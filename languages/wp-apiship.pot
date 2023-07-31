@@ -1,0 +1,174 @@
+# Copyright (C) 2022 WP ApiShip
+# This file is distributed under the same license as the WP ApiShip package.
+msgid ""
+msgstr ""
+"Project-Id-Version: WP ApiShip\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "WP ApiShip needs WooCommerce to run. Please, install and active WooCommerce plugin."
+msgstr ""
+
+msgid "Login"
+msgstr ""
+
+msgid "Token"
+msgstr ""
+
+msgid "Test login"
+msgstr ""
+
+msgid "Test password"
+msgstr ""
+
+msgid "Test token"
+msgstr ""
+
+msgid "Get token"
+msgstr ""
+
+msgid "Get test token"
+msgstr ""
+
+msgid "Timezone"
+msgstr ""
+
+msgid "Order dispatch date (pickupDate) will be set according to %sTimezone%s"
+msgstr ""
+
+msgid "You can set Timezone on General Settings page"
+msgstr ""
+
+msgid "To get more info about API Token refer %sdoc%s"
+msgstr ""
+
+msgid "Providers"
+msgstr ""
+
+msgid "ApiShip Order"
+msgstr ""
+
+msgid "Warehouse address"
+msgstr ""
+
+msgid "Use of warehouse address instead of store address."
+msgstr ""
+
+msgid "You can set it on %1sApiShip%2s tab."
+msgstr ""
+
+msgid "Address line 1"
+msgstr ""
+
+msgid "Address line 2"
+msgstr ""
+
+msgid "City"
+msgstr ""
+
+msgid "Country / State"
+msgstr ""
+
+msgid "Postcode / ZIP"
+msgstr ""
+
+msgid "ApiShip integrator"
+msgstr ""
+
+msgid "Select tariffs from various providers."
+msgstr ""
+
+msgid "Dimensions of product by default"
+msgstr ""
+
+msgid "Default item length (cm)"
+msgstr ""
+
+msgid "Default item length if it not specified"
+msgstr ""
+
+msgid "Default item width (cm)"
+msgstr ""
+
+msgid "Default item width if it not specified"
+msgstr ""
+
+msgid "Default item height (cm)"
+msgstr ""
+
+msgid "Default item height if it not specified"
+msgstr ""
+
+msgid "Weight of product by default"
+msgstr ""
+
+msgid "Default item weight (g)"
+msgstr ""
+
+msgid "Default item weight if it not specified"
+msgstr ""
+
+msgid "Others"
+msgstr ""
+
+msgid "Commission"
+msgstr ""
+
+msgid "Include COD and insurance fees commission in shipping costs"
+msgstr ""
+
+msgid "Do not include COD and insurance fees commission in shipping costs"
+msgstr ""
+
+msgid "Test connection"
+msgstr ""
+
+msgid "Connection successful."
+msgstr ""
+
+msgid "Connection failed."
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "Store address"
+msgstr ""
+
+msgid "Contact name"
+msgstr ""
+
+msgid "You can set the store address on the Woocommerce %sGeneral%s tab."
+msgstr ""
+
+msgid "The contact name will be indicated in the sender's address"
+msgstr ""
+
+msgid "Phone"
+msgstr ""
+
+msgid "Yandex map API key"
+msgstr ""
+
+msgid "For correct operation, you should set your own Yandex map key."
+msgstr ""
+
+msgid "We provide a default key, but no guarantee of correct operation"
+msgstr ""
+
+msgid "Docs"
+msgstr ""
+
+msgid "ApiShip server connection settings"
+msgstr ""
+
+msgid "Using only selected providers"
+msgstr ""
+
+msgid "You can set the list of providers on %sProviders%s section"
+msgstr ""
+
+msgid "You should get a token for authorization"
+msgstr ""

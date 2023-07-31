@@ -1,0 +1,24 @@
+# Игнорировать конфигурационные файлы PHPStorm
+.idea/
+
+# Игнорировать логи ошибок
+*.log
+
+# Игнорировать временные файлы различных операционных систем
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+# Windows
+Thumbs.db
+Desktop.ini
+# Linux
+!.gitignore
+!.gitkeep
+.cache
+.project
+.settings
+.tmproj
+*.bak
+*.swp
+*~.nib

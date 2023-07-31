@@ -1,0 +1,192 @@
+# Copyright (C) 2022 WP ApiShip
+# This file is distributed under the same license as the WP ApiShip package.
+msgid ""
+msgstr ""
+"Project-Id-Version: WP ApiShip\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ru_RU\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 1.6.5\n"
+
+msgid ""
+"WP ApiShip needs WooCommerce to run. Please, install and active WooCommerce "
+"plugin."
+msgstr "Необходимо установить и активировать WooCommerce для работы WP ApiShip"
+
+msgid "Login"
+msgstr "Логин"
+
+msgid "Token"
+msgstr "Токен"
+
+msgid "Test login"
+msgstr "Тестовый логин"
+
+msgid "Test password"
+msgstr "Тестовый пароль"
+
+msgid "Test token"
+msgstr "Тестовый токен"
+
+msgid "Get token"
+msgstr "Получить токен"
+
+msgid "Get test token"
+msgstr "Получить тестовый токен"
+
+msgid "Timezone"
+msgstr "Часовой пояс"
+
+msgid "Order dispatch date (pickupDate) will be set according to %sTimezone%s"
+msgstr ""
+"Дата отправки заказа будет установлена в соответствии с %sЧасовым поясом%s"
+
+msgid "You can set Timezone on General Settings page"
+msgstr "Вы можете установить Часовой пояс на странице Общие настройки"
+
+msgid "To get more info about API Token refer %sdoc%s"
+msgstr "Для получения дополнительной информации о токен API, см. %sdoc%s"
+
+msgid "Providers"
+msgstr "Службы доставки"
+
+msgid "ApiShip Order"
+msgstr "Заказ ApiShip"
+
+msgid "Warehouse address"
+msgstr "Адрес склада"
+
+msgid "Use of warehouse address instead of store address."
+msgstr "Использовать адрес склада вместо адреса магазина."
+
+msgid "You can set it on %1sApiShip%2s tab."
+msgstr "Вы можете установить его на вкладке %1sApiShip%2s."
+
+msgid "Address line 1"
+msgstr "Адрес"
+
+msgid "Address line 2"
+msgstr "Дополнения к адресу"
+
+msgid "City"
+msgstr "Город"
+
+msgid "Country / State"
+msgstr "Страна/регион"
+
+msgid "Postcode / ZIP"
+msgstr "Почтовый индекс"
+
+msgid "ApiShip integrator"
+msgstr "ApiShip интегратор"
+
+msgid "Select tariffs from various providers."
+msgstr "Выбор тарифов от разных транпортных компаний."
+
+msgid "Dimensions of product by default"
+msgstr "Размеры товара по умолчанию"
+
+msgid "Default item length (cm)"
+msgstr "Длина товара по умолчанию (см)"
+
+msgid "Default item length if it not specified"
+msgstr "Длина товара по умолчанию, если она не указана"
+
+msgid "Default item width (cm)"
+msgstr "Ширина товара по умолчанию (см)"
+
+msgid "Default item width if it not specified"
+msgstr "Ширина товара по умолчанию, если она не указана"
+
+msgid "Default item height (cm)"
+msgstr "Высота товара по умолчанию (см)"
+
+msgid "Default item height if it not specified"
+msgstr "Высота товара по умолчанию, если она не указана"
+
+msgid "Weight of product by default"
+msgstr "Вес товара по умолчанию"
+
+msgid "Default item weight (g)"
+msgstr "Вес товара по умолчанию (г)"
+
+msgid "Default item weight if it not specified"
+msgstr "Вес товара по умолчанию, если он не указан"
+
+msgid "Others"
+msgstr "Прочие настройки"
+
+msgid "Commission"
+msgstr "Комиссия"
+
+msgid "Include COD and insurance fees commission in shipping costs"
+msgstr ""
+"Включать в стоимость доставки комиссию за наложенный платёж и страховку"
+
+msgid "Do not include COD and insurance fees commission in shipping costs"
+msgstr "Комиссия за наложенный платёж и страховку в стоимость не включена"
+
+msgid "Test connection"
+msgstr "Тестировать подключение"
+
+msgid "Connection successful."
+msgstr "Подключение успешно."
+
+msgid "Connection failed."
+msgstr "Ошибка подключения."
+
+msgid "Error"
+msgstr "Ошибка"
+
+msgid "Store address"
+msgstr "Адрес магазина"
+
+msgid "Contact name"
+msgstr "ФИО контактного лица"
+
+msgid "You can set the store address on the Woocommerce %sGeneral%s tab."
+msgstr ""
+"Установка адреса магазина на вкладке %sОсновные%s страницы настроек "
+"Woocommerce"
+
+msgid "The contact name will be indicated in the sender's address"
+msgstr "ФИО контакта будет указано в адресе отправителя"
+
+msgid "Phone"
+msgstr "Телефон"
+
+msgid "Yandex map API key"
+msgstr "API ключ для Яндекс карт"
+
+msgid "For correct operation, you should set your own Yandex map key."
+msgstr ""
+"Для корректной работы необходимо установить собственный ключ карты Яндекса."
+
+msgid "We provide a default key, but no guarantee of correct operation"
+msgstr ""
+"Мы предоставляем ключ по умолчанию, но не гарантируем правильную работу"
+
+msgid "Docs"
+msgstr "Документы"
+
+msgid "ApiShip server connection settings"
+msgstr "Настройки подключения к серверу ApiShip"
+
+msgid "Using only selected providers"
+msgstr "Использовать только избранные Службы доставки"
+
+msgid "You can set the list of providers on %sProviders%s section"
+msgstr "Вы можете установить список в секции %sСлужбы доставки%s"
+
+msgid "You should get a token for authorization"
+msgstr "Вы должны получить токен для авторизации"
+
+#~ msgid "Guide"
+#~ msgstr "Руководство"
