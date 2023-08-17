@@ -271,7 +271,7 @@
 				setTimeout(function(){
 					// api.setProviderData();
 					api.setPostNewOrderAction();
-					api.setDeleteOrdersAction();
+					api.setOrderActions();
 					api.setStatusOrdersAction();
 					api.setViewOrdersAction();
 					api.setValidateOrdersAction();
@@ -507,7 +507,7 @@
 						location.reload();
 					}, 500);
 				} else {
-					api.orderViewer.add(api.getErrorsReport(body.errors, 'При создании заказа выявлены ошибки:'));
+					api.orderViewer.add(api.getErrorsReport(body, 'При создании заказа выявлены ошибки:'));
 				}
 				api.orderViewer.open();
 			}
@@ -748,10 +748,12 @@
 			}
 			return parsed;
 		},
-		setDeleteOrdersAction: function(){
-			/**
-			 * Delete orders.
-			 */		
+		setOrderActions: function(){
+			api.buttonAction('wpaiship-delete-order', 'deleteIntegratorOrder', 'удалён');
+			api.buttonAction('wpaiship-cancel-order', 'cancelIntegratorOrder', 'отменён');			
+		},
+		buttonAction: function(elemClass, endpoint, textStatus = 'отменён'){
+			
 			var beforeCB = (request) => {
 				if ( 'undefined' === typeof request ) {
 					return;
@@ -767,16 +769,15 @@
 
 				api.orderViewer.open();
 				if ( response.success ) {
-					api.orderViewer.add('Заказ #' + response.data.request.integratorOrder + ' отменён');
+					api.orderViewer.add('Заказ #' + response.data.request.integratorOrder + ' ' + textStatus);
 				} else {
-					api.orderViewer.add('При отмене заказа произошла ошибка: ' + body.message);
+					api.orderViewer.add('При совершении действия произошла ошибка: ' + body.message);
 				}			
 			}
-			
 			var confirmation = {
-				_self: $('#wpapiship-order-metabox .delete-orders-confirmation'),
-				_noElement: $('#wpapiship-order-metabox .confirmation-button.no'),
-				_yesElement: $('#wpapiship-order-metabox .confirmation-button.yes'),
+				_self: $('#wpapiship-order-metabox .' + elemClass + '.wpapiship-action-confirmation'),
+				_noElement: $('#wpapiship-order-metabox  .' + elemClass + ' .confirmation-button.no'),
+				_yesElement: $('#wpapiship-order-metabox  .' + elemClass + ' .confirmation-button.yes'),
 				hiddenClass: 'hidden',
 				inited: null,
 				open() {
@@ -818,7 +819,7 @@
 					this._yesElement.on('click', (evnt) => {
 						evnt.preventDefault();
 						var request = {
-							action: 'cancelIntegratorOrder',
+							action: endpoint,
 							postOrderID: api.getParam('post_id'),
 							integratorOrder: api.getShippingMethodMeta(
 								'integratorOrder', 
@@ -830,6 +831,9 @@
 						}	
 						api.ajax(request);						
 						this.close();
+						setTimeout(function(){
+							location.reload();
+						}, 500);
 					});					
 					this.inited = true;
 					return true;
@@ -840,7 +844,7 @@
 				return;
 			}
 
-			$('.delete-orders').on('click', function(evnt){
+			$('.' + elemClass).on('click', function(evnt){
 				evnt.preventDefault();
 				confirmation.toggle();
 				if ( confirmation.isOpened() ) {
@@ -848,7 +852,7 @@
 						confirmation.close();
 					}, 10000);
 				}
-			});				
+			});	
 		},
 		// deprecated (set connections count etc.)
 		setProviderData: function(){
@@ -1711,16 +1715,19 @@
 		setValidationReport: function(body, successText = 'Проверка пройдена успешно') {
 			let validationResult = successText;
 			if ('undefined' !== typeof body.errors && body.errors.length > 0) {
-				validationResult = api.getErrorsReport(body.errors);
+				validationResult = api.getErrorsReport(body);
 			}
 			api.orderViewer.add(validationResult).open();
 		},
-		getErrorsReport: function(errors, errorText = 'При проверке выявлены следующие ошибки:') {
-			if (errors.length == 0) {
-				return '';
+		getErrorsReport: function(body, errorText = 'При проверке выявлены следующие ошибки:') {
+			if (!body.errors) {
+				if ('undefined' !== typeof body.message) {
+					return errorText + "\n" + body.message + "\n" + body.description;
+				}
+				return errorText + "\nНеизвестная ошибка";
 			}
 			errorText = errorText + "\n\n";
-			errors.forEach(function(currentValue, index, arr){
+			body.errors.forEach(function(currentValue, index, arr){
 				errorText = errorText + 'Поле ' + currentValue.field + ' - ' + currentValue.message + '\n';
 			});
 			return errorText;

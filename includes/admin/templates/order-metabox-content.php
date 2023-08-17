@@ -535,22 +535,40 @@ if ( $_refunded ) {
 		<div class="meta--item meta-key">&nbsp;</div>		
 		<?php
 		if ( $this->integrator_order_exists() ) { ?>
-			<div class="meta--item meta-value action-buttons">
+			<div class="meta--item meta-value action-buttons wpapiship-buttons">
 				<button class="button button-secondary tools-orders <?php echo $tools_class; ?>" onclick="return false;">
 					<?php esc_html_e('Инструменты','wp-apiship'); ?>
 				</button>
-				<button class="button button-secondary delete-orders" onclick="return false;">
-					<?php esc_html_e('Отменить заказ','wp-apiship'); ?>
-				</button>
-				<span class="delete-orders-confirmation hidden">
-					<span class="message"><?php esc_html_e('Отменить?','wp-apiship'); ?></span> 
-					<button onclick="return false;" href="#" class="confirmation-button yes">
-						<?php esc_html_e('Да','wp-apiship'); ?>
+				
+				<div class="wpapiship-action-button-wrapper">
+					<button class="button button-secondary wpapiship-action-button wpaiship-cancel-order" onclick="return false;">
+						<?php esc_html_e('Отменить заказ','wp-apiship'); ?>
 					</button>
-					<button onclick="return false;" href="#" class="confirmation-button no">
-						<?php esc_html_e('Нет','wp-apiship'); ?>
+					<span class="wpapiship-confirmation-bar wpapiship-action-confirmation wpaiship-cancel-order hidden">
+						<span class="message"><?php esc_html_e('Отменить?','wp-apiship'); ?></span> 
+						<button onclick="return false;" href="#" class="confirmation-button yes">
+							<?php esc_html_e('Да','wp-apiship'); ?>
+						</button>
+						<button onclick="return false;" href="#" class="confirmation-button no">
+							<?php esc_html_e('Нет','wp-apiship'); ?>
+						</button>
+					</span>	
+				</div>
+				
+				<div class="wpapiship-action-button-wrapper">
+					<button class="button button-secondary wpapiship-action-button wpaiship-delete-order" onclick="return false;">
+						<?php esc_html_e('Удалить из ApiShip','wp-apiship'); ?>
 					</button>
-				</span>	
+					<span class="wpapiship-confirmation-bar wpapiship-action-confirmation wpaiship-delete-order hidden">
+						<span class="message"><?php esc_html_e('Удалить?','wp-apiship'); ?></span> 
+						<button onclick="return false;" href="#" class="confirmation-button yes">
+							<?php esc_html_e('Да','wp-apiship'); ?>
+						</button>
+						<button onclick="return false;" href="#" class="confirmation-button no">
+							<?php esc_html_e('Нет','wp-apiship'); ?>
+						</button>
+					</span>	
+				</div>
 			</div><?php		
 		} else { ?>
 			<div class="meta--item meta-value action-buttons">
