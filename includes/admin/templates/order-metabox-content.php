@@ -541,10 +541,10 @@ if ( $_refunded ) {
 				</button>
 				
 				<div class="wpapiship-action-button-wrapper">
-					<button class="button button-secondary wpapiship-action-button wpaiship-cancel-order" onclick="return false;">
+					<button class="button button-secondary wpapiship-action-button wpapiship-cancel-order" onclick="return false;">
 						<?php esc_html_e('Отменить заказ','wp-apiship'); ?>
 					</button>
-					<span class="wpapiship-confirmation-bar wpapiship-action-confirmation wpaiship-cancel-order hidden">
+					<span class="wpapiship-confirmation-bar wpapiship-action-confirmation wpapiship-cancel-order-confirmation hidden">
 						<span class="message"><?php esc_html_e('Отменить?','wp-apiship'); ?></span> 
 						<button onclick="return false;" href="#" class="confirmation-button yes">
 							<?php esc_html_e('Да','wp-apiship'); ?>
@@ -556,10 +556,10 @@ if ( $_refunded ) {
 				</div>
 				
 				<div class="wpapiship-action-button-wrapper">
-					<button class="button button-secondary wpapiship-action-button wpaiship-delete-order" onclick="return false;">
+					<button class="button button-secondary wpapiship-action-button wpapiship-delete-order" onclick="return false;">
 						<?php esc_html_e('Удалить из ApiShip','wp-apiship'); ?>
 					</button>
-					<span class="wpapiship-confirmation-bar wpapiship-action-confirmation wpaiship-delete-order hidden">
+					<span class="wpapiship-confirmation-bar wpapiship-action-confirmation wpapiship-delete-order-confirmation hidden">
 						<span class="message"><?php esc_html_e('Удалить?','wp-apiship'); ?></span> 
 						<button onclick="return false;" href="#" class="confirmation-button yes">
 							<?php esc_html_e('Да','wp-apiship'); ?>

@@ -749,8 +749,8 @@
 			return parsed;
 		},
 		setOrderActions: function(){
-			api.buttonAction('wpaiship-delete-order', 'deleteIntegratorOrder', 'удалён');
-			api.buttonAction('wpaiship-cancel-order', 'cancelIntegratorOrder', 'отменён');			
+			api.buttonAction('.wpapiship-delete-order', 'deleteIntegratorOrder', 'удалён');
+			api.buttonAction('.wpapiship-cancel-order', 'cancelIntegratorOrder', 'отменён');			
 		},
 		buttonAction: function(elemClass, endpoint, textStatus = 'отменён'){
 			
@@ -770,17 +770,22 @@
 				api.orderViewer.open();
 				if ( response.success ) {
 					api.orderViewer.add('Заказ #' + response.data.request.integratorOrder + ' ' + textStatus);
+					setTimeout(function(){
+						location.reload();
+					}, 1000);
 				} else {
 					api.orderViewer.add('При совершении действия произошла ошибка: ' + body.message);
 				}			
 			}
+			var confirmationClass = elemClass + '-confirmation';
 			var confirmation = {
-				_self: $('#wpapiship-order-metabox .' + elemClass + '.wpapiship-action-confirmation'),
-				_noElement: $('#wpapiship-order-metabox  .' + elemClass + ' .confirmation-button.no'),
-				_yesElement: $('#wpapiship-order-metabox  .' + elemClass + ' .confirmation-button.yes'),
+				_self: $('#wpapiship-order-metabox ' + confirmationClass + '.wpapiship-action-confirmation'),
+				_noElement: $('#wpapiship-order-metabox ' + confirmationClass + ' .confirmation-button.no'),
+				_yesElement: $('#wpapiship-order-metabox ' + confirmationClass + ' .confirmation-button.yes'),
 				hiddenClass: 'hidden',
 				inited: null,
 				open() {
+					api.hideAllConfirmations();
 					this._self.removeClass(this.hiddenClass);
 					return this;
 				},
@@ -831,9 +836,6 @@
 						}	
 						api.ajax(request);						
 						this.close();
-						setTimeout(function(){
-							location.reload();
-						}, 500);
 					});					
 					this.inited = true;
 					return true;
@@ -844,7 +846,8 @@
 				return;
 			}
 
-			$('.' + elemClass).on('click', function(evnt){
+			$(elemClass).on('click', function(evnt){
+				console.log(this);
 				evnt.preventDefault();
 				confirmation.toggle();
 				if ( confirmation.isOpened() ) {
@@ -854,6 +857,14 @@
 				}
 			});	
 		},
+		hideAllConfirmations: function(){
+			$('#wpapiship-order-metabox .wpapiship-action-confirmation').each(function(index, elem){
+				if (!$(elem).hasClass('hidden')) {
+					$(elem).addClass('hidden');
+				}
+			});
+		},
+			
 		// deprecated (set connections count etc.)
 		setProviderData: function(){
 			var providerKey = api.getShippingMethodMeta('tariffProviderKey', 'value');
