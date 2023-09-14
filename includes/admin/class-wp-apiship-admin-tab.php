@@ -689,6 +689,31 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 					'id'   	=> 'wp_apiship_section_points_template_setting',
 				),
 				/**
+				 * Point out display mode.
+				 */
+				array(
+					'name' 	=> esc_html__('Настройка вывода ПВЗ', 'wp-apiship'),
+					'type'	=> 'title',
+					'desc' 	=> '',
+					'id' 	=> 'wp_apiship_section_point_out_display_settings'
+				),
+				array(
+					'title' 	=> esc_html__('Выберите один из режимов', 'wp-apiship'),
+					'type'  	=> 'radio', # @see woocommerce\includes\admin\class-wc-admin-settings.php
+					'id'    	=> 'wp_apiship_point_out_display_mode',
+					'default'   => '1',
+					'options'   => array(
+						'1' => esc_html__('Отдельный способ доставки до ПВЗ для каждого тарифа', 'wp-apiship'),
+						'2' => esc_html__('Отдельный способ доставки до ПВЗ для каждой СД', 'wp-apiship'),
+						'3' => esc_html__('Все ПВЗ на одной карте', 'wp-apiship'),
+					),
+					'autoload' => true, #this is 3-rd option in `update_option` function.
+				),
+				array(
+					'type'  => 'sectionend',
+					'id'   	=> 'wp_apiship_section_point_out_display_settings',
+				),	
+				/**
 				 * Other settings.
 				 */
 				array(

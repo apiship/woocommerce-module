@@ -394,23 +394,27 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 			$pointAddress = '';
 			$tariffSelected = '0';
 
-			$selectedData = self::getSelectedPointData($labelTariff);
-			if (is_object($selectedData)) {
+			if (isset($tariff->isCached) and $tariff->isCached === true) {
 				$buttonText = __('Сменить ПВЗ', 'wp-apiship');
-				$pointOutId = $selectedData->point_id;
-				$pointName = $selectedData->name;
-				$pointAddress = $selectedData->address;
-				if ($selectedData->is_selected === true) {
+				$pointOutId = $tariff->cachedData->point_id;
+				$pointName = $tariff->cachedData->name;
+				$pointAddress = $tariff->cachedData->address;
+				if (isset($tariff->isSelected) and $tariff->isSelected === true) {
 					$tariffSelected = '1';
 				}
 			}
 
-			if (isset($_COOKIE['wp_apiship_selected_point_out_data'])) {
-				$selectedPointData = self::decodeSelectedPointData($_COOKIE['wp_apiship_selected_point_out_data']);
-				if (isset($selectedPointData->selected_tariff_id) and intval($selectedPointData->selected_tariff_id) === intval($labelTariff)) {
-					$tariffSelected = '1';
+			$tariffList = json_decode($meta['tariffList']);
+			$points = $tariff->pointIds;
+			$point_display_mode = intval(Options\WP_ApiShip_Options::get_option('point_out_display_mode', Options\WP_ApiShip_Options::DEFAULT_POINT_OUT_DISPLAY_MODE));
+
+			if (!empty($tariffList)) {
+				foreach($tariffList as $listTariff) {
+					$points = array_merge($points, $listTariff->pointIds);
 				}
 			}
+
+			$points = array_unique($points);
 
 			if ( in_array( Options\WP_ApiShip_Options::DELIVERY_TO_POINT_OUT, $tariff->deliveryTypes ) ) {
 				$elem  = '<a href="#" onclick="return false;" ';
@@ -422,7 +426,9 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				$elem .= 'data-point-out-address="' . $pointAddress . '" ';
 				$elem .= 'data-tariff-selected="' . $tariffSelected . '" ';
 				$elem .= 'data-delivery-type="'  .implode(',', $tariff->deliveryTypes) . '" ';
-				$elem .= 'data-points-list="'  .implode(',', $tariff->pointIds) . '" ';
+				$elem .= 'data-points-list="'  .implode(',', $points) . '" ';
+				$elem .= 'data-tariff-list="'  . htmlspecialchars($meta['tariffList']) . '" ';
+				$elem .= 'data-display-mode="'  . $point_display_mode . '" ';
 				$elem .= 'data-provider-key="' . $meta['tariffProviderKey'] . '">';
 				$elem .= ' (' . $buttonText . ')';
 				$elem .= '</a>';
@@ -435,11 +441,11 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		 *
 		 * @since 1.4.0
 		 */
-		public static function getSelectedPointData($tariff_id)
+		public static function getSelectedPointData($tariff_id, $method_id)
 		{
 			if (isset($_COOKIE['wp_apiship_selected_point_out_data'])) {
 				$selectedPointData = self::decodeSelectedPointData($_COOKIE['wp_apiship_selected_point_out_data']);
-				$tariffKey = 't' . $tariff_id;
+				$tariffKey = 't' . $tariff_id . '|' . $method_id;;
 				if (isset($selectedPointData->$tariffKey)) {
 					$selectedPointData->$tariffKey->is_selected = false;
 					if (isset($selectedPointData->selected_tariff_id) and intval($selectedPointData->selected_tariff_id) === intval($tariff_id)) {
@@ -996,6 +1002,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						$body = json_decode($response['response']['body']);
 						foreach($body->rows as $key => $row) {
 							if (in_array($row->id, $tariffPointsList)) {
+								$row->providerName = WP_ApiShip_Options::get_provider_name($row->providerKey);
 								$newBody->rows[] = $row;
 							}
 						}
@@ -1701,8 +1708,9 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						'name' => addslashes($request['name']),
 						'point_id' => addslashes($request['id']),
 						'tariff_id' => addslashes($request['tariff_id']),
+						'method_id' => addslashes($request['method_id']),
 					];
-					$pointTariffKey = 't' . $request['tariff_id'];
+					$pointTariffKey = 't' . $request['tariff_id'] . '|' . $request['method_id'];
 
 					$allData = (object) [];
 					if (isset($_COOKIE['wp_apiship_selected_point_out_data']) and !empty($_COOKIE['wp_apiship_selected_point_out_data'])) {
@@ -1711,6 +1719,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 					$allData->$pointTariffKey = $pointData;
 					$allData->selected_tariff_id = $request['tariff_id'];
+					$allData->selected_method_id = $request['method_id'];
 
 					self::saveSelectedPointData($allData);
 				
