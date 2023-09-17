@@ -104,6 +104,25 @@ if ( ! class_exists('WP_ApiShip_Calculator_Direction') ) :
  
 			$args = wp_parse_args( $args, $defaults );
 			
+			$addressElements = [
+				'index' 	=> $args['index'],
+				'region'    => $args['region'],
+				'city' 	   	=> $args['city'],
+				'address' 	=> $args['addressString']
+			];
+			
+			foreach($addressElements as $elementKey => $value) {
+				if ($value === '') {
+					unset($addressElements[$elementKey]);
+				}
+			}
+
+			if ($addressElements['region'] === $addressElements['city']) {
+				unset($addressElements['region']);
+			}
+
+			$args['addressString'] = implode(', ', $addressElements);
+
 			$this->countryCode 	 = $args['countryCode'];
 			$this->index	   	 = $args['index'];
 			$this->addressString = $args['addressString'];
