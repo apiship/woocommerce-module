@@ -35,6 +35,7 @@
 		map: null,
 		toCity: null,
 		providerKey: null,
+		requestKeyEnabled: false,
 		isMapExists: function(){
 			if ( mapApi.map !== null && 'object' === typeof mapApi.map ) {
 				return true;
@@ -77,7 +78,7 @@
 		setProviderKey: function(key){
 			if ( false === key || 'string' === typeof key ) {
 				mapApi.providerKey = key;
-			} else {
+			} else if (mapApi.requestKeyEnabled == false) {
 				var val = $(mapApi.getParam('checkedShippingMethodSelector')).val();
 				var dataElem = $('.wpapiship-delivery-to-point[data-value="'+val+'"]');
 				if ( dataElem.length == 1 ) {
@@ -159,10 +160,8 @@
 		getBalloonContent: function(pointOut) {
 			var content = '<div class="point-out-balloon-content">';
 			
-			if (mapApi.pointsMode != 3) {
-				content  += 	'<div class="provider-key">Служба доставки: '+pointOut.providerName;
-				content  += 	'</div>';
-			} 
+			content  	+= 		'<div class="provider-key">Служба доставки: '+pointOut.providerName;
+			content  	+= 		'</div>';
 
 			content 	 += 	'<div class="point-out-address">'+pointOut.streetType+'.'+pointOut.street+', д.'+pointOut.house;
 			
@@ -173,9 +172,11 @@
 			content 	 += 	'</div>';
 			content 	 += 	'<br />';	
 
-			content 	 += 	'<div style="margin-bottom: 10px;">';
-			content 	 += 		'<div>Выбор тарифа</div>';
-			content 	 += 		'<select class="wpapiship-select-map-tariff">';
+			if (mapApi.pointsMode != 1) {
+				content 	 += 	'<div style="margin-bottom: 10px;">';
+				content 	 += 		'<div>Выбор тарифа</div>';
+				content 	 += 		'<select class="wpapiship-select-map-tariff">';
+			} 
 			
 			mapApi.tariffList.forEach(element => {
 				let days = element.daysMin;;
@@ -333,7 +334,7 @@
 				cod: mapApi.getCod(),
 				doneCallback: donePointsOutCallback,
 			}
-			if (mapApi.pointsMode != 3) {
+			if (mapApi.pointsMode != 3 || mapApi.pointsMode == 3 && mapApi.requestKeyEnabled == true) {
 				request.providerKey = mapApi.getProviderKey();
 			}
 			mapApi.ajax(request);	
@@ -394,6 +395,26 @@
 			$(mapApi.getParam('pointOutFieldSelector')).val('');
 			$(mapApi.getParam('pointOutAddressSelector')).val('').data('id','').data('lat','').data('lng','');
 		},
+		selectProviderCallback: function() {
+			$(document).on('change', mapApi.getParam('mapProviderSelect'), function(evnt){
+				mapApi.reloadMap($(this).val());
+				mapApi.selectProviderCallback();
+			});
+		},
+		reloadMap: function(requestProviderKey = null) {
+			// Set selected provider key.
+			mapApi.requestKeyEnabled = false;
+			if (requestProviderKey != null && requestProviderKey != 'all-providers') {
+				mapApi.providerKey = requestProviderKey;
+				mapApi.requestKeyEnabled = true;
+			}
+			
+			// Reload the map.
+			mapApi.setToCity();
+			mapApi.setProviderKey();
+			mapApi.setTariffData();
+			mapApi.openMap();
+		},
 		attachListeners: function() {
 			
 			// Stop event bubbling when clicking on map itself.
@@ -403,9 +424,15 @@
 			
 			// Close map by clicking outside it.
 			$(document).on('click', mapApi.getParam('checkoutBodyOverlaySelector'), function(evnt){
-				mapApi.closeMap();
+				// Check if click on map options container.
+				if (!$(evnt.target).closest('#wpapiship_map_options').length) {
+					mapApi.closeMap();
+				}
 			});
-			
+
+			// Select option from providers list.
+			mapApi.selectProviderCallback();
+
 			// Click on Select button in the balloon content box.
 			$(document).on('click', mapApi.getParam('pointOutSelectSelector'), function(evnt){
 				$(document).trigger('selectPointOut',[$(this)]);

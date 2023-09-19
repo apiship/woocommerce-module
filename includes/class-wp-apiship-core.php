@@ -109,6 +109,11 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		protected static $_SCRIPT_SUFFIX = ''; # '.min';
 
 		/**
+		 * List of the providers.
+		 */
+		public static array $providersList = [];
+
+		/**
 		 * Get instance.
 		 *
 		 * @param string $path_to_loader
@@ -360,6 +365,16 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 			
 			return $fields;
 		}
+
+		public static function get_point_display_mode(): int
+		{
+			$default_point_display_mode = WP_ApiShip_Options::DEFAULT_POINT_OUT_DISPLAY_MODE;
+
+			$point_display_mode = WP_ApiShip_Options::get_option('point_out_display_mode', $default_point_display_mode);
+			$point_display_mode = intval($point_display_mode);
+
+			return $point_display_mode;
+		}
 		
 		/**
 		 * Add element with data after shipping rate.
@@ -384,6 +399,9 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 			}
 		
 			$tariff = json_decode($meta[ Options\WP_ApiShip_Options::TARIFF_DATA_KEY ]);
+			$providerKey = $meta['tariffProviderKey'];
+
+			self::$providersList[$providerKey][] = $tariff;
 			
 			$elem = '';
 
@@ -406,7 +424,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 			$tariffList = json_decode($meta['tariffList']);
 			$points = $tariff->pointIds;
-			$point_display_mode = intval(Options\WP_ApiShip_Options::get_option('point_out_display_mode', Options\WP_ApiShip_Options::DEFAULT_POINT_OUT_DISPLAY_MODE));
+			$point_display_mode = self::get_point_display_mode();
 
 			if (!empty($tariffList)) {
 				foreach($tariffList as $listTariff) {
@@ -429,7 +447,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				$elem .= 'data-points-list="'  .implode(',', $points) . '" ';
 				$elem .= 'data-tariff-list="'  . htmlspecialchars($meta['tariffList']) . '" ';
 				$elem .= 'data-display-mode="'  . $point_display_mode . '" ';
-				$elem .= 'data-provider-key="' . $meta['tariffProviderKey'] . '">';
+				$elem .= 'data-provider-key="' . $providerKey . '">';
 				$elem .= ' (' . $buttonText . ')';
 				$elem .= '</a>';
 			}
@@ -1852,11 +1870,37 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		 *
 		 * @since 1.0.0
 		 */
-		public static function on__wp_footer() {
+		public static function on__wp_footer(): void
+		{
 			if (!is_checkout() and !is_cart()) {
 				return;
 			}
-			echo '<div class="wpapiship-checkout-modal"><!-- yandex map --><div id="wpapiship-checkout-ymap"></div></div>';
+
+			$providers = WP_ApiShip_Options::PROVIDERS_LIST;
+
+			foreach ($providers as $key => $provider) {
+				if (!isset(self::$providersList[$provider['key']])) {
+					unset($providers[$key]);
+				}
+			}
+
+			$vars = [
+				'providers' => $providers,
+				'point_display_mode' => self::get_point_display_mode()
+			];
+
+			self::load_template('checkout-modal', $vars);
+		}
+
+		/**
+		 * Include template by path.
+		 *
+		 * @since 1.5.0
+		 */
+		public static function load_template(string $name, array $vars = []): void
+		{
+			extract($vars);
+			include __DIR__ . "/templates/$name.php";
 		}
 		
 		/**
@@ -2336,7 +2380,9 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				'deliveryTypes' => array(
 					'byCourier'  => Options\WP_ApiShip_Options::DELIVERY_BY_COURIER,
 					'toPointOut' => Options\WP_ApiShip_Options::DELIVERY_TO_POINT_OUT,
-				)
+				),
+				//
+				'mapProviderSelect' => '#wpapiship_provider_select'
 			);
 			
 			wp_register_script(
