@@ -1333,14 +1333,6 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						 * https://api.apiship.ru/doc/#/orders/deleteOrder
 						 */
 						
-						$cancelResponse = HTTP\WP_ApiShip_HTTP::get(
-							'orders/' . $request['integratorOrder'] . '/cancel'
-						);	
-						
-						if ( wp_remote_retrieve_response_code($cancelResponse) !== HTTP\WP_ApiShip_HTTP::OK ) {
-							$response['success'] = 'error';
-						}	
-						 
 						$response['response'] = HTTP\WP_ApiShip_HTTP::delete(
 							'orders/'.$request['integratorOrder'],
 							array(
