@@ -48,6 +48,13 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 		 * @since 1.4.0
 		 */
 		const DEFAULT_POINTS_TEMPLATE	 = '%type %company %name %tariff %address %time';
+			
+		/**
+		 * Default point out display mode
+		 * 
+		 * @since 1.5.0
+		 */
+		const DEFAULT_POINT_OUT_DISPLAY_MODE = 1;
 		
 		/**
 		 * Default mapping settings.

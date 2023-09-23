@@ -271,7 +271,7 @@
 				setTimeout(function(){
 					// api.setProviderData();
 					api.setPostNewOrderAction();
-					api.setDeleteOrdersAction();
+					api.setOrderActions();
 					api.setStatusOrdersAction();
 					api.setViewOrdersAction();
 					api.setValidateOrdersAction();
@@ -507,7 +507,7 @@
 						location.reload();
 					}, 500);
 				} else {
-					api.orderViewer.add(api.getErrorsReport(body.errors, 'При создании заказа выявлены ошибки:'));
+					api.orderViewer.add(api.getErrorsReport(body, 'При создании заказа выявлены ошибки:'));
 				}
 				api.orderViewer.open();
 			}
@@ -748,10 +748,12 @@
 			}
 			return parsed;
 		},
-		setDeleteOrdersAction: function(){
-			/**
-			 * Delete orders.
-			 */		
+		setOrderActions: function(){
+			api.buttonAction('.wpapiship-delete-order', 'deleteIntegratorOrder', 'удалён');
+			api.buttonAction('.wpapiship-cancel-order', 'cancelIntegratorOrder', 'отменён');			
+		},
+		buttonAction: function(elemClass, endpoint, textStatus = 'отменён'){
+			
 			var beforeCB = (request) => {
 				if ( 'undefined' === typeof request ) {
 					return;
@@ -767,19 +769,23 @@
 
 				api.orderViewer.open();
 				if ( response.success ) {
-					api.orderViewer.add('Заказ #' + response.data.request.integratorOrder + ' отменён');
+					api.orderViewer.add('Заказ #' + response.data.request.integratorOrder + ' ' + textStatus);
+					setTimeout(function(){
+						location.reload();
+					}, 1000);
 				} else {
-					api.orderViewer.add('При отмене заказа произошла ошибка: ' + body.message);
+					api.orderViewer.add('При совершении действия произошла ошибка: ' + body.message);
 				}			
 			}
-			
+			var confirmationClass = elemClass + '-confirmation';
 			var confirmation = {
-				_self: $('#wpapiship-order-metabox .delete-orders-confirmation'),
-				_noElement: $('#wpapiship-order-metabox .confirmation-button.no'),
-				_yesElement: $('#wpapiship-order-metabox .confirmation-button.yes'),
+				_self: $('#wpapiship-order-metabox ' + confirmationClass + '.wpapiship-action-confirmation'),
+				_noElement: $('#wpapiship-order-metabox ' + confirmationClass + ' .confirmation-button.no'),
+				_yesElement: $('#wpapiship-order-metabox ' + confirmationClass + ' .confirmation-button.yes'),
 				hiddenClass: 'hidden',
 				inited: null,
 				open() {
+					api.hideAllConfirmations();
 					this._self.removeClass(this.hiddenClass);
 					return this;
 				},
@@ -818,7 +824,7 @@
 					this._yesElement.on('click', (evnt) => {
 						evnt.preventDefault();
 						var request = {
-							action: 'cancelIntegratorOrder',
+							action: endpoint,
 							postOrderID: api.getParam('post_id'),
 							integratorOrder: api.getShippingMethodMeta(
 								'integratorOrder', 
@@ -840,7 +846,8 @@
 				return;
 			}
 
-			$('.delete-orders').on('click', function(evnt){
+			$(elemClass).on('click', function(evnt){
+				console.log(this);
 				evnt.preventDefault();
 				confirmation.toggle();
 				if ( confirmation.isOpened() ) {
@@ -848,8 +855,16 @@
 						confirmation.close();
 					}, 10000);
 				}
-			});				
+			});	
 		},
+		hideAllConfirmations: function(){
+			$('#wpapiship-order-metabox .wpapiship-action-confirmation').each(function(index, elem){
+				if (!$(elem).hasClass('hidden')) {
+					$(elem).addClass('hidden');
+				}
+			});
+		},
+			
 		// deprecated (set connections count etc.)
 		setProviderData: function(){
 			var providerKey = api.getShippingMethodMeta('tariffProviderKey', 'value');
@@ -1711,16 +1726,19 @@
 		setValidationReport: function(body, successText = 'Проверка пройдена успешно') {
 			let validationResult = successText;
 			if ('undefined' !== typeof body.errors && body.errors.length > 0) {
-				validationResult = api.getErrorsReport(body.errors);
+				validationResult = api.getErrorsReport(body);
 			}
 			api.orderViewer.add(validationResult).open();
 		},
-		getErrorsReport: function(errors, errorText = 'При проверке выявлены следующие ошибки:') {
-			if (errors.length == 0) {
-				return '';
+		getErrorsReport: function(body, errorText = 'При проверке выявлены следующие ошибки:') {
+			if (!body.errors) {
+				if ('undefined' !== typeof body.message) {
+					return errorText + "\n" + body.message + "\n" + body.description;
+				}
+				return errorText + "\nНеизвестная ошибка";
 			}
 			errorText = errorText + "\n\n";
-			errors.forEach(function(currentValue, index, arr){
+			body.errors.forEach(function(currentValue, index, arr){
 				errorText = errorText + 'Поле ' + currentValue.field + ' - ' + currentValue.message + '\n';
 			});
 			return errorText;

@@ -106,7 +106,12 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		/**
 		 * @var string $_SCRIPT_SUFFIX Whether to use minimized or full versions of JS.
 		 */
-		protected static $_SCRIPT_SUFFIX = '.min';
+		protected static $_SCRIPT_SUFFIX = ''; # '.min';
+
+		/**
+		 * List of the providers.
+		 */
+		public static array $providersList = [];
 
 		/**
 		 * Get instance.
@@ -360,6 +365,16 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 			
 			return $fields;
 		}
+
+		public static function get_point_display_mode(): int
+		{
+			$default_point_display_mode = WP_ApiShip_Options::DEFAULT_POINT_OUT_DISPLAY_MODE;
+
+			$point_display_mode = WP_ApiShip_Options::get_option('point_out_display_mode', $default_point_display_mode);
+			$point_display_mode = intval($point_display_mode);
+
+			return $point_display_mode;
+		}
 		
 		/**
 		 * Add element with data after shipping rate.
@@ -384,6 +399,9 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 			}
 		
 			$tariff = json_decode($meta[ Options\WP_ApiShip_Options::TARIFF_DATA_KEY ]);
+			$providerKey = $meta['tariffProviderKey'];
+
+			self::$providersList[$providerKey][] = $tariff;
 			
 			$elem = '';
 
@@ -394,23 +412,27 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 			$pointAddress = '';
 			$tariffSelected = '0';
 
-			$selectedData = self::getSelectedPointData($labelTariff);
-			if (is_object($selectedData)) {
+			if (isset($tariff->isCached) and $tariff->isCached === true) {
 				$buttonText = __('Сменить ПВЗ', 'wp-apiship');
-				$pointOutId = $selectedData->point_id;
-				$pointName = $selectedData->name;
-				$pointAddress = $selectedData->address;
-				if ($selectedData->is_selected === true) {
+				$pointOutId = $tariff->cachedData->point_id;
+				$pointName = $tariff->cachedData->name;
+				$pointAddress = $tariff->cachedData->address;
+				if (isset($tariff->isSelected) and $tariff->isSelected === true) {
 					$tariffSelected = '1';
 				}
 			}
 
-			if (isset($_COOKIE['wp_apiship_selected_point_out_data'])) {
-				$selectedPointData = self::decodeSelectedPointData($_COOKIE['wp_apiship_selected_point_out_data']);
-				if (isset($selectedPointData->selected_tariff_id) and intval($selectedPointData->selected_tariff_id) === intval($labelTariff)) {
-					$tariffSelected = '1';
+			$tariffList = json_decode($meta['tariffList']);
+			$points = $tariff->pointIds;
+			$point_display_mode = self::get_point_display_mode();
+
+			if (!empty($tariffList)) {
+				foreach($tariffList as $listTariff) {
+					$points = array_merge($points, $listTariff->pointIds);
 				}
 			}
+
+			$points = array_unique($points);
 
 			if ( in_array( Options\WP_ApiShip_Options::DELIVERY_TO_POINT_OUT, $tariff->deliveryTypes ) ) {
 				$elem  = '<a href="#" onclick="return false;" ';
@@ -422,8 +444,10 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				$elem .= 'data-point-out-address="' . $pointAddress . '" ';
 				$elem .= 'data-tariff-selected="' . $tariffSelected . '" ';
 				$elem .= 'data-delivery-type="'  .implode(',', $tariff->deliveryTypes) . '" ';
-				$elem .= 'data-points-list="'  .implode(',', $tariff->pointIds) . '" ';
-				$elem .= 'data-provider-key="' . $meta['tariffProviderKey'] . '">';
+				$elem .= 'data-points-list="'  .implode(',', $points) . '" ';
+				$elem .= 'data-tariff-list="'  . htmlspecialchars($meta['tariffList']) . '" ';
+				$elem .= 'data-display-mode="'  . $point_display_mode . '" ';
+				$elem .= 'data-provider-key="' . $providerKey . '">';
 				$elem .= ' (' . $buttonText . ')';
 				$elem .= '</a>';
 			}
@@ -435,11 +459,11 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		 *
 		 * @since 1.4.0
 		 */
-		public static function getSelectedPointData($tariff_id)
+		public static function getSelectedPointData($tariff_id, $method_id)
 		{
 			if (isset($_COOKIE['wp_apiship_selected_point_out_data'])) {
 				$selectedPointData = self::decodeSelectedPointData($_COOKIE['wp_apiship_selected_point_out_data']);
-				$tariffKey = 't' . $tariff_id;
+				$tariffKey = 't' . $tariff_id . '|' . $method_id;;
 				if (isset($selectedPointData->$tariffKey)) {
 					$selectedPointData->$tariffKey->is_selected = false;
 					if (isset($selectedPointData->selected_tariff_id) and intval($selectedPointData->selected_tariff_id) === intval($tariff_id)) {
@@ -996,6 +1020,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						$body = json_decode($response['response']['body']);
 						foreach($body->rows as $key => $row) {
 							if (in_array($row->id, $tariffPointsList)) {
+								$row->providerName = WP_ApiShip_Options::get_provider_name($row->providerKey);
 								$newBody->rows[] = $row;
 							}
 						}
@@ -1307,7 +1332,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						 * DELETE http://api.dev.apiship.ru/v1/orders/{{integratorOrder}}
 						 * https://api.apiship.ru/doc/#/orders/deleteOrder
 						 */
-						 
+						
 						$response['response'] = HTTP\WP_ApiShip_HTTP::delete(
 							'orders/'.$request['integratorOrder'],
 							array(
@@ -1693,8 +1718,9 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						'name' => addslashes($request['name']),
 						'point_id' => addslashes($request['id']),
 						'tariff_id' => addslashes($request['tariff_id']),
+						'method_id' => addslashes($request['method_id']),
 					];
-					$pointTariffKey = 't' . $request['tariff_id'];
+					$pointTariffKey = 't' . $request['tariff_id'] . '|' . $request['method_id'];
 
 					$allData = (object) [];
 					if (isset($_COOKIE['wp_apiship_selected_point_out_data']) and !empty($_COOKIE['wp_apiship_selected_point_out_data'])) {
@@ -1703,6 +1729,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 					$allData->$pointTariffKey = $pointData;
 					$allData->selected_tariff_id = $request['tariff_id'];
+					$allData->selected_method_id = $request['method_id'];
 
 					self::saveSelectedPointData($allData);
 				
@@ -1835,11 +1862,37 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		 *
 		 * @since 1.0.0
 		 */
-		public static function on__wp_footer() {
+		public static function on__wp_footer(): void
+		{
 			if (!is_checkout() and !is_cart()) {
 				return;
 			}
-			echo '<div class="wpapiship-checkout-modal"><!-- yandex map --><div id="wpapiship-checkout-ymap"></div></div>';
+
+			$providers = WP_ApiShip_Options::PROVIDERS_LIST;
+
+			foreach ($providers as $key => $provider) {
+				if (!isset(self::$providersList[$provider['key']])) {
+					unset($providers[$key]);
+				}
+			}
+
+			$vars = [
+				'providers' => $providers,
+				'point_display_mode' => self::get_point_display_mode()
+			];
+
+			self::load_template('checkout-modal', $vars);
+		}
+
+		/**
+		 * Include template by path.
+		 *
+		 * @since 1.5.0
+		 */
+		public static function load_template(string $name, array $vars = []): void
+		{
+			extract($vars);
+			include __DIR__ . "/templates/$name.php";
 		}
 		
 		/**
@@ -2319,7 +2372,9 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				'deliveryTypes' => array(
 					'byCourier'  => Options\WP_ApiShip_Options::DELIVERY_BY_COURIER,
 					'toPointOut' => Options\WP_ApiShip_Options::DELIVERY_TO_POINT_OUT,
-				)
+				),
+				//
+				'mapProviderSelect' => '#wpapiship_provider_select'
 			);
 			
 			wp_register_script(

@@ -439,3 +439,21 @@
 	opacity: 0.8;
 	pointer-events: none;
 }
+
+.wpapiship-action-button-wrapper {
+	position: relative;
+}
+
+.wpapiship-confirmation-bar {
+	position: absolute;
+    top: 40px;
+    left: 0;
+    width: max-content;
+}
+
+.wpapiship-buttons {
+	display: flex;
+	gap: 12px;
+	flex-wrap: wrap;
+	position: relative;
+}

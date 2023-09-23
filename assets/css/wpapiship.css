@@ -43,3 +43,24 @@ body.wpapiship-overlay:before {
 .wpapiship-checkout-row.hidden {
 	display: none;
 }
+
+.wpapiship-map-options-container {
+    position: absolute;
+    z-index: 999;
+    padding: 12px;
+    top: 0;
+    left: 0;
+    height: max-content;
+    width: max-content;
+    line-height: 1.4;
+    text-align: initial;
+}
+
+.wpapiship-map-select {
+	border: 1px solid #c4c4c4;
+    padding: 5px;
+}
+
+.wpapiship-map-select:focus {
+	outline: none;
+}
