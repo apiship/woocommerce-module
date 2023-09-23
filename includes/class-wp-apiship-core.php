@@ -1930,12 +1930,12 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				/**
 				 * Settings page.
 				 */
-				 
-				if ( Options\WP_ApiShip_Options::get_wc_settings_page_hook() != $hook ) {
+				
+				if (Options\WP_ApiShip_Options::get_wc_settings_page_hook() != $hook) {
 					return;
 				}
 
-				if ( Options\WP_ApiShip_Options::get_wc_settings_plugin_tab() != self::safe_get('tab') ) {
+				if (Options\WP_ApiShip_Options::get_wc_settings_plugin_tab() != self::safe_get('tab')) {
 					return;
 				}
 				
@@ -2173,11 +2173,11 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				Options\WP_ApiShip_Options::get_wc_settings_shipping_tab(),
 			);
 			
-			if ( Options\WP_ApiShip_Options::get_wc_settings_page_hook() != $hook ) {
+			if (Options\WP_ApiShip_Options::get_wc_settings_page_hook() != $hook) {
 				return;
 			}
 
-			if ( ! in_array( $current_tab, $enabled_tabs  ) ) {
+			if (!in_array($current_tab, $enabled_tabs)) {
 				return;
 			}
 				

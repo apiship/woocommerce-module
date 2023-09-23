@@ -23,6 +23,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Plugin constants.
 define('WP_APISHIP_VERSION', '1.5.0-dev');
 define('WP_APISHIP_SHIPPING_CACHE', false);
+define('WP_APISHIP_PLUGIN_BASE', plugin_basename(__FILE__));
+define('WP_APISHIP_ACTIVATOR_LIMIT', 50);
+define('WP_APISHIP_ACTIVATOR_WRITE_LOG', false);
 
 add_action('plugins_loaded', function() {
 	load_plugin_textdomain( 'wp-apiship', false, dirname( plugin_basename(__FILE__) ) . '/languages' );
@@ -48,6 +51,25 @@ if ( is_plugin_active('woocommerce/woocommerce.php') ) {
 	
 	require 'includes/class-wp-apiship-cron.php';
 	new WP_ApiShip_Cron();
+
+	/** Include activator core. */
+	require_once __DIR__ . '/includes/class-wp-apiship-activator.php';
+	
+	/** Activation actions. */
+	(function(){
+		/** Load activator core */
+		new WP_ApiShip_Activator();
+			
+		/** Register activation hook */
+		register_activation_hook(__FILE__, function(){
+			WP_ApiShip_Activator::activate();
+		});
+	
+		/** Register deactivation hook */
+		register_deactivation_hook(__FILE__, function(){
+			WP_ApiShip_Activator::deactivate();
+		});
+	})();
 
 	if ( is_admin() ) {
 		require 'includes/admin/class-wp-apiship-admin.php';
