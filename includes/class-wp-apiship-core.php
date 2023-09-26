@@ -106,7 +106,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		/**
 		 * @var string $_SCRIPT_SUFFIX Whether to use minimized or full versions of JS.
 		 */
-		protected static $_SCRIPT_SUFFIX = ''; # '.min';
+		protected static $_SCRIPT_SUFFIX = '.min'; # '';
 
 		/**
 		 * List of the providers.
