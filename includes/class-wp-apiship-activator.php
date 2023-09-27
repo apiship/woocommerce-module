@@ -35,8 +35,9 @@ if (!class_exists('WP_ApiShip\\WP_ApiShip_Activator')) :
         public const IS_WAIT_ACTION_OPTION = 'wp_apiship_activator_wait_action';
         public const ACTION_OPTION = 'wp_apiship_activator_action';
 
-        public const CRON_SCHEDULE = 'wp_apiship_schedule_10_sec'; # 'wp_apiship_schedule_min';
+        public const CRON_SCHEDULE = 'wp_apiship_schedule_30_sec'; # 'wp_apiship_schedule_min';
         public const ORDER_ITEM_TABLE = 'woocommerce_order_items';
+        public const ORDER_ITEM_META_TABLE = 'woocommerce_order_itemmeta';
 
         public const ACTIVATE_INSTANT_MODE = false;
         public const DEACTIVATE_INSTANT_MODE = false;
@@ -183,6 +184,7 @@ if (!class_exists('WP_ApiShip\\WP_ApiShip_Activator')) :
                     global $wpdb;
 
                     $table          = $wpdb->prefix . self::ORDER_ITEM_TABLE;
+                    $meta_table     = $wpdb->prefix . self::ORDER_ITEM_META_TABLE;
 
                     $offset_option  = self::OFFSET_OPTION;
                     $done_option    = self::IS_DONE_OPTION;
@@ -199,10 +201,27 @@ if (!class_exists('WP_ApiShip\\WP_ApiShip_Activator')) :
                         $from_status    = 'shipping';
                         $to_status      = '__apiship_shipping';
                     }
-                    
-                    $order_items = $wpdb->get_results("SELECT `order_item_id`, `order_id`, `order_item_type` FROM `$table` WHERE `order_item_type` = '$from_status' LIMIT $limit OFFSET $offset");
 
-                    if (boolval($is_done) === true or empty($order_items) or $order_items === null) {
+                    $meta_key = 'integrator';
+                    $meta_value = 'WPApiShip';
+
+                    $order_item_ids = $wpdb->get_col(
+                        $wpdb->prepare(
+                            "SELECT DISTINCT oi.order_item_id
+                            FROM $meta_table AS oim
+                            INNER JOIN $table AS oi ON oim.order_item_id = oi.order_item_id
+                            WHERE oim.meta_key = %s
+                            AND oim.meta_value = %s
+                            LIMIT %d
+                            OFFSET %d",
+                            $meta_key,
+                            $meta_value,
+                            $limit,
+                            $offset
+                        )
+                    );
+
+                    if (boolval($is_done) === true or empty($order_item_ids) or $order_item_ids === null) {
                         self::write_log("[FINISH] All data has been processed" . PHP_EOL);
 
                         update_option($offset_option, 0);
@@ -215,23 +234,11 @@ if (!class_exists('WP_ApiShip\\WP_ApiShip_Activator')) :
                         return;
                     }
                     else {
-                        $count = count($order_items);
+                        $count = count($order_item_ids);
                         self::write_log("Data processing. Results count $count");
-
-                        foreach ($order_items as $order_item) {
-                            $order_item_id = $order_item->order_item_id;
-                            $order_id = $order_item->order_id;
-
-                            $integrator_order = wc_get_order_item_meta( 
-                                $order_item_id, 
-                                'integrator'
-                            );
                         
-                            if ($integrator_order !== 'WPApiShip') {
-                                self::write_log("[skip] Is not ApiShip order. orderId$order_id / orderItemId$order_item_id");
-                                continue;
-                            }
-
+                        foreach ($order_item_ids as $order_item_id) {
+                            
                             $result = $wpdb->update($table, ['order_item_type' => $to_status], ['order_item_id' => $order_item_id]);
 
                             $response = '[success]';
@@ -240,7 +247,7 @@ if (!class_exists('WP_ApiShip\\WP_ApiShip_Activator')) :
                                 $response = '[ERROR]';
                             }
 
-                            self::write_log("$response orderId$order_id / orderItemId$order_item_id. Status update: $from_status to $to_status");
+                            self::write_log("$response orderItemId$order_item_id. Status update: $from_status to $to_status");
                         }
                     }
 

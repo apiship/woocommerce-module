@@ -114,6 +114,10 @@ if (!class_exists('WP_ApiShip_Cron')) :
 					'interval' => 60,
 					'display'  => 'Once at 1 min'
 				);
+				$schedules['wp_apiship_schedule_30_sec'] = array(
+					'interval' => 10,
+					'display'  => 'Once at 30 sec'
+				);
 				$schedules['wp_apiship_schedule_10_sec'] = array(
 					'interval' => 10,
 					'display'  => 'Once at 10 sec'
