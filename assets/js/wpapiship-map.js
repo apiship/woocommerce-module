@@ -303,7 +303,7 @@
 			
 				try {
 					mapApi.listPointsOut = JSON.parse(response.data.response.body);
-				} catch {
+				} catch (uncaught) {
 					console.log('getListPointsOut:: parsing error.');
 					return;
 				}

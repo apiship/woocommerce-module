@@ -25,6 +25,11 @@
 		parseBool: function(b){return !(/^(false|0)$/i).test(b) && !!b;},
 		listPointsOut: null,
 		map: null,
+		tariffList: null,
+		pointsMode: 1,
+		toCity: null,
+		providerKey: null,
+		requestKeyEnabled: false,
 		existsYmaps: function(){
 			if ('undefined' === typeof ymaps) {
 				return false;
@@ -86,11 +91,12 @@
 				'wpapiship-ymap',
 				{
 					center: [55.753909, 37.620938],
-					zoom: 12
+					zoom: 12,
+					controls: []
 				}, 
-				{
-					searchControlProvider: 'yandex#search'
-				}
+				// {
+				// 	searchControlProvider: 'yandex#search'
+				// }
 			);			
 		},	
 		mapInit: function() {
@@ -112,7 +118,7 @@
 			}
 			
 			mapApi.listPointsOut.rows.map(
-				function(pointOut){
+				function(pointOut, idx){
 					if ( pointOutInDefaultCountry === null ) {
 						if ( pointOut.countryCode == WPApiShipAdmin.getParam('wcCountryCode') ) {
 							pointOutInDefaultCountry = pointOut;
@@ -145,7 +151,7 @@
 		
 				try {
 					mapApi.listPointsOut = JSON.parse(response.data.response.body);
-				} catch {
+				} catch (uncaught) {
 					console.log('getListPointsOut:: parsing error.');
 					return;
 				}
@@ -158,10 +164,17 @@
 			var request = {
 				action: 'getListPointsOut',
 				city: shipping['_shipping_city'],
-				providerKey: WPApiShipAdmin.getShippingMethodMeta('tariffProviderKey','value'),
+				// tariffPointsList: mapApi.getTariffPointsList(),
 				availableOperation: "[2,3]",
+				// cod: mapApi.getCod(),
 				doneCallback: donePointsOutCallback,
 			}
+
+			//// Point Mode muse be set from CORE
+			if (mapApi.pointsMode != 3 || mapApi.pointsMode == 3 && mapApi.requestKeyEnabled == true) {
+				request.providerKey = WPApiShipAdmin.getShippingMethodMeta('tariffProviderKey','value');
+			}
+
 			WPApiShipAdmin.ajax(request);		
 		},
 		warning: function() {
@@ -169,9 +182,20 @@
 		},
 		attachListeners: function() {
 			
-			//
 			$(document).on('click', '.point-out-select', function(evnt){
+				// Call custom trigger to select point out.
 				$(document).trigger('selectPointOut',[$(this)] );
+
+				// Close map.
+				$(WPApiShipAdmin.getParam('ymapSelector')).toggleClass('hidden');
+				
+				// Display message.
+				$('#pointOutSaveMessage').toggleClass('hidden');
+
+				// Hide message.
+				setTimeout(function(){
+					$('#pointOutSaveMessage').toggleClass('hidden');
+				}, 8000);
 			});
 			
 			// Edit data in ApiShip metabox.

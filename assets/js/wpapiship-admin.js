@@ -257,7 +257,7 @@
 
 				try {
 					var body = JSON.parse(response.data.response.body);
-				} catch {
+				} catch (uncaught) {
 					console.log('connectionCheck:: Parsing error.');
 					return;
 				}
@@ -305,7 +305,7 @@
 
 				try {
 					var iOrder = JSON.parse(response.data.response.body);
-				} catch {
+				} catch (uncaught) {
 					console.log('getSenderAddressString: Parsing error.');
 					return;
 				}
@@ -338,7 +338,7 @@
 						
 						try {
 							var body = JSON.parse(response.data.response.body);
-						} catch {
+						} catch (uncaught)  {
 							console.log('getPoint:: Parsing error.');
 							return;
 						}
@@ -372,7 +372,7 @@
 					
 					try {
 						var body = JSON.parse(response.data.response.body);
-					} catch {
+					} catch (uncaught) {
 						console.log('getPoint:: Parsing error.');
 						return;
 					}
@@ -460,7 +460,7 @@
 				
 				try {
 					var body = JSON.parse(response.data.response.body);
-				} catch {
+				} catch (uncaught) {
 					return;
 				}				
 				
@@ -497,7 +497,7 @@
 				}					
 				try {
 					var body = JSON.parse(response.data.response.body);
-				} catch {
+				} catch (uncaught) {
 					return;
 				}
 
@@ -597,7 +597,7 @@
 				}
 				try {
 					var body = JSON.parse(response.data.response.body);
-				} catch {
+				} catch (uncaught) {
 					api.orderViewer.add('View order: ' + api.__('parsingError')).open();
 					return;
 				}
@@ -624,7 +624,7 @@
 				}					
 				try {
 					var body = JSON.parse(response.data.response.body);
-				} catch {
+				} catch (uncaught) {
 					api.orderViewer.add('Set status order: ' + api.__('parsingError')).open();
 					return;
 				}
@@ -650,7 +650,7 @@
 				
 				try {
 					var body = JSON.parse(response.data.response.body);
-				} catch {
+				} catch (uncaught) {
 					api.orderViewer.add('Order tool: ' + api.__('parsingError')).open();					
 					return;
 				}	
@@ -706,7 +706,7 @@
 				
 				try {
 					var body = JSON.parse(response.data.response.body);
-				} catch {
+				} catch (uncaught) {
 					api.orderViewer.add('Validate done callback: ' + api.__('parsingError')).open();
 					return;
 				}
@@ -878,7 +878,7 @@
 				}					
 				try {
 					var body = JSON.parse(response.data.response.body);
-				} catch {
+				} catch (uncaught) {
 					api.orderViewer.add('Error: ' + api.__('parsingError')).open();
 					return;
 				}
@@ -955,7 +955,7 @@
 					var initialRequest = response.data.request;
 					try {
 						var html = JSON.parse(response.data.response.customHtml);
-					} catch { 
+					} catch (uncaught) { 
 						console.log(initialRequest.action+': '+ 'error parsing response body.');
 						return 
 					}
@@ -1099,10 +1099,10 @@
 				}
 			});	
 	
-			// Redirect to Providers section on settings page.
-			$('#wpapiship-order-metabox .card--logo').on('click', function(evnt){
-				location = api.getParam('providersSectionUrl');
-			});
+// 			// Redirect to Providers section on settings page.
+// 			$('#wpapiship-order-metabox .card--logo').on('click', function(evnt){
+// 				location = api.getParam('providersSectionUrl');
+// 			});
 			
 			// Debug.
 			$('.wpapiship-debug').on('dblclick', function(evnt){
@@ -1129,7 +1129,7 @@
 			$(document).on('selectPointOut', function(evnt, elem){
 
 				var id = elem.data('id'),
-						address = elem.data('address');
+					address = elem.data('address');
 						
 				var action = '';
 		
@@ -1323,7 +1323,7 @@
 						try {
 							// var body = JSON.parse(response.data.response.body);
 							api.orderViewer.add('getTariffs callback: ' + api.__('parsingError')).open();
-						} catch {
+						} catch (uncaught) {
 							api.orderViewer.add('getTariffs callback: ' + api.__('parsingError')).open();
 							return;
 						}
@@ -1338,7 +1338,7 @@
 						try {
 							// var body = JSON.parse(response.data.response.body);
 							api.orderViewer.add('getProviderConnections callback: ' + api.__('parsingError')).open();
-						} catch {
+						} catch (uncaught) {
 							api.orderViewer.add('getProviderConnections callback: ' + api.__('parsingError')).open();
 							return;
 						}
@@ -1422,7 +1422,7 @@
 
 						try {
 							var html = JSON.parse( response.data.response[request.pointType]['html'] );
-						} catch { 
+						} catch (uncaught) { 
 							api.providerCard.errorMessage('resetSelectedPoint Parsing success response body.');
 							return 
 						}
@@ -1470,7 +1470,7 @@
 					if ( response.success ) {
 						try {
 							var html = JSON.parse(response.data.response.customHtml);
-						} catch { 
+						} catch (uncaught) { 
 							api.providerCard.errorMessage('getListsPoints: Parsing success response body.');
 							return 
 						}
@@ -1576,7 +1576,7 @@
 				if ( response.success ) {
 					try {
 						var body = JSON.parse(response.data.response.body);
-					} catch { 
+					} catch (uncaught) { 
 						api.providerCard.errorMessage('Parsing success response body.');
 						return;
 					}
@@ -1584,7 +1584,7 @@
 					try {
 						var body = JSON.parse(response.data.response.body);
 						api.providerCard.errorMessage(body.message);
-					} catch { 
+					} catch (uncaught) { 
 						api.providerCard.errorMessage('Parsing error response body.');
 					}					
 					return;
@@ -1695,7 +1695,7 @@
 				
 				try {
 					var calculations = JSON.parse(response.data.response.body);
-				} catch {
+				} catch (uncaught) {
 					$('#calculate-response').val('Incorrect response');
 					return;
 				}

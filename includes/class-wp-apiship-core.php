@@ -106,7 +106,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		/**
 		 * @var string $_SCRIPT_SUFFIX Whether to use minimized or full versions of JS.
 		 */
-		protected static $_SCRIPT_SUFFIX = '.min'; # '';
+		protected static $_SCRIPT_SUFFIX = ''; # '.min';
 
 		/**
 		 * List of the providers.
@@ -1010,6 +1010,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 					$response['response'] = HTTP\WP_ApiShip_HTTP::get($endpoint);
 
 					if ( wp_remote_retrieve_response_code($response['response']) == HTTP\WP_ApiShip_HTTP::OK ) {
+						$tariffPointsList = [];
 						if (isset($request['tariffPointsList'])) {
 							$tariffPointsList = explode(',', $request['tariffPointsList']);
 						}
@@ -1019,7 +1020,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 						$body = json_decode($response['response']['body']);
 						foreach($body->rows as $key => $row) {
-							if (in_array($row->id, $tariffPointsList)) {
+							if (empty($tariffPointsList) or !empty($tariffPointsList) and in_array($row->id, $tariffPointsList)) {
 								$row->providerName = WP_ApiShip_Options::get_provider_name($row->providerKey);
 								$newBody->rows[] = $row;
 							}

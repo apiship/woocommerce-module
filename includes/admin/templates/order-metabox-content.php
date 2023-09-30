@@ -517,14 +517,9 @@ if ( $_refunded ) {
 				id="<?php echo $field['id']; ?>" 
 				class="meta-value-point-out-address wpapiship-transmitting-field" 
 				disabled="disabled" 
-				data-request-id="<?php echo $field['requestID']; ?>" />		
+				data-request-id="<?php echo $field['requestID']; ?>" />	
+			<div class="meta--item meta-key hidden point-out-save-message" id="pointOutSaveMessage">Данные успешно сохранены</div>	
 		</div>
-		<!-- Shipping point out: Map -->
-		<div class="meta--item meta-key wpapiship-ymap-row">&nbsp;</div>
-		<div class="meta--item meta-value wpapiship-ymap-row">
-			<!-- yandex map -->
-			<div id="wpapiship-ymap" class="hidden"></div>	
-		</div>	
 		<!-- Divider -->
 		<div class="meta--item meta-key">&nbsp;</div>
 		<div class="meta--item meta-value meta-divider"><hr /></div>			
@@ -585,6 +580,15 @@ if ( $_refunded ) {
 		} ?>		
 	</div><!-- .shipping--box -->
 </div><!-- .order-shipping-wrapper -->
+
+
+<!-- Shipping point out: Map -->
+<div class="meta--item meta-key wpapiship-ymap-row">&nbsp;</div>
+<div class="meta--item meta-value wpapiship-ymap-row">
+	<!-- yandex map -->
+	<div id="wpapiship-ymap" class="hidden"></div>	
+</div>	
+
 <!-- order actions -->
 <div class="wpapiship-order-action-wrapper">
 	<div class="wpapiship-viewer-section hidden">
