@@ -11,11 +11,11 @@
 
 (function($) {
 	"use strict";
-
+	
 	if ('undefined' === typeof WPApiShipAdmin) {
-			return;
+		return;
 	}
-
+		
 	var api = {
 		parseBool: function(b){return !(/^(false|0)$/i).test(b) && !!b;},
 		getCurrentSection: function(){
@@ -1768,7 +1768,7 @@
 		start: function(){
 			api.initSettingsPage();
 			api.initOrderPage();
-		}		
+		}
 	}
 	
 	WPApiShipAdmin = $.extend({}, WPApiShipAdmin, api);
