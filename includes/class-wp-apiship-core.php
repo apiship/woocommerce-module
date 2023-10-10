@@ -423,7 +423,12 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 			}
 
 			$tariffList = json_decode($meta['tariffList']);
-			$points = $tariff->pointIds;
+
+			$points = [];
+			if (isset($tariff->pointIds)) {
+				$points = $tariff->pointIds;
+			}
+
 			$point_display_mode = self::get_point_display_mode();
 
 			if (!empty($tariffList)) {

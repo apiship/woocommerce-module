@@ -461,11 +461,26 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 			} else {
 				$name = $tariff->providerKey;
 			}
-
-			$pointName = $tariff->pointName;
-			$pointAddress = $tariff->pointAddress;
-			$tariffName = $tariff->tariffName;
-			$isCached = $tariff->isCached;
+			
+			$pointName = '';
+			if (isset($tariff->pointName)) {
+			  $pointName = $tariff->pointName;
+			}
+			
+			$pointAddress = '';
+			if (isset($tariff->pointAddress)) {
+			  $pointAddress = $tariff->pointAddress;
+			}
+			
+			$tariffName = '';
+			if (isset($tariff->tariffName)) {
+			  $pointName = $tariff->tariffName;
+			}
+			
+			$isCached = false;
+			if (isset($tariff->isCached)) {
+			  $isCached = $tariff->isCached;
+			}
 
 			$variables = [
 				'type' => $type,
