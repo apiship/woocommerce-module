@@ -27,12 +27,14 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 	 */
 	class WP_ApiShip_Shipping_Method extends WC_Shipping_Method {
 		
+		public $admin_rates = [];
+
 		/**
 		 * Constructor.
 		 *
 		 * @param int $instance_id id.
 		 */
-		public function __construct( $instance_id = 0 ) {
+		public function __construct($instance_id = 0, $is_admin = false) {
 			
 			$this->id                 = Options\WP_ApiShip_Options::SHIPPING_METHOD_ID;
 			$this->instance_id        = absint( $instance_id );
@@ -42,11 +44,15 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 				'shipping-zones',
 				'instance-settings',
 			);
+			$this->is_admin = $is_admin;
 			// $this->selectedPointData = (object) array();
 			// if (isset($_COOKIE['selectedPointData'])) {
 			// 	$this->selectedPointData = json_decode(stripcslashes($_COOKIE['selectedPointData']));
 			// }
-			$this->init();
+
+			if ($this->is_admin === false) {
+				$this->init();
+			}
 		}
 		
 		/**
@@ -100,6 +106,8 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 		 * @param array $package Package array.
 		 */
 		public function calculate_shipping( $package = array() ) {
+
+			$is_admin = $this->is_admin;
 			
 			if ( ! class_exists( 'WP_ApiShip_Calculator_Request' ) ) {
 				include_once dirname( __FILE__ ) . '/api/class-wp-apiship-calculator-request.php';
@@ -210,7 +218,11 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 				Options\WP_ApiShip_Options::DELIVERY_TO_POINT, //  'deliveryToPoint'
 			);
 
-			$point_display_mode = intval(Options\WP_ApiShip_Options::get_option('point_out_display_mode', Options\WP_ApiShip_Options::DEFAULT_POINT_OUT_DISPLAY_MODE));
+			if ($is_admin === false) {
+				$point_display_mode = intval(Options\WP_ApiShip_Options::get_option('point_out_display_mode', Options\WP_ApiShip_Options::DEFAULT_POINT_OUT_DISPLAY_MODE));
+			} else {
+				$point_display_mode = 2;
+			}
 
 			$providers_data = WP_ApiShip_Core::get_providers_data(true, false, false);
 
@@ -372,10 +384,14 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 					'meta_data' => $meta_data
 				);
 				
-				/**
-				 * @see `add_rate` method in woocommerce\includes\abstracts\abstract-wc-shipping-method.php
-				 */ 
-				$this->add_rate($rate_args);
+				if ($is_admin === false) {
+					/**
+					 * @see `add_rate` method in woocommerce\includes\abstracts\abstract-wc-shipping-method.php
+					 */ 
+					$this->add_rate($rate_args);
+				} else {
+					$this->admin_rates[] = $rate_args;
+				}
 
 				if ($tariff->isDeliveryToPoint === true) {
 					$existedRates[$tariff->providerKey][] = $tariff->tariffId;
@@ -462,6 +478,14 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 				$name = $tariff->providerKey;
 			}
 
+			if (!isset($tariff->pointName)) {
+				$tariff->pointName = '';
+			}
+
+			if (!isset($tariff->pointAddress)) {
+				$tariff->pointAddress = '';
+			}
+			
 			$pointName = $tariff->pointName;
 			$pointAddress = $tariff->pointAddress;
 			$tariffName = $tariff->tariffName;
@@ -485,6 +509,11 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 				}
 			}
 
+			if ($this->is_admin === true) {
+				$variables['name'] = '';
+				$variables['address'] = '';
+			}
+
 			foreach ($variables as $key => $value) {
 				$templateVar = '%' . $key;
 				if (stripos($template, $templateVar) !== false) {
@@ -492,7 +521,7 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 				}
 			}
 
-			if ($is_delivery_to_point === true and $point_display_mode !== 1 and $isCached === false) {
+			if ($this->is_admin === false and $is_delivery_to_point === true and $point_display_mode !== 1 and $isCached === false) {
 				$template .= ', цена от';
 			}
 

@@ -13,6 +13,7 @@ use WP_ApiShip\HTTP\WP_ApiShip_HTTP;
 use WP_ApiShip\Options,
 	WP_ApiShip;
 use WP_ApiShip\WP_ApiShip_Core;
+use WP_ApiShip_Shipping_Method;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -75,7 +76,7 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 		 *
 		 * @var object
 		 */		
-		protected $tariff = null;
+		public $tariff = null;
 
 		/**
 		 * Integrator order ID for current WC order.
@@ -83,6 +84,13 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 		 * @var string | int
 		 */
 		protected $integrator_order_id = null;
+
+		/**
+		 * Admin shipping methods.
+		 *
+		 * @since 1.6.0
+		 */
+		public ?array $shipping_methods = null;
 		
 		/**
 		 * Constructor.
@@ -101,6 +109,8 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 			
 			add_action( 'add_meta_boxes', array( $this, 'on__add_meta_boxes' ), 10, 2 );			
 			add_action( 'save_post', array( $this, 'on__save' ) );
+
+			$this->set_tariff();
 		}
 		
 		/**
@@ -205,7 +215,79 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
                 'high'
             );
 		}
+					
+		/**
+		 * Admin shipping methods.
+		 * 
+		 * @since 1.6.0
+		 */
+		public function get_shipping_methods()
+		{
+			if (isset($this->shipping_methods)) {
+				return $this->shipping_methods;
+			}
+
+			global $wpdb;
+
+			$method_key = Options\WP_ApiShip_Options::SHIPPING_METHOD_ID;
+
+			$instance_id = $wpdb->get_var( $wpdb->prepare( "SELECT instance_id FROM {$wpdb->prefix}woocommerce_shipping_zone_methods WHERE method_id = %s", $method_key ) );
+
+			$instance_id = intval($instance_id);
+
+			$order = $this->order;
+
+			$shipping_method = new WP_ApiShip_Shipping_Method($instance_id, true);
+
+			$items = $order->get_items();
+
+			$package = array(
+				'destination' => array(
+					'country' => $order->get_shipping_country(),
+					'state'    => $order->get_shipping_state(),
+					'postcode' => $order->get_shipping_postcode(),
+					'city'     => $order->get_shipping_city(),
+				),
+				'contents'    => array(),
+				'user'        => array(
+					'ID' => $order->get_customer_id(),
+				),
+				'address'     => $order->get_address(),
+			);
+
+			foreach ( $items as $item_id => $item ) {
+				$product_id    = wc_get_order_item_meta( $item->get_id(), '_product_id', true );
+				$variation_id  = wc_get_order_item_meta( $item->get_id(), '_variation_id', true );
+				$quantity      = $item->get_quantity();
+				$line_total    = wc_get_order_item_meta( $item->get_id(), '_line_total', true );
+				$line_tax      = wc_get_order_item_meta( $item->get_id(), '_line_tax', true );
+
+				$package['contents'][] = array(
+					'product_id'  => $product_id,
+					'variation_id'=> $variation_id,
+					'quantity'    => $quantity,
+					'line_total'  => $line_total,
+					'line_tax'    => $line_tax,
+				);
+			}
+
+			$shipping_method->calculate_shipping( $package );
+
+			$this->shipping_methods = $shipping_method->admin_rates;
+
+			return $this->shipping_methods;
+		}
 		
+	    /**
+		 * Save admin shipping method.
+		 *
+		 * @since 1.6.0
+		 */
+		public function save_admin_shipping()
+		{
+			
+		}
+
 	    /**
 		 * Render Meta Box content.
 		 *

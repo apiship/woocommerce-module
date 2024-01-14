@@ -458,6 +458,10 @@ if ( ! class_exists('WP_ApiShip_Calculator_Request') ) :
 		protected function get_assessed_cost($package) {
 
 			global $woocommerce;  
+
+			if (!$woocommerce->cart) {
+				return 0;
+			}
 			
 			/**
 			 * @see woocommerce\includes\class-wc-cart.php

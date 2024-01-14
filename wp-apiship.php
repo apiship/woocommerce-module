@@ -22,7 +22,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Plugin constants.
 define('WP_APISHIP_VERSION', '1.5.1');
-define('WP_APISHIP_SHIPPING_CACHE', false);
+
+if (!defined('WP_APISHIP_SHIPPING_CACHE')) {
+	define('WP_APISHIP_SHIPPING_CACHE', false);
+}
+
 define('WP_APISHIP_PLUGIN_BASE', plugin_basename(__FILE__));
 
 // Activator settings.

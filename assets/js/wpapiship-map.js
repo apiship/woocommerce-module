@@ -176,35 +176,36 @@
 				content 	 += 	'<div style="margin-bottom: 10px;">';
 				content 	 += 		'<div>Выбор тарифа</div>';
 				content 	 += 		'<select class="wpapiship-select-map-tariff">';
-			} 
-			
-			mapApi.tariffList.forEach(element => {
-				let days = element.daysMin;;
-				let pointExists = false;
 				
-				element.pointIds.forEach(pointId => {
-					if (pointId == pointOut.id) {
-						pointExists = true;
+				mapApi.tariffList.forEach(element => {
+					let days = element.daysMin;;
+					let pointExists = false;
+					
+					element.pointIds.forEach(pointId => {
+						if (pointId == pointOut.id) {
+							pointExists = true;
+						}
+					});
+
+					if (pointExists === false) {
+						return;
 					}
-				});
 
-				if (pointExists === false) {
-					return;
-				}
+					if (element.daysMin != element.daysMax) {
+						days += '-' + element.daysMax;
+					}
 
-				if (element.daysMin != element.daysMax) {
-					days += '-' + element.daysMax;
-				}
+					content  	+= 			'<option data-method-id="' + element.methodId + '" data-provider-key="' + element.providerKey + '" value="' + element.tariffId + '">';
+					content 	+= 				element.providerName + ', '; // if (mapApi.pointsMode == 3) {}	
+					content  	+= 				element.tariffName + ', ';
+					content  	+= 				days + ' дн., ';
+					content  	+= 				element.deliveryCost + ' руб.';
+					content  	+= 			'</option>';
+				});	
 
-				content  	+= 			'<option data-method-id="' + element.methodId + '" data-provider-key="' + element.providerKey + '" value="' + element.tariffId + '">';
-				content 	+= 				element.providerName + ', '; // if (mapApi.pointsMode == 3) {}	
-				content  	+= 				element.tariffName + ', ';
-				content  	+= 				days + ' дн., ';
-				content  	+= 				element.deliveryCost + ' руб.';
-				content  	+= 			'</option>';
-			});	
-			content 	 += 		'</select>';
-			content 	 += 	'</div>';
+				content 	 += 		'</select>';
+				content 	 += 	'</div>';
+			} 
 
 			content 	 += 	'<div class="description">';
 			content 	 += 		pointOut.description;
