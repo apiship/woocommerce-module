@@ -106,6 +106,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		/**
 		 * @var string $_SCRIPT_SUFFIX Whether to use minimized or full versions of JS.
 		 */
+
 		protected static $_SCRIPT_SUFFIX = ''; # '.min';
 
 		/**
@@ -402,7 +403,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 			$providerKey = $meta['tariffProviderKey'];
 
 			self::$providersList[$providerKey][] = $tariff;
-			
+
 			$elem = '';
 
 			$buttonText = __('Выбрать ПВЗ', 'wp-apiship');
@@ -428,6 +429,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 			$tariffList = json_decode($meta['tariffList']);
 			$points = $tariff->pointIds;
+
 			$point_display_mode = self::get_point_display_mode();
 
 			if (!empty($tariffList)) {
@@ -1443,7 +1445,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						 * DELETE http://api.dev.apiship.ru/v1/orders/{{integratorOrder}}
 						 * https://api.apiship.ru/doc/#/orders/deleteOrder
 						 */
-						
+
 						$response['response'] = HTTP\WP_ApiShip_HTTP::delete(
 							'orders/'.$request['integratorOrder'],
 							array(
@@ -2041,7 +2043,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				/**
 				 * Settings page.
 				 */
-				
+
 				if (Options\WP_ApiShip_Options::get_wc_settings_page_hook() != $hook) {
 					return;
 				}

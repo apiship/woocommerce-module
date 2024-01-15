@@ -413,7 +413,6 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 				}
 
 				foreach($tariff_group->tariffs as $tariff_to_list) {
-					
 					$c_rate_id = $this->get_rate_id($tariff_group->providerKey . ':' . $tariff_to_list->tariffId);
 					$tariff_to_list->methodId = $c_rate_id;
 					$tariff_to_list->providerKey = $tariff_group->providerKey;
@@ -433,7 +432,7 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 					
 					$pickup_types = [];
 					$providerData = $providers_data[$tariff_to_list_group->providerKey]->data;
-					
+
 					if (!empty($providerData['pickup_types'])) {
 						$pickup_types = $providerData['pickup_types'];
 					}
@@ -477,19 +476,26 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 			} else {
 				$name = $tariff->providerKey;
 			}
-
-			if (!isset($tariff->pointName)) {
-				$tariff->pointName = '';
-			}
-
-			if (!isset($tariff->pointAddress)) {
-				$tariff->pointAddress = '';
+      
+			$pointName = '';
+			if (isset($tariff->pointName)) {
+			  $pointName = $tariff->pointName;
 			}
 			
-			$pointName = $tariff->pointName;
-			$pointAddress = $tariff->pointAddress;
-			$tariffName = $tariff->tariffName;
-			$isCached = $tariff->isCached;
+			$pointAddress = '';
+			if (isset($tariff->pointAddress)) {
+			  $pointAddress = $tariff->pointAddress;
+			}
+			
+			$tariffName = '';
+			if (isset($tariff->tariffName)) {
+			  $pointName = $tariff->tariffName;
+			}
+			
+			$isCached = false;
+			if (isset($tariff->isCached)) {
+			  $isCached = $tariff->isCached;
+			}
 
 			$variables = [
 				'type' => $type,

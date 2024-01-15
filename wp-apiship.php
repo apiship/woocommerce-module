@@ -21,6 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Plugin constants.
+
 define('WP_APISHIP_VERSION', '1.5.1');
 
 if (!defined('WP_APISHIP_SHIPPING_CACHE')) {
@@ -60,17 +61,17 @@ if ( is_plugin_active('woocommerce/woocommerce.php') ) {
 
 	/** Include activator core. */
 	require_once __DIR__ . '/includes/class-wp-apiship-activator.php';
-	
+
 	/** Activation actions. */
 	(function(){
 		/** Load activator core */
 		new WP_ApiShip_Activator();
-			
+
 		/** Register activation hook */
 		register_activation_hook(__FILE__, function(){
 			WP_ApiShip_Activator::activate();
 		});
-	
+
 		/** Register deactivation hook */
 		register_deactivation_hook(__FILE__, function(){
 			WP_ApiShip_Activator::deactivate();
