@@ -261,6 +261,7 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 				$quantity      = $item->get_quantity();
 				$line_total    = wc_get_order_item_meta( $item->get_id(), '_line_total', true );
 				$line_tax      = wc_get_order_item_meta( $item->get_id(), '_line_tax', true );
+				$product 	   = wc_get_product($product_id);
 
 				$package['contents'][] = array(
 					'product_id'  => $product_id,
@@ -268,6 +269,7 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 					'quantity'    => $quantity,
 					'line_total'  => $line_total,
 					'line_tax'    => $line_tax,
+					'data'		  => $product
 				);
 			}
 
