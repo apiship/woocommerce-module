@@ -213,6 +213,10 @@ if (isset($tariff->isDeliveryToPoint)) {
 					<div class="label-caption"><?php esc_html_e('Наклейка не доступна для скачивания','wp-apiship'); ?></div>
 					<div class="label-message"></div>
 				</div>
+				
+				<button style="margin-top: 10px;" class="button button-secondary" id="order_label_request" onclick="return false;" data-url="">
+					<?php esc_html_e('Запросить наклейку','wp-apiship'); ?>
+				</button>
 			</div><!-- .integrator-order-label-card --><?php
 		} ?>	
 	</div><!-- .shipping--box -->

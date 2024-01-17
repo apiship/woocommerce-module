@@ -361,44 +361,49 @@
 				}
 
 				// Set Integrator Order Label.
-				var getOrderLabelDoneCB = response => {
-					if ( 'undefined' === typeof response ) {
-						return;
-					}
+				$(document).on('click', '#order_label_request', function(){
+					$(this).prop('disabled', true);
 
-					if ( ! response.success ) {
-						return;
-					}
-					
-					try {
-						var body = JSON.parse(response.data.response.body);
-					} catch (uncaught) {
-						console.log('getPoint:: Parsing error.');
-						return;
-					}
+					var getOrderLabelDoneCB = response => {
+						if ( 'undefined' === typeof response ) {
+							return;
+						}
 
-					if ( 'object' === typeof body.failedOrders && null !== body.failedOrders ) {
-						$('#wpapiship-order-metabox .label-not-exists').removeClass('hidden');
-						$.each(body.failedOrders, function(i,e){
-							$('#wpapiship-order-metabox .label-message').text(e.message);
-							return false; // @todo multiple orders.
-						});
+						if ( ! response.success ) {
+							return;
+						}
 						
-					} else {
-						$('#wpapiship-order-metabox .label-exists').removeClass('hidden');
-						$('#wpapiship-order-metabox .label-download').data('url',body.url);
-						
-					}
-			
-				}
+						try {
+							var body = JSON.parse(response.data.response.body);
+						} catch (uncaught) {
+							console.log('getPoint:: Parsing error.');
+							return;
+						}
 
-				var request = {
-					action: 'getOrderLabel',
-					integratorOrder: id,
-					doneCallback: getOrderLabelDoneCB,
-				}
-				api.ajax(request);					
-				
+						if ( 'object' === typeof body.failedOrders && null !== body.failedOrders ) {
+							$('#wpapiship-order-metabox .label-not-exists').removeClass('hidden');
+							$.each(body.failedOrders, function(i,e){
+								$('#wpapiship-order-metabox .label-message').text(e.message);
+								$('#order_label_request').prop('disabled', false);
+								return false; // @todo multiple orders.
+							});
+							
+						} else {
+							$('#wpapiship-order-metabox .label-exists').removeClass('hidden');
+							$('#wpapiship-order-metabox .label-download').data('url',body.url);
+							$('#order_label_request').addClass('hidden');
+						}
+
+					}
+
+					var request = {
+						action: 'getOrderLabel',
+						integratorOrder: id,
+						doneCallback: getOrderLabelDoneCB,
+					}
+					api.ajax(request);					
+				});
+
 				// Generate sender address string.
 				var addressDoneCB = (response) => {
 					if ( 'undefined' === typeof response ) {
