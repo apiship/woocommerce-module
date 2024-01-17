@@ -9,6 +9,7 @@
 namespace WP_ApiShip;
 
 use stdClass;
+use Throwable;
 use WP_ApiShip\HTTP\WP_ApiShip_HTTP;
 use WP_ApiShip\Options,
 	WP_ApiShip\HTTP;
@@ -950,8 +951,6 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						$tariffJson = wp_unslash(htmlspecialchars_decode($request['tariff']));
 						$tariff = json_decode($tariffJson);
 
-						// file_put_contents(__DIR__ . '/log.txt', $tariffJson . PHP_EOL . print_r($tariff, true));
-
 						$cost = $tariff->deliveryCost;
 						$methodId = $tariff->methodId;
 						$tariffName = $tariff->tariffName;
@@ -1091,68 +1090,102 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 					 * 	https://api.apiship.ru/doc/#/lists/getListPoints
 					 * 	https://docs.apiship.ru/docs/api/query-filter/
 					 */
-
-					$country_code = Options\WP_ApiShip_Options::get_wc_option(
-						'woocommerce_default_country', 
-						Options\WP_ApiShip_Options::WС_DEFAULT_COUNTRY,
-						false
-					);
-
-					$endpoint = 'lists/points?limit=9999&filter=';
-	
-					if ( ! empty($request['city']) ) {
-						$endpoint = $endpoint . 'city=' . $request['city'];
-					}
 					
-					if ( ! empty($request['providerKey']) ) {
-						$endpoint = $endpoint . ';providerKey=' . $request['providerKey'];
-					}		
-					
-					if ( ! empty($request['availableOperation']) ) {
-						$endpoint = $endpoint . ';availableOperation=' . $request['availableOperation'];
-					}
+					try {
+						set_time_limit(0);
 
-					/**
-					 * cod - Cash on delevery.
-					 */
-					if ( ! empty($request['cod']) ) {
-						$endpoint = $endpoint . ';cod=' . $request['cod'];
-					}
-					
-					$response['response'] = HTTP\WP_ApiShip_HTTP::get($endpoint);
+						$pointsCallback = function($endpoint, $response) {
+							$response['response'] = HTTP\WP_ApiShip_HTTP::get($endpoint);
 
-					if ( wp_remote_retrieve_response_code($response['response']) == HTTP\WP_ApiShip_HTTP::OK ) {
-
-						$tariffPointsList = [];
-
-						if (isset($request['tariffPointsList'])) {
-							$tariffPointsList = explode(',', $request['tariffPointsList']);
-						}
-
-						$newBody = new stdClass();
-						$newBody->rows = [];
-
-						$body = json_decode($response['response']['body']);
-						
-						foreach($body->rows as $key => $row) {
-							if (empty($tariffPointsList) or !empty($tariffPointsList) and in_array($row->id, $tariffPointsList)) {
-								$row->providerName = WP_ApiShip_Options::get_provider_name($row->providerKey);
-								$newBody->rows[] = $row;
+							if (wp_remote_retrieve_response_code($response['response']) != HTTP\WP_ApiShip_HTTP::OK) {
+								$response['success'] = 'error';
 							}
+
+							return $response;
+						};
+
+						$endpoint = 'lists/points?limit=1000&filter=';
+
+						$usePointIds = false;
+						if (isset($request['tariffPointsList']) and !empty($request['tariffPointsList']) and $request['tariffPointsList'] !== false) {
+							$usePointIds = true;
+						}
+		
+						if (!empty($request['availableOperation'])) {
+							$endpoint = $endpoint . 'availableOperation=' . $request['availableOperation'];
 						}
 
-						$newBody->meta = [
-							'offset' => 0,
-							'limit' => 9999,
-							'total' => count($newBody->rows)
-						];
+						if (!empty($request['city']) and $usePointIds === false) {
+							$endpoint = $endpoint . ';city=' . $request['city'];
+						}
+						
+						if (!empty($request['providerKey'])) {
+							$endpoint = $endpoint . ';providerKey=' . $request['providerKey'];
+						}		
 
-						$response['response']['body'] = json_encode($newBody);
+						/**
+						 * cod - Cash on delevery.
+						 */
+						if (!empty($request['cod'])) {
+							$endpoint = $endpoint . ';cod=' . $request['cod'];
+						}
 
-					} else {
-						$response['success'] = 'error';						
+						if ($usePointIds === true) {
+
+							$tariffPointsList = explode(',', $request['tariffPointsList']);
+							$tariffPointsLists = array_chunk($tariffPointsList, 500, false);
+
+							$rows = [];
+
+							foreach($tariffPointsLists as $list) {
+
+								$pointIds = implode(',', $list);
+								$listEndpoint = $endpoint . ';id=[' . $pointIds . ']';
+
+								$response = $pointsCallback($listEndpoint, $response);
+
+								if ($response['success'] === 'error') {
+									break(2);
+								}
+
+								$body = json_decode($response['response']['body']);
+								$rows = array_merge($rows, $body->rows);
+							}
+
+							foreach($rows as $key => $row) {
+								$row->providerName = WP_ApiShip_Options::get_provider_name($row->providerKey);
+								$rows[$key] = $row;
+							}
+
+							$mergedBody = (object) [
+								'meta' => [
+									'offset' => 0,
+									'limit' => -1,
+									'total' => count($rows)
+								],
+								'rows' => $rows
+							];
+
+							$response['response']['body'] = json_encode($mergedBody);
+
+						} else {
+
+							$response = $pointsCallback($endpoint, $response);
+							$body = json_decode($response['response']['body']);
+							
+							foreach($body->rows as $key => $row) {
+								$row->providerName = WP_ApiShip_Options::get_provider_name($row->providerKey);
+								$body->rows[$key] = $row;
+							}
+
+							$response['response']['body'] = json_encode($body);
+						}
+					} catch (Throwable $exception) {
+						$response['success'] = 'error';
+						$response['error_message'] = $exception->getMessage();
 					}
 					break;
+
 				case 'getListsPoints':
 
 					$type = 'store';

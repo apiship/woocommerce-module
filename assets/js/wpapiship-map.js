@@ -295,39 +295,24 @@
 			
 			var donePointsOutCallback = (response) => {
 
-				if ( 'undefined' === typeof response ) {
+				if ('undefined' === typeof response) {
 					return;
 				}
-				if ( ! response.success ) {
+
+				if (!response.success) {
 					return;
 				}
 			
+				if ('undefined' !== typeof response.data.error_message) {
+					console.log(response.data.error_message);
+				}
+				
 				try {
 					mapApi.listPointsOut = JSON.parse(response.data.response.body);
 				} catch (uncaught) {
 					console.log('getListPointsOut:: parsing error.');
 					return;
 				}
-
-				// Проверка, что все ПВЗ отображаются
-				mapApi.tariffList.forEach(tariff => {
-					tariff.pointIds.forEach(pointId => {
-
-						let isExists = false;
-	
-						mapApi.listPointsOut.rows.map(
-							(mapPointOut, idx) => {
-								if (Number(pointId) === Number(mapPointOut.id)) {
-									isExists = true;
-								}
-							}
-						);
-	
-						if (isExists === false) {
-							console.log('ПВЗ ' + pointId + ' не отображается на карте. Тариф: ' + tariff.tariffId);
-						}
-					});
-				});
 				
 				if ( mapApi.isMapExists() ) {
 					mapApi.getListPointsOut().rows.map(
