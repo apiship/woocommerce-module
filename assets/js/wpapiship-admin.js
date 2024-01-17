@@ -257,7 +257,7 @@
 
 				try {
 					var body = JSON.parse(response.data.response.body);
-				} catch {
+				} catch (uncaught) {
 					console.log('connectionCheck:: Parsing error.');
 					return;
 				}
@@ -305,7 +305,7 @@
 
 				try {
 					var iOrder = JSON.parse(response.data.response.body);
-				} catch {
+				} catch (uncaught) {
 					console.log('getSenderAddressString: Parsing error.');
 					return;
 				}
@@ -338,7 +338,7 @@
 						
 						try {
 							var body = JSON.parse(response.data.response.body);
-						} catch {
+						} catch (uncaught)  {
 							console.log('getPoint:: Parsing error.');
 							return;
 						}
@@ -372,7 +372,7 @@
 					
 					try {
 						var body = JSON.parse(response.data.response.body);
-					} catch {
+					} catch (uncaught) {
 						console.log('getPoint:: Parsing error.');
 						return;
 					}
@@ -460,7 +460,7 @@
 				
 				try {
 					var body = JSON.parse(response.data.response.body);
-				} catch {
+				} catch (uncaught) {
 					return;
 				}				
 				
@@ -497,7 +497,7 @@
 				}					
 				try {
 					var body = JSON.parse(response.data.response.body);
-				} catch {
+				} catch (uncaught) {
 					return;
 				}
 
@@ -597,7 +597,7 @@
 				}
 				try {
 					var body = JSON.parse(response.data.response.body);
-				} catch {
+				} catch (uncaught) {
 					api.orderViewer.add('View order: ' + api.__('parsingError')).open();
 					return;
 				}
@@ -624,7 +624,7 @@
 				}					
 				try {
 					var body = JSON.parse(response.data.response.body);
-				} catch {
+				} catch (uncaught) {
 					api.orderViewer.add('Set status order: ' + api.__('parsingError')).open();
 					return;
 				}
@@ -650,7 +650,7 @@
 				
 				try {
 					var body = JSON.parse(response.data.response.body);
-				} catch {
+				} catch (uncaught) {
 					api.orderViewer.add('Order tool: ' + api.__('parsingError')).open();					
 					return;
 				}	
@@ -706,7 +706,7 @@
 				
 				try {
 					var body = JSON.parse(response.data.response.body);
-				} catch {
+				} catch (uncaught) {
 					api.orderViewer.add('Validate done callback: ' + api.__('parsingError')).open();
 					return;
 				}
@@ -878,7 +878,7 @@
 				}					
 				try {
 					var body = JSON.parse(response.data.response.body);
-				} catch {
+				} catch (uncaught) {
 					api.orderViewer.add('Error: ' + api.__('parsingError')).open();
 					return;
 				}
@@ -955,7 +955,7 @@
 					var initialRequest = response.data.request;
 					try {
 						var html = JSON.parse(response.data.response.customHtml);
-					} catch { 
+					} catch (uncaught) { 
 						console.log(initialRequest.action+': '+ 'error parsing response body.');
 						return 
 					}
@@ -1004,6 +1004,21 @@
 				if ( $t.hasClass('edit-point-in') ) {
 					$('.meta-key-point-in-new-address').toggleClass('hidden');
 					$('.meta-value-point-in-new-address').toggleClass('hidden');
+				} else if ( $t.hasClass('edit-tariff') ) {
+
+					let isOpen = $t.attr('data-open');
+
+					if (isOpen === "0") {
+						$t.attr('data-open', "1");
+					} else {
+						$t.attr('data-open', "0");
+					}
+
+					$('.edit-tariff-section.meta-key').toggleClass('hidden');
+					$('.edit-tariff-section.meta-value').toggleClass('hidden');
+
+					// $('.tariff-data-section').toggleClass('hidden');
+
 				} else if ( $t.hasClass('edit-dimensions') ) {
 					$('.wpapiship-editable-field').each(function(i,e){
 						var elm = $(e);
@@ -1014,8 +1029,42 @@
 							elm.addClass('disabled').attr('disabled','disabled');
 						}
 					});
+				} else if ($t.hasClass('edit-price')) {
+					$('.edit-price-section.meta-key').toggleClass('hidden');
+					$('.edit-price-section.meta-value').toggleClass('hidden');
 				}
 			});	
+
+			$('#save_price').on('click', function(){
+
+				let price = Number($('#edit_price_input').val());
+				
+				var request = {
+					action: 'updateDeliveryPrice',
+					postOrderID: api.getParam('post_id'),
+					price: price,
+					doneCallback: function(response) {
+						if ('undefined' === typeof response) {
+							return;
+						}
+
+						// console.log(response);
+
+						if (response.success) {
+							$('#updatePriceMessage').toggleClass('hidden');
+
+							setTimeout(function(){
+								location.reload();
+							}, 2000);
+						} else {
+							alert('Ошибка при сохранении данных');
+						}
+					}
+				}
+
+				api.ajax(request);
+
+			});
 
 			// Delete data in ApiShip metabox.
 			$('#wpapiship-order-metabox .delete-data').on('click', function(evnt){
@@ -1099,10 +1148,10 @@
 				}
 			});	
 	
-			// Redirect to Providers section on settings page.
-			$('#wpapiship-order-metabox .card--logo').on('click', function(evnt){
-				location = api.getParam('providersSectionUrl');
-			});
+// 			// Redirect to Providers section on settings page.
+// 			$('#wpapiship-order-metabox .card--logo').on('click', function(evnt){
+// 				location = api.getParam('providersSectionUrl');
+// 			});
 			
 			// Debug.
 			$('.wpapiship-debug').on('dblclick', function(evnt){
@@ -1129,8 +1178,11 @@
 			$(document).on('selectPointOut', function(evnt, elem){
 
 				var id = elem.data('id'),
-						address = elem.data('address');
+					address = elem.data('address'),
+					tariff = elem.attr('data-tariff');
 						
+				console.log(tariff);
+
 				var action = '';
 		
 				if ( 'undefined' !== typeof id ) {
@@ -1146,11 +1198,62 @@
 					var request = {
 						action: action,
 						postOrderID: api.getParam('post_id'),
-						data: {id:id, address:address}
+						data: {id:id, address:address},
+						tariff: tariff
 					}
 					api.ajax(request);	
 				}				
 				
+			});
+			
+			// Select and save delivery method.
+			$(document).on('click', '#save_admin_method', function(evnt){
+
+				evnt.preventDefault();
+
+				let selected = $('input[name=selected_shipping_method]:checked');
+
+				if (selected.length === 0) {
+					alert('Выберите тариф');
+					return;
+				}
+
+				let order_id = $(selected).data('order-id');
+				let cost = $(selected).data('cost');
+				let meta = $(selected).data('meta-data');
+				let method_title = $(selected).data('method-title');
+				
+				let request = {
+					action: 'updateAdminTariff',
+					postOrderID: order_id,
+					cost: cost,
+					method_title: method_title,
+					meta_data: meta,
+					doneCallback: function(response) {
+						
+						if ('undefined' === typeof response) {
+							return;
+						}
+
+						if (!response.success) {
+							// Display error.
+							alert('Ошибка сохранения данных');
+						} else {
+							// Display message.
+							$('#updateAdminTariffMessage').toggleClass('hidden');
+
+							console.log('SUCCESS');
+							console.log(response);
+							
+							// Reload page.
+							setTimeout(function(){
+								location.reload();
+							}, 2000);
+						}
+					},
+				}
+
+				api.ajax(request);
 			});
 		},
 		initSettingsPage: function(){
@@ -1323,7 +1426,7 @@
 						try {
 							// var body = JSON.parse(response.data.response.body);
 							api.orderViewer.add('getTariffs callback: ' + api.__('parsingError')).open();
-						} catch {
+						} catch (uncaught) {
 							api.orderViewer.add('getTariffs callback: ' + api.__('parsingError')).open();
 							return;
 						}
@@ -1338,7 +1441,7 @@
 						try {
 							// var body = JSON.parse(response.data.response.body);
 							api.orderViewer.add('getProviderConnections callback: ' + api.__('parsingError')).open();
-						} catch {
+						} catch (uncaught) {
 							api.orderViewer.add('getProviderConnections callback: ' + api.__('parsingError')).open();
 							return;
 						}
@@ -1422,7 +1525,7 @@
 
 						try {
 							var html = JSON.parse( response.data.response[request.pointType]['html'] );
-						} catch { 
+						} catch (uncaught) { 
 							api.providerCard.errorMessage('resetSelectedPoint Parsing success response body.');
 							return 
 						}
@@ -1470,7 +1573,7 @@
 					if ( response.success ) {
 						try {
 							var html = JSON.parse(response.data.response.customHtml);
-						} catch { 
+						} catch (uncaught) { 
 							api.providerCard.errorMessage('getListsPoints: Parsing success response body.');
 							return 
 						}
@@ -1576,7 +1679,7 @@
 				if ( response.success ) {
 					try {
 						var body = JSON.parse(response.data.response.body);
-					} catch { 
+					} catch (uncaught) { 
 						api.providerCard.errorMessage('Parsing success response body.');
 						return;
 					}
@@ -1584,7 +1687,7 @@
 					try {
 						var body = JSON.parse(response.data.response.body);
 						api.providerCard.errorMessage(body.message);
-					} catch { 
+					} catch (uncaught) { 
 						api.providerCard.errorMessage('Parsing error response body.');
 					}					
 					return;
@@ -1695,7 +1798,7 @@
 				
 				try {
 					var calculations = JSON.parse(response.data.response.body);
-				} catch {
+				} catch (uncaught) {
 					$('#calculate-response').val('Incorrect response');
 					return;
 				}

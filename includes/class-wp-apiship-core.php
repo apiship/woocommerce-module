@@ -106,7 +106,8 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		/**
 		 * @var string $_SCRIPT_SUFFIX Whether to use minimized or full versions of JS.
 		 */
-        protected static $_SCRIPT_SUFFIX = '.min'; # '';
+
+		protected static $_SCRIPT_SUFFIX = ''; # '.min';
 
 		/**
 		 * List of the providers.
@@ -375,7 +376,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 			return $point_display_mode;
 		}
-
+		
 		/**
 		 * Add element with data after shipping rate.
 		 *
@@ -422,12 +423,12 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				}
 			}
 
-			$tariffList = json_decode($meta['tariffList']);
-
-			$points = [];
-			if (isset($tariff->pointIds)) {
-				$points = $tariff->pointIds;
+			if (!isset($tariff->pointIds)) {
+				$tariff->pointIds = [];
 			}
+
+			$tariffList = json_decode($meta['tariffList']);
+			$points = $tariff->pointIds;
 
 			$point_display_mode = self::get_point_display_mode();
 
@@ -914,25 +915,131 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 					}
 					
 					break;
+
+				case 'updateDeliveryPrice':
+					if (!empty($request['postOrderID']) && (int) $request['postOrderID'] > 0) {
+
+						$cost = floatval($request['price']);
+						
+						$order = wc_get_order(intval($request['postOrderID']));
+
+						$order_items = $order->get_items(array('shipping'));
+ 
+						foreach($order_items as $item_id => $order_item) {
+							wc_update_order_item_meta($item_id, 'cost', $cost);
+						}
+
+						$order->set_shipping_total($cost);
+						$order->set_total($order->get_subtotal() + $cost);
+
+						$order->save();
+
+					} else {
+						$response['success'] = 'error';
+					}
+
+					break;
+
 				case 'updatePointOutData':
 				
-					if ( ! empty($request['postOrderID']) && (int)  $request['postOrderID'] > 0 && is_array($request['data']) ) {
+					if (!empty($request['postOrderID']) && (int) $request['postOrderID'] > 0 && is_array($request['data'])) {
 					
-						if ( update_post_meta( 
-								$request['postOrderID'],
-								Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
-								$request['data']
-							)
-						) {
-							// Do nothing.
-						} else {
-							$response['success'] = 'error';
+						$order_id = $request['postOrderID'];
+						$pointData = $request['data'];
+
+						$tariffJson = wp_unslash(htmlspecialchars_decode($request['tariff']));
+						$tariff = json_decode($tariffJson);
+
+						// file_put_contents(__DIR__ . '/log.txt', $tariffJson . PHP_EOL . print_r($tariff, true));
+
+						$cost = $tariff->deliveryCost;
+						$methodId = $tariff->methodId;
+						$tariffName = $tariff->tariffName;
+						$daysMin = $tariff->daysMin;
+						$daysMax = $tariff->daysMax;
+						$tariffId = $tariff->tariffId;
+						
+						$order = wc_get_order($order_id);
+
+						$order_items = $order->get_items(array('shipping'));
+ 
+						foreach($order_items as $item_id => $order_item) {
+							wc_update_order_item_meta($item_id, 'cost', $cost);
+							wc_update_order_item_meta($item_id, 'methodId', $methodId);
+							wc_update_order_item_meta($item_id, 'tariffId', $tariffId);
+							wc_update_order_item_meta($item_id, 'tariffName', $tariffName);
+							wc_update_order_item_meta($item_id, 'tariff', $tariffJson);
+							wc_update_order_item_meta($item_id, 'daysMin', $daysMin);
+							wc_update_order_item_meta($item_id, 'daysMax', $daysMax);
 						}
+
+						$order->set_shipping_total($cost);
+						$order->set_total($order->get_subtotal() + $cost);
+
+						$order->save();
+
+						update_post_meta( 
+							$order_id,
+							Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
+							$pointData
+						);
 					} else {
 						$response['success'] = 'error';
 					}
 				
 					break;
+
+				case 'updateAdminTariff':
+
+					if (!empty($request['postOrderID']) && (int) $request['postOrderID'] > 0) {
+						
+						$order_id = $request['postOrderID'];
+						$cost = $request['cost'];
+						$meta_data = $request['meta_data'];
+						$method_title = $request['method_title'];
+
+						$order = wc_get_order($order_id);
+
+						$order_items = $order->get_items(array('shipping'));
+ 
+						foreach($order_items as $item_id => $order_item) {
+							wc_update_order_item_meta($item_id, 'cost', $cost);
+
+							$order_item->set_name($method_title);
+							$order_item->save();
+
+							foreach ($meta_data as $meta_key => $meta_value) {
+
+								if (in_array($meta_key, ['places', 'pickupTypes', 'tariff'])) {
+									$meta_value = wp_unslash(htmlspecialchars_decode($meta_value));
+								}
+
+								wc_update_order_item_meta($item_id, $meta_key, $meta_value);
+							}
+						}
+
+						$order->set_shipping_total($cost);
+						$order->set_total($order->get_subtotal() + $cost);
+
+						$order->save();
+
+						update_post_meta( 
+							$order_id,
+							Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
+							''
+						);
+
+						update_post_meta( 
+							$order_id,
+							Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
+							''
+						);
+					} else {
+						$response['success'] = 'error';
+					}
+				
+					break;
+					
 				case 'getCardSelectHtml':
 						
 					$provider_key = false;
@@ -1015,6 +1122,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 					$response['response'] = HTTP\WP_ApiShip_HTTP::get($endpoint);
 
 					if ( wp_remote_retrieve_response_code($response['response']) == HTTP\WP_ApiShip_HTTP::OK ) {
+						$tariffPointsList = [];
 						if (isset($request['tariffPointsList'])) {
 							$tariffPointsList = explode(',', $request['tariffPointsList']);
 						}
@@ -1024,7 +1132,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 						$body = json_decode($response['response']['body']);
 						foreach($body->rows as $key => $row) {
-							if (in_array($row->id, $tariffPointsList)) {
+							if (empty($tariffPointsList) or !empty($tariffPointsList) and in_array($row->id, $tariffPointsList)) {
 								$row->providerName = WP_ApiShip_Options::get_provider_name($row->providerKey);
 								$newBody->rows[] = $row;
 							}

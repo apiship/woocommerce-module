@@ -14,17 +14,22 @@
 	"use strict";
 
 	if ('undefined' === typeof WPApiShipAdmin) {
-			return;
+		return;
 	}
 	
 	if ('undefined' === typeof WPApiShipAdminMap) {
-			return;
+		return;
 	}
 	
 	var mapApi = {
 		parseBool: function(b){return !(/^(false|0)$/i).test(b) && !!b;},
 		listPointsOut: null,
 		map: null,
+		tariffList: null,
+		pointsMode: 2,
+		toCity: null,
+		providerKey: null,
+		requestKeyEnabled: false,
 		existsYmaps: function(){
 			if ('undefined' === typeof ymaps) {
 				return false;
@@ -39,7 +44,7 @@
 		},		
 		getBalloonContent: function(pointOut) {
 			var content = '<div class="point-out-balloon-content">';
-			content 	 += 	'<div class="provider-key">Служба доставки: '+WPApiShipAdmin.getShippingMethodMeta('tariffProviderKey','value');
+			content 	 += 	'<div class="provider-key">Служба доставки: ' + pointOut.providerName;
 			content 	 += 	'</div>';			
 			content 	 += 	'<div class="point-out-address">'+pointOut.streetType+'.'+pointOut.street+', д.'+pointOut.house;
 			if ( pointOut.availableOperation == '2' ) {
@@ -47,12 +52,61 @@
 			}			
 			content 	 += 	'</div>';
 			content 	 += 	'<br />';
+
+			
+			content 	 += 	'<div style="margin-bottom: 10px;">';
+			content 	 += 		'<div>Выбор тарифа</div>';
+			content 	 += 		'<select class="wpapiship-select-map-tariff">';
+
+			let selectedTariff = null;
+			
+			mapApi.tariffList.forEach(element => {
+				let days = element.daysMin;
+				let pointExists = false;
+				
+				element.pointIds.forEach(pointId => {
+					if (pointId == pointOut.id) {
+						pointExists = true;
+					}
+				});
+
+				if (pointExists === false) {
+					return;
+				}
+
+				if (element.daysMin != element.daysMax) {
+					days += '-' + element.daysMax;
+				}
+
+				let jsonTariff = JSON.stringify(element);
+
+				jsonTariff = jsonTariff.replace(/&/g, "&amp;")
+					.replace(/</g, "&lt;")
+					.replace(/>/g, "&gt;")
+					.replace(/"/g, "&quot;")
+					.replace(/'/g, "&#039;");
+
+				if (selectedTariff === null) {
+					selectedTariff = jsonTariff;
+				}
+
+				content  	+= 			'<option data-method-id="' + element.methodId + '" data-provider-key="' + element.providerKey + '" value="' + element.tariffId + '" data-tariff="' + jsonTariff + '">';
+				content 	+= 				element.providerName + ', '; // if (mapApi.pointsMode == 3) {}	
+				content  	+= 				element.tariffName + ', ';
+				content  	+= 				days + ' дн., ';
+				content  	+= 				element.deliveryCost + ' руб.';
+				content  	+= 			'</option>';
+			});	
+
+			content 	 += 		'</select>';
+			content 	 += 	'</div>';
+
 			content 	 += 	'<div class="description">';
 			content 	 += 		pointOut.description;
 			content 	 += 	'</div>';
 			content 	 += 	'<br />';
 			content 	 += 	'<div class="point-out-select-wrapper">';
-			content 	 += 		'<a href="#" data-id="'+pointOut.id+'" data-address="'+pointOut.address+'" onclick="return false;" class="point-out-select button button-secondary">'+WPApiShipAdmin.__('Select')+'</a>';
+			content 	 += 		'<a href="#" data-tariff="' + selectedTariff + '" data-id="'+pointOut.id+'" data-address="'+pointOut.address+'" onclick="return false;" class="point-out-select button button-secondary">'+WPApiShipAdmin.__('Select')+'</a>';
 			content 	 += 	'</div>';			
 			content 	 += '</div>';
 			return content;
@@ -79,18 +133,24 @@
 							iconColor: '#0000ff', //'#0095b6'
 						}
 					)
-				)			
+				);
+			
+			// Set tariff.
+			$(document).on('change', '.wpapiship-select-map-tariff', function(evnt){
+				$('.point-out-select').attr('data-tariff', $(this).find('option:selected').attr('data-tariff'));
+			});	
 		},
 		newMap: function() {
 			mapApi.map = new ymaps.Map(
 				'wpapiship-ymap',
 				{
 					center: [55.753909, 37.620938],
-					zoom: 12
+					zoom: 12,
+					controls: []
 				}, 
-				{
-					searchControlProvider: 'yandex#search'
-				}
+				// {
+				// 	searchControlProvider: 'yandex#search'
+				// }
 			);			
 		},	
 		mapInit: function() {
@@ -112,7 +172,7 @@
 			}
 			
 			mapApi.listPointsOut.rows.map(
-				function(pointOut){
+				function(pointOut, idx){
 					if ( pointOutInDefaultCountry === null ) {
 						if ( pointOut.countryCode == WPApiShipAdmin.getParam('wcCountryCode') ) {
 							pointOutInDefaultCountry = pointOut;
@@ -145,7 +205,7 @@
 		
 				try {
 					mapApi.listPointsOut = JSON.parse(response.data.response.body);
-				} catch {
+				} catch (uncaught) {
 					console.log('getListPointsOut:: parsing error.');
 					return;
 				}
@@ -153,15 +213,24 @@
 				ymaps.ready(mapApi.mapInit);
 			}
 			
+			mapApi.tariffList = JSON.parse($('#adminTariffList').html());
+			
 			var shipping = WPApiShipAdmin.getParam('wcShipping');
 			
 			var request = {
 				action: 'getListPointsOut',
 				city: shipping['_shipping_city'],
-				providerKey: WPApiShipAdmin.getShippingMethodMeta('tariffProviderKey','value'),
+				// tariffPointsList: mapApi.getTariffPointsList(),
 				availableOperation: "[2,3]",
+				// cod: mapApi.getCod(),
 				doneCallback: donePointsOutCallback,
 			}
+
+			//// Point Mode muse be set from CORE
+			if (mapApi.pointsMode != 3 || mapApi.pointsMode == 3 && mapApi.requestKeyEnabled == true) {
+				request.providerKey = WPApiShipAdmin.getShippingMethodMeta('tariffProviderKey','value');
+			}
+
 			WPApiShipAdmin.ajax(request);		
 		},
 		warning: function() {
@@ -169,9 +238,21 @@
 		},
 		attachListeners: function() {
 			
-			//
 			$(document).on('click', '.point-out-select', function(evnt){
+				// Call custom trigger to select point out.
 				$(document).trigger('selectPointOut',[$(this)] );
+
+				// Close map.
+				$(WPApiShipAdmin.getParam('ymapSelector')).toggleClass('hidden');
+				
+				// Display message.
+				$('#pointOutSaveMessage').toggleClass('hidden');
+
+				// Hide message.
+				setTimeout(function(){
+					// $('#pointOutSaveMessage').toggleClass('hidden');
+					location.reload();
+				}, 2000);
 			});
 			
 			// Edit data in ApiShip metabox.

@@ -374,10 +374,10 @@
 	grid-column: 1 / -1;
 }
 #wpapiship-order-metabox #wpapiship-ymap {
-	width: 97%;
+	/* width: 97%; */
 	height:700px;
 	padding:0;
-	margin:0 10px 0 0;
+	/* margin:0 10px 0 0; */
 }
 #wpapiship-order-metabox .not-ymap {
 	height:50px !important;
@@ -456,4 +456,10 @@
 	gap: 12px;
 	flex-wrap: wrap;
 	position: relative;
+}
+
+.point-out-save-message {
+	color: rgb(0, 160, 0);
+	font-size: 16px;
+	padding-top: 8px;
 }

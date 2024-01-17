@@ -123,6 +123,17 @@ $_refunded = -1 * $this->order->get_total_refunded_for_item( $item_id, 'shipping
 if ( $_refunded ) {
 	$_price .= wp_kses_post( '<small class="refunded">' . wc_price( $_refunded, array( 'currency' => $this->order->get_currency() ) ) . '</small>' );
 }
+
+/**
+ * Shipping methods.
+ */
+$shipping_methods = $this->get_shipping_methods();
+
+/**
+ * Is delivery to point.
+ */
+$isDeliveryToPoint = json_decode($meta_data['tariff']->value)->isDeliveryToPoint;
+
 ?>
 <div class="order-shipping-message-wrapper" data-order_item_id="<?php echo esc_attr($shipping_order_item_id); ?>">
 	<div class="content"></div>
@@ -205,13 +216,66 @@ if ( $_refunded ) {
 		<!-- Tariff Section -->
 		<div class="meta--item meta-key">&nbsp;</div>
 		<div class="meta--item meta-title">
-			<h3><?php esc_html_e('Тариф','wp-apiship'); ?></h3>
+			<h3><?php esc_html_e('Тариф','wp-apiship'); 
+			if (!$this->integrator_order_exists()) { ?>
+				<a href="#" onclick="return false;" class="edit-data edit-tariff" data-open="0"></a>
+			<?php } ?></h3>
 		</div>
+
+		<div class="meta-key edit-tariff-section hidden"></div>
+		<div class="meta-value edit-tariff-section hidden meta--item meta-value" style="max-width: 90%;">
+			
+			<button id="save_admin_method" class="button button-secondary" onclick="return false;">
+				<?php esc_html_e('Сохранить', 'wp-apiship'); ?>
+			</button>
+
+			<div class="meta--item meta-key hidden point-out-save-message" id="updateAdminTariffMessage">Данные успешно сохранены</div>
+
+			<p style="padding-bottom: 20px;"><b><?php esc_html_e('Выберите новый тариф. Выбор ПВЗ и тарифа для способов доставки до ПВЗ будет доступен после сохранения в разделе "Пункт выдачи заказа".', 'wp-apiship'); ?></b></p>
+
+			<?php 
+
+			foreach ($shipping_methods as $method) {
+				$method_id = $method['id'];
+				$method_title = $method['label'];
+				$price = $method['cost'];
+				$tariff = json_decode($method['meta_data']['tariff']);
+				$is_delivery_to_point = $tariff->isDeliveryToPoint;
+				$tariffProviderKey = $method['meta_data']['tariffProviderKey'];
+
+				$price_text = ', цена: ';
+				if ($is_delivery_to_point === true) {
+					$price_text = ', цена от ';
+				}
+
+				echo '<div style="margin-bottom: 10px;"><label>';
+				echo '<input type="radio" name="selected_shipping_method" value="' . esc_attr($method_id) . '"';
+
+				// if ($method_id === $selected_shipping) {
+				// 	echo ' checked';
+				// }
+
+				echo ' data-order-id="' . $post->ID . '"';
+				echo ' data-cost="' . $price . '"';
+				echo ' data-meta-data="' . htmlspecialchars(json_encode($method['meta_data'])) . '"';
+				echo ' data-method-title="' . $method_title . '"';
+
+				echo '>';
+				echo $method_title . $price_text . wc_price($price);
+				echo '</label></div>';
+			}
+
+			?>
+			
+			<div style="height: 20px;"></div>
+		</div>
+
 		<div class="meta--item meta-key">
 			<?php esc_html_e('Полное название',''); ?>:
 		</div>
 		<div class="meta--item meta-value">
 			<?php echo esc_html( $item->get_name() ? $item->get_name() : __( 'Shipping', 'woocommerce' ) ) . $_price; ?>
+			<a href="#" onclick="return false;" class="edit-data edit-price"></a>
 		</div>
 		<!-- Pickup type -->
 		<div class="meta--item meta-key">
@@ -224,7 +288,7 @@ if ( $_refunded ) {
 				class="wpapiship-transmitting-field field-to-control hidden" 
 				data-request-id="pickupType" 
 				value="<?php echo $this->the_pickup_type(); ?>" />
-		</div>		
+		</div>
 		<!-- Delivery type -->
 		<div class="meta--item meta-key">
 			<?php esc_html_e('Тип доставки','wp-apiship'); ?>:
@@ -237,6 +301,23 @@ if ( $_refunded ) {
 				data-request-id="deliveryType" 
 				value="<?php echo $this->the_delivery_type(); ?>" />
 		</div>
+
+		<div class="meta-key edit-price-section hidden"></div>
+		<div class="meta-value edit-price-section hidden meta--item meta-value" style="max-width: 90%;">
+		
+			<div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 10px;">
+				<div>
+					<input type="text" id="edit_price_input" placeholder="Введите новую цену">
+				</div>
+
+				<button id="save_price" class="button button-secondary" onclick="return false;">
+					<?php esc_html_e('Сохранить', 'wp-apiship'); ?>
+				</button>
+			</div>
+
+			<div class="meta--item meta-key hidden point-out-save-message" id="updatePriceMessage">Данные успешно сохранены</div>
+		</div>
+
 		<?php
 		foreach ( $meta_data as $_key=>$_item ) : 
 			if ( array_key_exists( $_key, $enabled_meta_keys ) ) {
@@ -489,7 +570,7 @@ if ( $_refunded ) {
 		<div class="meta--item meta-title">
 			<?php 
 			esc_html_e('Пункт выдачи заказа','wp-apiship');
-			if ( ! $this->integrator_order_exists() ) { ?>
+			if (!$this->integrator_order_exists() and $isDeliveryToPoint === true) { ?>
 				<a href="#" onclick="return false;" class="edit-data edit-point-out"></a>
 				<a href="#" onclick="return false;" class="delete-data delete-point-out"></a><?php
 			} ?>			
@@ -517,14 +598,9 @@ if ( $_refunded ) {
 				id="<?php echo $field['id']; ?>" 
 				class="meta-value-point-out-address wpapiship-transmitting-field" 
 				disabled="disabled" 
-				data-request-id="<?php echo $field['requestID']; ?>" />		
+				data-request-id="<?php echo $field['requestID']; ?>" />	
+			<div class="meta--item meta-key hidden point-out-save-message" id="pointOutSaveMessage">Данные успешно сохранены</div>	
 		</div>
-		<!-- Shipping point out: Map -->
-		<div class="meta--item meta-key wpapiship-ymap-row">&nbsp;</div>
-		<div class="meta--item meta-value wpapiship-ymap-row">
-			<!-- yandex map -->
-			<div id="wpapiship-ymap" class="hidden"></div>	
-		</div>	
 		<!-- Divider -->
 		<div class="meta--item meta-key">&nbsp;</div>
 		<div class="meta--item meta-value meta-divider"><hr /></div>			
@@ -585,6 +661,16 @@ if ( $_refunded ) {
 		} ?>		
 	</div><!-- .shipping--box -->
 </div><!-- .order-shipping-wrapper -->
+
+<div style="display: none;" id="adminTariffList"><?= wp_unslash(htmlspecialchars_decode($meta_data['tariffList']->value)) ?></div>
+
+<!-- Shipping point out: Map -->
+<div class="meta--item meta-key wpapiship-ymap-row">&nbsp;</div>
+<div class="meta--item meta-value wpapiship-ymap-row">
+	<!-- yandex map -->
+	<div id="wpapiship-ymap" class="hidden"></div>	
+</div>	
+
 <!-- order actions -->
 <div class="wpapiship-order-action-wrapper">
 	<div class="wpapiship-viewer-section hidden">
