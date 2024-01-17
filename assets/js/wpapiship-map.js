@@ -199,7 +199,7 @@
 					content 	+= 				element.providerName + ', '; // if (mapApi.pointsMode == 3) {}	
 					content  	+= 				element.tariffName + ', ';
 					content  	+= 				days + ' дн., ';
-					content  	+= 				element.deliveryCost + ' руб.';
+					content  	+= 				element.deliveryCost?.toFixed(2) + ' руб.';
 					content  	+= 			'</option>';
 				});	
 

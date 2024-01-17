@@ -132,7 +132,11 @@ $shipping_methods = $this->get_shipping_methods();
 /**
  * Is delivery to point.
  */
-$isDeliveryToPoint = json_decode($meta_data['tariff']->value)->isDeliveryToPoint;
+$tariff = json_decode($meta_data['tariff']->value);
+$isDeliveryToPoint = false;
+if (isset($tariff->isDeliveryToPoint)) {	
+	$isDeliveryToPoint = $tariff->isDeliveryToPoint;
+}
 
 ?>
 <div class="order-shipping-message-wrapper" data-order_item_id="<?php echo esc_attr($shipping_order_item_id); ?>">
@@ -662,7 +666,8 @@ $isDeliveryToPoint = json_decode($meta_data['tariff']->value)->isDeliveryToPoint
 	</div><!-- .shipping--box -->
 </div><!-- .order-shipping-wrapper -->
 
-<div style="display: none;" id="adminTariffList"><?= wp_unslash(htmlspecialchars_decode($meta_data['tariffList']->value)) ?></div>
+<div style="display: none;" id="adminTariffList"><?= htmlspecialchars_decode($meta_data['tariffList']->value) ?></div>
+<div style="display: none;" id="adminTariff"><?= htmlspecialchars_decode($meta_data['tariff']->value) ?></div>
 
 <!-- Shipping point out: Map -->
 <div class="meta--item meta-key wpapiship-ymap-row">&nbsp;</div>

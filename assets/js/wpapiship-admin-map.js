@@ -61,6 +61,7 @@
 			let selectedTariff = null;
 			
 			mapApi.tariffList.forEach(element => {
+
 				let days = element.daysMin;
 				let pointExists = false;
 				
@@ -85,16 +86,16 @@
 					.replace(/>/g, "&gt;")
 					.replace(/"/g, "&quot;")
 					.replace(/'/g, "&#039;");
-
+					
 				if (selectedTariff === null) {
 					selectedTariff = jsonTariff;
 				}
 
 				content  	+= 			'<option data-method-id="' + element.methodId + '" data-provider-key="' + element.providerKey + '" value="' + element.tariffId + '" data-tariff="' + jsonTariff + '">';
-				content 	+= 				element.providerName + ', '; // if (mapApi.pointsMode == 3) {}	
+				content 	+= 				element.providerName + ', ';
 				content  	+= 				element.tariffName + ', ';
 				content  	+= 				days + ' дн., ';
-				content  	+= 				element.deliveryCost + ' руб.';
+				content  	+= 				element.deliveryCost?.toFixed(2) + ' руб.';
 				content  	+= 			'</option>';
 			});	
 
@@ -214,24 +215,35 @@
 			}
 			
 			mapApi.tariffList = JSON.parse($('#adminTariffList').html());
-			
+			mapApi.tariffPointsList = JSON.parse($('#adminTariff').html()).pointIds;
+
 			var shipping = WPApiShipAdmin.getParam('wcShipping');
 			
 			var request = {
 				action: 'getListPointsOut',
 				city: shipping['_shipping_city'],
-				// tariffPointsList: mapApi.getTariffPointsList(),
+				tariffPointsList: mapApi.getTariffPointsList(),
 				availableOperation: "[2,3]",
-				// cod: mapApi.getCod(),
+				cod: mapApi.getCod(),
 				doneCallback: donePointsOutCallback,
 			}
 
-			//// Point Mode muse be set from CORE
-			if (mapApi.pointsMode != 3 || mapApi.pointsMode == 3 && mapApi.requestKeyEnabled == true) {
-				request.providerKey = WPApiShipAdmin.getShippingMethodMeta('tariffProviderKey','value');
-			}
+			request.providerKey = WPApiShipAdmin.getShippingMethodMeta('tariffProviderKey','value');
 
 			WPApiShipAdmin.ajax(request);		
+		},
+		getCod: function(){
+			if (mapApi.getPaymentMethod() == 'cod') {
+				return '1';
+			}
+			return '0';
+		},
+		getPaymentMethod: function(){
+			console.log($('#_payment_method').val());
+			return $('#_payment_method').val();
+		},
+		getTariffPointsList: function(){
+			return mapApi.tariffPointsList;
 		},
 		warning: function() {
 			$( WPApiShipAdmin.getParam('ymapSelector') ).text('').text(WPApiShipAdmin.__('notYMap')).addClass('not-ymap').toggleClass('hidden');			
