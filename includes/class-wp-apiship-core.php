@@ -1098,7 +1098,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						false
 					);
 
-					$endpoint = 'lists/points?limit=500&filter=';
+					$endpoint = 'lists/points?limit=9999&filter=';
 	
 					if ( ! empty($request['city']) ) {
 						$endpoint = $endpoint . 'city=' . $request['city'];
@@ -1122,7 +1122,9 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 					$response['response'] = HTTP\WP_ApiShip_HTTP::get($endpoint);
 
 					if ( wp_remote_retrieve_response_code($response['response']) == HTTP\WP_ApiShip_HTTP::OK ) {
+
 						$tariffPointsList = [];
+
 						if (isset($request['tariffPointsList'])) {
 							$tariffPointsList = explode(',', $request['tariffPointsList']);
 						}
@@ -1131,6 +1133,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						$newBody->rows = [];
 
 						$body = json_decode($response['response']['body']);
+						
 						foreach($body->rows as $key => $row) {
 							if (empty($tariffPointsList) or !empty($tariffPointsList) and in_array($row->id, $tariffPointsList)) {
 								$row->providerName = WP_ApiShip_Options::get_provider_name($row->providerKey);
@@ -1140,7 +1143,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 						$newBody->meta = [
 							'offset' => 0,
-							'limit' => 500,
+							'limit' => 9999,
 							'total' => count($newBody->rows)
 						];
 
@@ -2071,7 +2074,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		 */
 		public static function get_providers_data(bool $useProviderKey = true, bool $update = false, bool $getAll = false)
 		{
-			$response = HTTP\WP_ApiShip_HTTP::get('lists/providers');
+			$response = HTTP\WP_ApiShip_HTTP::get('lists/providers?limit=999');
 			$data = [];
 
 			if (wp_remote_retrieve_response_code($response) == HTTP\WP_ApiShip_HTTP::OK) {
@@ -2081,11 +2084,13 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 				if ($update === true) {
 					$updated_selected_providers = [];
-					$connectionsResponse = HTTP\WP_ApiShip_HTTP::get('connections');
+					$connectionsResponse = HTTP\WP_ApiShip_HTTP::get('connections?limit=100');
 					if (wp_remote_retrieve_response_code($connectionsResponse) == HTTP\WP_ApiShip_HTTP::OK) {
 						$conntectionsBody = json_decode(wp_remote_retrieve_body($connectionsResponse));
 						foreach($conntectionsBody->rows as $key => $connection) {
-							$updated_selected_providers[] = $connection->providerKey;
+							if (!in_array($connection->providerKey, $updated_selected_providers)) {
+								$updated_selected_providers[] = $connection->providerKey;
+							}
 						}
 						$selected_providers = $updated_selected_providers;
 						WP_ApiShip_Options::update_option('selected_providers', $updated_selected_providers);

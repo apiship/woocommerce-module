@@ -309,6 +309,26 @@
 					return;
 				}
 
+				// Проверка, что все ПВЗ отображаются
+				mapApi.tariffList.forEach(tariff => {
+					tariff.pointIds.forEach(pointId => {
+
+						let isExists = false;
+	
+						mapApi.listPointsOut.rows.map(
+							(mapPointOut, idx) => {
+								if (Number(pointId) === Number(mapPointOut.id)) {
+									isExists = true;
+								}
+							}
+						);
+	
+						if (isExists === false) {
+							console.log('ПВЗ ' + pointId + ' не отображается на карте. Тариф: ' + tariff.tariffId);
+						}
+					});
+				});
+				
 				if ( mapApi.isMapExists() ) {
 					mapApi.getListPointsOut().rows.map(
 						function(pointOut, idx){
