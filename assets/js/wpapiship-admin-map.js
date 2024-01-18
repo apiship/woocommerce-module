@@ -186,10 +186,10 @@
 					mapApi.placePointOutToMap(pointOut);
 				}
 			);
-
+			
 			if ( currentPointOutData ) {
 				mapApi.map.setCenter([currentPointOutData.lat, currentPointOutData.lng])
-			} else {
+			} else if (pointOutInDefaultCountry !== null) {
 				mapApi.map.setCenter([pointOutInDefaultCountry.lat, pointOutInDefaultCountry.lng])
 			}
 		},
@@ -218,6 +218,8 @@
 			mapApi.tariffPointsList = JSON.parse($('#adminTariff').html()).pointIds;
 
 			var shipping = WPApiShipAdmin.getParam('wcShipping');
+			
+			console.log(mapApi.getTariffPointsList());
 			
 			var request = {
 				action: 'getListPointsOut',

@@ -670,7 +670,7 @@ if (isset($tariff->isDeliveryToPoint)) {
 	</div><!-- .shipping--box -->
 </div><!-- .order-shipping-wrapper -->
 
-<div style="display: none;" id="adminTariffList"><?= htmlspecialchars_decode($meta_data['tariffList']->value) ?></div>
+<div style="display: none;" id="adminTariffList"><?= htmlspecialchars_decode(stripslashes($meta_data['tariffList']->value)) ?></div>
 <div style="display: none;" id="adminTariff"><?= htmlspecialchars_decode($meta_data['tariff']->value) ?></div>
 
 <!-- Shipping point out: Map -->

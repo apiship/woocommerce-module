@@ -1132,7 +1132,12 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 						if ($usePointIds === true) {
 
-							$tariffPointsList = explode(',', $request['tariffPointsList']);
+							if (is_string($request['tariffPointsList'])) {	
+								$tariffPointsList = explode(',', $request['tariffPointsList']);
+							} else {
+								$tariffPointsList = $request['tariffPointsList'];
+							}
+							
 							$tariffPointsLists = array_chunk($tariffPointsList, 500, false);
 
 							$rows = [];
