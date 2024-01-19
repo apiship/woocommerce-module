@@ -224,7 +224,7 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 				$point_display_mode = 2;
 			}
 
-			$providers_data = WP_ApiShip_Core::get_providers_data(true, false, false);
+			$providers_data = WP_ApiShip_Core::get_providers_data(true, false, false, true);
 
 			$tariffsToRates = [];
 			$selectedExists = false;

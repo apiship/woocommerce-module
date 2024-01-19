@@ -2110,14 +2110,22 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		 *
 		 * @since 1.4.0
 		 */
-		public static function get_providers_data(bool $useProviderKey = true, bool $update = false, bool $getAll = false)
+		public static function get_providers_data(bool $useProviderKey = true, bool $update = false, bool $getAll = false, bool $loadFromCache = false)
 		{
-			$response = HTTP\WP_ApiShip_HTTP::get('lists/providers?limit=999');
 			$data = [];
 
-			if (wp_remote_retrieve_response_code($response) == HTTP\WP_ApiShip_HTTP::OK) {
+			if ($loadFromCache === true) {
+				$rows = get_option('wp_apiship_providers_list');
+			} else {
+				$response = HTTP\WP_ApiShip_HTTP::get('lists/providers?limit=999');
 
-				$body = json_decode( wp_remote_retrieve_body($response) );
+				if (wp_remote_retrieve_response_code($response) == HTTP\WP_ApiShip_HTTP::OK) {
+					$body = json_decode( wp_remote_retrieve_body($response) );
+					$rows = $body->rows;
+				}
+			}
+
+			if (isset($rows)) {
 				$selected_providers = Options\WP_ApiShip_Options::get_selected_providers();
 
 				if ($update === true) {
@@ -2135,7 +2143,12 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 					}
 				}
 
-				foreach( $body->rows as $key => $provider ) {
+				foreach( $rows as $key => $provider ) {
+
+					if (is_array($provider)) {
+						$provider = (object) $provider;
+					}
+
 					$provider->selected = false;
 					$provider->data = false;
 					if (in_array( $provider->key, $selected_providers )) {
@@ -2153,9 +2166,9 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						}
 					}
 				}
-				return $data;
 			}
-			return array();
+
+			return $data;
 		}
 		
 		/**
