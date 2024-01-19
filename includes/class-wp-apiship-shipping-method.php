@@ -489,7 +489,7 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 			
 			$tariffName = '';
 			if (isset($tariff->tariffName)) {
-			  $pointName = $tariff->tariffName;
+			  $tariffName = $tariff->tariffName;
 			}
 			
 			$isCached = false;
