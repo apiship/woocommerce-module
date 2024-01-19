@@ -199,7 +199,7 @@
 					content 	+= 				element.providerName + ', '; // if (mapApi.pointsMode == 3) {}	
 					content  	+= 				element.tariffName + ', ';
 					content  	+= 				days + ' дн., ';
-					content  	+= 				element.deliveryCost + ' руб.';
+					content  	+= 				element.deliveryCost?.toFixed(2) + ' руб.';
 					content  	+= 			'</option>';
 				});	
 
@@ -232,8 +232,7 @@
 					new ymaps.Placemark(
 						[pointOut.lat, pointOut.lng], 
 						{
-							balloonContent: mapApi.getBalloonContent(pointOut),
-							iconCaption: mapApi.getCaption(pointOut)
+							balloonContent: mapApi.getBalloonContent(pointOut)
 						}, 
 						{
 							preset: 'islands#icon',
@@ -251,13 +250,27 @@
 					controls: []
 				}
 			);
-			mapApi.map.controls.add(
-				new ymaps.control.Button(WPApiShip.__('closeButtonCaption')),
-				{float: 'right'}
-			);
-			mapApi.map.controls.events.add('click', function(e){
+
+			let button = new ymaps.control.Button(WPApiShip.__('closeButtonCaption'));
+
+			button.events.add('click', function(e){
 				mapApi.closeMap();
 			});
+
+			mapApi.map.controls.add(
+				button,
+				{
+					float: 'right'
+				}
+			);
+
+			mapApi.map.controls.add(
+				new ymaps.control.ZoomControl({
+					options: {
+						size: "small"
+					}
+				})
+			);
 		},		
 		mapInit: function() {
 			var list = mapApi.getListPointsOut();
@@ -295,20 +308,25 @@
 			
 			var donePointsOutCallback = (response) => {
 
-				if ( 'undefined' === typeof response ) {
+				if ('undefined' === typeof response) {
 					return;
 				}
-				if ( ! response.success ) {
+
+				if (!response.success) {
 					return;
 				}
 			
+				if ('undefined' !== typeof response.data.error_message) {
+					console.log(response.data.error_message);
+				}
+				
 				try {
 					mapApi.listPointsOut = JSON.parse(response.data.response.body);
 				} catch (uncaught) {
 					console.log('getListPointsOut:: parsing error.');
 					return;
 				}
-
+				
 				if ( mapApi.isMapExists() ) {
 					mapApi.getListPointsOut().rows.map(
 						function(pointOut, idx){

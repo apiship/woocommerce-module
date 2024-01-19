@@ -9,6 +9,7 @@
 namespace WP_ApiShip;
 
 use stdClass;
+use Throwable;
 use WP_ApiShip\HTTP\WP_ApiShip_HTTP;
 use WP_ApiShip\Options,
 	WP_ApiShip\HTTP;
@@ -107,7 +108,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		 * @var string $_SCRIPT_SUFFIX Whether to use minimized or full versions of JS.
 		 */
 
-		protected static $_SCRIPT_SUFFIX = ''; # '.min';
+		protected static $_SCRIPT_SUFFIX = '.min';
 
 		/**
 		 * List of the providers.
@@ -498,7 +499,6 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		 */
 		protected static function saveSelectedPointData(object $data)
 		{
-			// $_COOKIE['wp_apiship_selected_point_out_data'] = json_encode($data);
 			setcookie('wp_apiship_selected_point_out_data', json_encode($data), time() + 3600 * 24, '/');
 		}
 
@@ -950,8 +950,6 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						$tariffJson = wp_unslash(htmlspecialchars_decode($request['tariff']));
 						$tariff = json_decode($tariffJson);
 
-						// file_put_contents(__DIR__ . '/log.txt', $tariffJson . PHP_EOL . print_r($tariff, true));
-
 						$cost = $tariff->deliveryCost;
 						$methodId = $tariff->methodId;
 						$tariffName = $tariff->tariffName;
@@ -1091,65 +1089,107 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 					 * 	https://api.apiship.ru/doc/#/lists/getListPoints
 					 * 	https://docs.apiship.ru/docs/api/query-filter/
 					 */
-
-					$country_code = Options\WP_ApiShip_Options::get_wc_option(
-						'woocommerce_default_country', 
-						Options\WP_ApiShip_Options::WС_DEFAULT_COUNTRY,
-						false
-					);
-
-					$endpoint = 'lists/points?limit=500&filter=';
-	
-					if ( ! empty($request['city']) ) {
-						$endpoint = $endpoint . 'city=' . $request['city'];
-					}
 					
-					if ( ! empty($request['providerKey']) ) {
-						$endpoint = $endpoint . ';providerKey=' . $request['providerKey'];
-					}		
-					
-					if ( ! empty($request['availableOperation']) ) {
-						$endpoint = $endpoint . ';availableOperation=' . $request['availableOperation'];
-					}
+					try {
+						set_time_limit(0);
 
-					/**
-					 * cod - Cash on delevery.
-					 */
-					if ( ! empty($request['cod']) ) {
-						$endpoint = $endpoint . ';cod=' . $request['cod'];
-					}
-					
-					$response['response'] = HTTP\WP_ApiShip_HTTP::get($endpoint);
+						$pointsCallback = function($endpoint, $response) {
+							$response['response'] = HTTP\WP_ApiShip_HTTP::get($endpoint);
 
-					if ( wp_remote_retrieve_response_code($response['response']) == HTTP\WP_ApiShip_HTTP::OK ) {
-						$tariffPointsList = [];
-						if (isset($request['tariffPointsList'])) {
-							$tariffPointsList = explode(',', $request['tariffPointsList']);
-						}
-
-						$newBody = new stdClass();
-						$newBody->rows = [];
-
-						$body = json_decode($response['response']['body']);
-						foreach($body->rows as $key => $row) {
-							if (empty($tariffPointsList) or !empty($tariffPointsList) and in_array($row->id, $tariffPointsList)) {
-								$row->providerName = WP_ApiShip_Options::get_provider_name($row->providerKey);
-								$newBody->rows[] = $row;
+							if (wp_remote_retrieve_response_code($response['response']) != HTTP\WP_ApiShip_HTTP::OK) {
+								$response['success'] = 'error';
 							}
+
+							return $response;
+						};
+
+						$endpoint = 'lists/points?limit=1000&filter=';
+
+						$usePointIds = false;
+						if (isset($request['tariffPointsList']) and !empty($request['tariffPointsList']) and $request['tariffPointsList'] !== false) {
+							$usePointIds = true;
+						}
+		
+						if (!empty($request['availableOperation'])) {
+							$endpoint = $endpoint . 'availableOperation=' . $request['availableOperation'];
 						}
 
-						$newBody->meta = [
-							'offset' => 0,
-							'limit' => 500,
-							'total' => count($newBody->rows)
-						];
+						if (!empty($request['city']) and $usePointIds === false) {
+							$endpoint = $endpoint . ';city=' . $request['city'];
+						}
+						
+						if (!empty($request['providerKey'])) {
+							$endpoint = $endpoint . ';providerKey=' . $request['providerKey'];
+						}		
 
-						$response['response']['body'] = json_encode($newBody);
+						/**
+						 * cod - Cash on delevery.
+						 */
+						if (!empty($request['cod'])) {
+							$endpoint = $endpoint . ';cod=' . $request['cod'];
+						}
 
-					} else {
-						$response['success'] = 'error';						
+						if ($usePointIds === true) {
+
+							if (is_string($request['tariffPointsList'])) {	
+								$tariffPointsList = explode(',', $request['tariffPointsList']);
+							} else {
+								$tariffPointsList = $request['tariffPointsList'];
+							}
+							
+							$tariffPointsLists = array_chunk($tariffPointsList, 500, false);
+
+							$rows = [];
+
+							foreach($tariffPointsLists as $list) {
+
+								$pointIds = implode(',', $list);
+								$listEndpoint = $endpoint . ';id=[' . $pointIds . ']';
+
+								$response = $pointsCallback($listEndpoint, $response);
+
+								if ($response['success'] === 'error') {
+									break(2);
+								}
+
+								$body = json_decode($response['response']['body']);
+								$rows = array_merge($rows, $body->rows);
+							}
+
+							foreach($rows as $key => $row) {
+								$row->providerName = WP_ApiShip_Options::get_provider_name($row->providerKey);
+								$rows[$key] = $row;
+							}
+
+							$mergedBody = (object) [
+								'meta' => [
+									'offset' => 0,
+									'limit' => -1,
+									'total' => count($rows)
+								],
+								'rows' => $rows
+							];
+
+							$response['response']['body'] = json_encode($mergedBody);
+
+						} else {
+
+							$response = $pointsCallback($endpoint, $response);
+							$body = json_decode($response['response']['body']);
+							
+							foreach($body->rows as $key => $row) {
+								$row->providerName = WP_ApiShip_Options::get_provider_name($row->providerKey);
+								$body->rows[$key] = $row;
+							}
+
+							$response['response']['body'] = json_encode($body);
+						}
+					} catch (Throwable $exception) {
+						$response['success'] = 'error';
+						$response['error_message'] = $exception->getMessage();
 					}
 					break;
+
 				case 'getListsPoints':
 
 					$type = 'store';
@@ -2069,30 +2109,45 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		 *
 		 * @since 1.4.0
 		 */
-		public static function get_providers_data(bool $useProviderKey = true, bool $update = false, bool $getAll = false)
+		public static function get_providers_data(bool $useProviderKey = true, bool $update = false, bool $getAll = false, bool $loadFromCache = false)
 		{
-			$response = HTTP\WP_ApiShip_HTTP::get('lists/providers');
 			$data = [];
 
-			if (wp_remote_retrieve_response_code($response) == HTTP\WP_ApiShip_HTTP::OK) {
+			if ($loadFromCache === true) {
+				$rows = get_option('wp_apiship_providers_list');
+			} else {
+				$response = HTTP\WP_ApiShip_HTTP::get('lists/providers?limit=999');
 
-				$body = json_decode( wp_remote_retrieve_body($response) );
+				if (wp_remote_retrieve_response_code($response) == HTTP\WP_ApiShip_HTTP::OK) {
+					$body = json_decode( wp_remote_retrieve_body($response) );
+					$rows = $body->rows;
+				}
+			}
+
+			if (isset($rows)) {
 				$selected_providers = Options\WP_ApiShip_Options::get_selected_providers();
 
 				if ($update === true) {
 					$updated_selected_providers = [];
-					$connectionsResponse = HTTP\WP_ApiShip_HTTP::get('connections');
+					$connectionsResponse = HTTP\WP_ApiShip_HTTP::get('connections?limit=100');
 					if (wp_remote_retrieve_response_code($connectionsResponse) == HTTP\WP_ApiShip_HTTP::OK) {
 						$conntectionsBody = json_decode(wp_remote_retrieve_body($connectionsResponse));
 						foreach($conntectionsBody->rows as $key => $connection) {
-							$updated_selected_providers[] = $connection->providerKey;
+							if (!in_array($connection->providerKey, $updated_selected_providers)) {
+								$updated_selected_providers[] = $connection->providerKey;
+							}
 						}
 						$selected_providers = $updated_selected_providers;
 						WP_ApiShip_Options::update_option('selected_providers', $updated_selected_providers);
 					}
 				}
 
-				foreach( $body->rows as $key => $provider ) {
+				foreach( $rows as $key => $provider ) {
+
+					if (is_array($provider)) {
+						$provider = (object) $provider;
+					}
+
 					$provider->selected = false;
 					$provider->data = false;
 					if (in_array( $provider->key, $selected_providers )) {
@@ -2110,9 +2165,9 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						}
 					}
 				}
-				return $data;
 			}
-			return array();
+
+			return $data;
 		}
 		
 		/**

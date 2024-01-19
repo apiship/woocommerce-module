@@ -42,7 +42,7 @@ if (!class_exists('WP_ApiShip_Cron')) :
 		public function providers_callback()
 		{
 			set_time_limit(0);
-			$response = WP_ApiShip_HTTP::get("lists/providers?limit=100");
+			$response = WP_ApiShip_HTTP::get("lists/providers?limit=999");
 			if(wp_remote_retrieve_response_code($response) == WP_ApiShip_HTTP::OK) {
 				$body = json_decode($response['body']);
 				if (empty($body->rows)) {

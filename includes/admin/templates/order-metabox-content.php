@@ -132,7 +132,11 @@ $shipping_methods = $this->get_shipping_methods();
 /**
  * Is delivery to point.
  */
-$isDeliveryToPoint = json_decode($meta_data['tariff']->value)->isDeliveryToPoint;
+$tariff = json_decode($meta_data['tariff']->value);
+$isDeliveryToPoint = false;
+if (isset($tariff->isDeliveryToPoint)) {	
+	$isDeliveryToPoint = $tariff->isDeliveryToPoint;
+}
 
 ?>
 <div class="order-shipping-message-wrapper" data-order_item_id="<?php echo esc_attr($shipping_order_item_id); ?>">
@@ -209,6 +213,10 @@ $isDeliveryToPoint = json_decode($meta_data['tariff']->value)->isDeliveryToPoint
 					<div class="label-caption"><?php esc_html_e('Наклейка не доступна для скачивания','wp-apiship'); ?></div>
 					<div class="label-message"></div>
 				</div>
+				
+				<button style="margin-top: 10px;" class="button button-secondary" id="order_label_request" onclick="return false;" data-url="">
+					<?php esc_html_e('Запросить наклейку','wp-apiship'); ?>
+				</button>
 			</div><!-- .integrator-order-label-card --><?php
 		} ?>	
 	</div><!-- .shipping--box -->
@@ -662,7 +670,14 @@ $isDeliveryToPoint = json_decode($meta_data['tariff']->value)->isDeliveryToPoint
 	</div><!-- .shipping--box -->
 </div><!-- .order-shipping-wrapper -->
 
-<div style="display: none;" id="adminTariffList"><?= wp_unslash(htmlspecialchars_decode($meta_data['tariffList']->value)) ?></div>
+<div style="display: none;" id="adminTariffList"><?php 
+	$json = $meta_data['tariffList']->value;
+	if (json_decode($json) === null) {
+		$json = stripslashes($json);
+	}
+	echo htmlspecialchars_decode($json);
+?></div>
+<div style="display: none;" id="adminTariff"><?= htmlspecialchars_decode($meta_data['tariff']->value) ?></div>
 
 <!-- Shipping point out: Map -->
 <div class="meta--item meta-key wpapiship-ymap-row">&nbsp;</div>
@@ -673,6 +688,11 @@ $isDeliveryToPoint = json_decode($meta_data['tariff']->value)->isDeliveryToPoint
 
 <!-- order actions -->
 <div class="wpapiship-order-action-wrapper">
+	<div class="hidden" id="wpapiship_viewer_preloader">
+		<div class="wpapiship-viewer-preloader">
+			<span class="wpapiship-preloader-animation">&#9203;</span>
+		</div>
+	</div>
 	<div class="wpapiship-viewer-section hidden">
 		<div class="extra-buttons">
 			<span class="close-viewer-button">

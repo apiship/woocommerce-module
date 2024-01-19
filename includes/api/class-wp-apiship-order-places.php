@@ -27,7 +27,7 @@ if ( ! class_exists('WP_ApiShip_Order_Places') ) :
 		 *
 		 * example: 45
 		 *
-		 * @var number($float)
+		 * @var int
 		 */		 
 		protected $height = 0;
 
@@ -36,7 +36,7 @@ if ( ! class_exists('WP_ApiShip_Order_Places') ) :
 		 *
 		 * example: 30
 		 *
-		 * @var number($float)
+		 * @var int
 		 */		
 		protected $length = 0;
 
@@ -45,7 +45,7 @@ if ( ! class_exists('WP_ApiShip_Order_Places') ) :
 		 *
 		 * example: 20
 		 *
-		 * @var number($float)
+		 * @var int
 		 */			
 		protected $width = 0;
 
@@ -54,7 +54,7 @@ if ( ! class_exists('WP_ApiShip_Order_Places') ) :
 		 *
 		 * example: 20
 		 *
-		 * @var number($float)
+		 * @var int
 		 */
 		protected $weight = 0;
 
@@ -117,6 +117,13 @@ if ( ! class_exists('WP_ApiShip_Order_Places') ) :
 			foreach( $wc_order_items as $wc_order_item ) {
 				$this->items[] = $this->get_item( $wc_order_item, $cod_cost, $wc_order );
 			}
+
+			$sizes = $this->getPlacesSizes($this->items);
+
+			$this->length = $sizes['length'];
+			$this->width = $sizes['width'];
+			$this->height = $sizes['height'];
+			$this->weight = $sizes['weight'];
 			
 			/**
 			 * Set custom dimensions if they exist.
@@ -136,6 +143,34 @@ if ( ! class_exists('WP_ApiShip_Order_Places') ) :
 			}
 		}
 		
+		/**
+		 * Get places sizes.
+		 *
+		 * @since 1.6.0
+		 *
+		 * return array
+		 */
+		public function getPlacesSizes(): array
+		{
+			$sizes = [
+				'weight' => 0,
+				'height' => 0,
+				'length' => 0,
+				'width'  => 0,
+			];
+
+			foreach (($this->items ?? []) as $orderPlace) {
+				$dims = [$orderPlace->height ?: 0, $orderPlace->width ?: 0, $orderPlace->length ?: 0];
+				sort($dims);
+				$sizes['height'] += $dims[0];
+				$sizes['length'] = max($sizes['length'], $dims[1]);
+				$sizes['width'] = max($sizes['width'], $dims[2]);
+				$sizes['weight'] += $orderPlace->weight ?: 0;
+			}
+
+			return $sizes;
+		}
+
 		/**
 		 * Get single item.
 		 *
@@ -158,10 +193,6 @@ if ( ! class_exists('WP_ApiShip_Order_Places') ) :
 			 */	
 			$item->length = $this->get_dimension( 'length', $product );
 
-			if ( $item->length > $this->length ) {
-				$this->length = $item->length;
-			}
-
 			/**
 			 * Ширина единицы товара в сантиметрах.
 			 *
@@ -171,10 +202,6 @@ if ( ! class_exists('WP_ApiShip_Order_Places') ) :
 			 */
 			$item->width = $this->get_dimension( 'width', $product );
 
-			if ( $item->width > $this->width ) {
-				$this->width = $item->width;
-			}
-			
 			/**
 			 * Высота единицы товара в сантиметрах.
 			 *
@@ -228,12 +255,6 @@ if ( ! class_exists('WP_ApiShip_Order_Places') ) :
 			 * integer($int32)
 			 */			
 			$item->quantity = $wc_order_item->get_quantity();
-
-			/**
-			 * Let's sum weight and height.
-			 */
-			$this->weight = $this->weight + ( $item->weight * $item->quantity );
-			$this->height = $this->height + ( $item->height * $item->quantity );
 
 			/**
 			 * Заполняется только при частичной доставке и показывает сколько единиц товара выкуплено.

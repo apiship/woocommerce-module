@@ -361,44 +361,49 @@
 				}
 
 				// Set Integrator Order Label.
-				var getOrderLabelDoneCB = response => {
-					if ( 'undefined' === typeof response ) {
-						return;
-					}
+				$(document).on('click', '#order_label_request', function(){
+					$(this).prop('disabled', true);
 
-					if ( ! response.success ) {
-						return;
-					}
-					
-					try {
-						var body = JSON.parse(response.data.response.body);
-					} catch (uncaught) {
-						console.log('getPoint:: Parsing error.');
-						return;
-					}
+					var getOrderLabelDoneCB = response => {
+						if ( 'undefined' === typeof response ) {
+							return;
+						}
 
-					if ( 'object' === typeof body.failedOrders && null !== body.failedOrders ) {
-						$('#wpapiship-order-metabox .label-not-exists').removeClass('hidden');
-						$.each(body.failedOrders, function(i,e){
-							$('#wpapiship-order-metabox .label-message').text(e.message);
-							return false; // @todo multiple orders.
-						});
+						if ( ! response.success ) {
+							return;
+						}
 						
-					} else {
-						$('#wpapiship-order-metabox .label-exists').removeClass('hidden');
-						$('#wpapiship-order-metabox .label-download').data('url',body.url);
-						
-					}
-			
-				}
+						try {
+							var body = JSON.parse(response.data.response.body);
+						} catch (uncaught) {
+							console.log('getPoint:: Parsing error.');
+							return;
+						}
 
-				var request = {
-					action: 'getOrderLabel',
-					integratorOrder: id,
-					doneCallback: getOrderLabelDoneCB,
-				}
-				api.ajax(request);					
-				
+						if ( 'object' === typeof body.failedOrders && null !== body.failedOrders ) {
+							$('#wpapiship-order-metabox .label-not-exists').removeClass('hidden');
+							$.each(body.failedOrders, function(i,e){
+								$('#wpapiship-order-metabox .label-message').text(e.message);
+								$('#order_label_request').prop('disabled', false);
+								return false; // @todo multiple orders.
+							});
+							
+						} else {
+							$('#wpapiship-order-metabox .label-exists').removeClass('hidden');
+							$('#wpapiship-order-metabox .label-download').data('url',body.url);
+							$('#order_label_request').addClass('hidden');
+						}
+
+					}
+
+					var request = {
+						action: 'getOrderLabel',
+						integratorOrder: id,
+						doneCallback: getOrderLabelDoneCB,
+					}
+					api.ajax(request);					
+				});
+
 				// Generate sender address string.
 				var addressDoneCB = (response) => {
 					if ( 'undefined' === typeof response ) {
@@ -486,10 +491,12 @@
 			 */
 			var beforeCB = (request) => {
 				$('.button.post-orders').prop('disabled','disabled');
+				$('#wpapiship_viewer_preloader').removeClass('hidden');
 				api.orderViewer.clear();
 			}
 			var alwaysCB = (response) => {
-				$('.button.post-orders').prop('disabled','');			
+				$('.button.post-orders').prop('disabled','');	
+				$('#wpapiship_viewer_preloader').addClass('hidden');		
 			}			
 			var doneCB = (response) => {
 				if ( 'undefined' === typeof response ) {
@@ -544,11 +551,13 @@
 					return;
 				}	
 				api.orderViewer.clear().close();
+				$('#wpapiship_viewer_preloader').removeClass('hidden');
 			}
 			var validateDoneCB = (response) => {
 				if ( 'undefined' === typeof response ) {
 					return;
 				}
+				$('#wpapiship_viewer_preloader').addClass('hidden');
 				try {
 					var body = JSON.parse(response.data.response.body);
 					api.setValidationReport(body);
@@ -595,6 +604,7 @@
 				if ( 'undefined' === typeof response ) {
 					return;
 				}
+				$('#wpapiship_viewer_preloader').addClass('hidden');
 				try {
 					var body = JSON.parse(response.data.response.body);
 				} catch (uncaught) {
@@ -606,6 +616,7 @@
 			
 			$('.view-orders').on('click', function(evnt){
 				evnt.preventDefault();	
+				$('#wpapiship_viewer_preloader').removeClass('hidden');
 				var request = {};
 				request.action 			 	  = 'getIntegratorOrder';
 				request.postOrderID  	  = api.getParam('post_id');
@@ -622,6 +633,7 @@
 				if ( 'undefined' === typeof response ) {
 					return;
 				}					
+				$('#wpapiship_viewer_preloader').addClass('hidden');
 				try {
 					var body = JSON.parse(response.data.response.body);
 				} catch (uncaught) {
@@ -632,6 +644,7 @@
 			}				 
 			$('.status-orders').on('click', function(evnt){
 				evnt.preventDefault();	
+				$('#wpapiship_viewer_preloader').removeClass('hidden');
 				var request = {};
 				request.action = 'getOrderStatus';
 				request.postOrderID  = api.getParam('post_id');
@@ -757,13 +770,16 @@
 			var beforeCB = (request) => {
 				if ( 'undefined' === typeof request ) {
 					return;
-				}				
+				}			
+				$('#wpapiship_viewer_preloader').removeClass('hidden');	
 			}
 			
 			var doneCB = (response) => {
 				if ( 'undefined' === typeof response ) {
 					return;
 				}
+
+				$('#wpapiship_viewer_preloader').addClass('hidden');
 
 				var body = JSON.parse(response.data.response.body);
 
