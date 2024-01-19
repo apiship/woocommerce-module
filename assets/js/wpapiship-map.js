@@ -251,13 +251,27 @@
 					controls: []
 				}
 			);
-			mapApi.map.controls.add(
-				new ymaps.control.Button(WPApiShip.__('closeButtonCaption')),
-				{float: 'right'}
-			);
-			mapApi.map.controls.events.add('click', function(e){
+			
+			let button = new ymaps.control.Button(WPApiShip.__('closeButtonCaption'));
+
+			button.events.add('click', function(e){
 				mapApi.closeMap();
 			});
+
+			mapApi.map.controls.add(
+				button,
+				{
+					float: 'right'
+				}
+			);
+
+			mapApi.map.controls.add(
+				new ymaps.control.ZoomControl({
+					options: {
+						size: "small"
+					}
+				})
+			);
 		},		
 		mapInit: function() {
 			var list = mapApi.getListPointsOut();

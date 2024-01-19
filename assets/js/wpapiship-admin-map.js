@@ -152,7 +152,15 @@
 				// {
 				// 	searchControlProvider: 'yandex#search'
 				// }
-			);			
+			);		
+
+			mapApi.map.controls.add(
+				new ymaps.control.ZoomControl({
+					options: {
+						size: "small"
+					}
+				})
+			);
 		},	
 		mapInit: function() {
 			
