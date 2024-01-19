@@ -682,6 +682,11 @@ if (isset($tariff->isDeliveryToPoint)) {
 
 <!-- order actions -->
 <div class="wpapiship-order-action-wrapper">
+	<div class="hidden" id="wpapiship_viewer_preloader">
+		<div class="wpapiship-viewer-preloader">
+			<span class="wpapiship-preloader-animation">&#9203;</span>
+		</div>
+	</div>
 	<div class="wpapiship-viewer-section hidden">
 		<div class="extra-buttons">
 			<span class="close-viewer-button">

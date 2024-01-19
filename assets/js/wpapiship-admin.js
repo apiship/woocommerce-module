@@ -491,10 +491,12 @@
 			 */
 			var beforeCB = (request) => {
 				$('.button.post-orders').prop('disabled','disabled');
+				$('#wpapiship_viewer_preloader').removeClass('hidden');
 				api.orderViewer.clear();
 			}
 			var alwaysCB = (response) => {
-				$('.button.post-orders').prop('disabled','');			
+				$('.button.post-orders').prop('disabled','');	
+				$('#wpapiship_viewer_preloader').addClass('hidden');		
 			}			
 			var doneCB = (response) => {
 				if ( 'undefined' === typeof response ) {
@@ -549,11 +551,13 @@
 					return;
 				}	
 				api.orderViewer.clear().close();
+				$('#wpapiship_viewer_preloader').removeClass('hidden');
 			}
 			var validateDoneCB = (response) => {
 				if ( 'undefined' === typeof response ) {
 					return;
 				}
+				$('#wpapiship_viewer_preloader').addClass('hidden');
 				try {
 					var body = JSON.parse(response.data.response.body);
 					api.setValidationReport(body);
@@ -600,6 +604,7 @@
 				if ( 'undefined' === typeof response ) {
 					return;
 				}
+				$('#wpapiship_viewer_preloader').addClass('hidden');
 				try {
 					var body = JSON.parse(response.data.response.body);
 				} catch (uncaught) {
@@ -611,6 +616,7 @@
 			
 			$('.view-orders').on('click', function(evnt){
 				evnt.preventDefault();	
+				$('#wpapiship_viewer_preloader').removeClass('hidden');
 				var request = {};
 				request.action 			 	  = 'getIntegratorOrder';
 				request.postOrderID  	  = api.getParam('post_id');
@@ -627,6 +633,7 @@
 				if ( 'undefined' === typeof response ) {
 					return;
 				}					
+				$('#wpapiship_viewer_preloader').addClass('hidden');
 				try {
 					var body = JSON.parse(response.data.response.body);
 				} catch (uncaught) {
@@ -637,6 +644,7 @@
 			}				 
 			$('.status-orders').on('click', function(evnt){
 				evnt.preventDefault();	
+				$('#wpapiship_viewer_preloader').removeClass('hidden');
 				var request = {};
 				request.action = 'getOrderStatus';
 				request.postOrderID  = api.getParam('post_id');
@@ -762,13 +770,16 @@
 			var beforeCB = (request) => {
 				if ( 'undefined' === typeof request ) {
 					return;
-				}				
+				}			
+				$('#wpapiship_viewer_preloader').removeClass('hidden');	
 			}
 			
 			var doneCB = (response) => {
 				if ( 'undefined' === typeof response ) {
 					return;
 				}
+
+				$('#wpapiship_viewer_preloader').addClass('hidden');
 
 				var body = JSON.parse(response.data.response.body);
 

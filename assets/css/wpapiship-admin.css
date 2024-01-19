@@ -463,3 +463,33 @@
 	font-size: 16px;
 	padding-top: 8px;
 }
+
+.wpapiship-viewer-preloader {
+	display: flex;
+    justify-content: center;
+	padding-bottom: 20px;
+}
+
+.wpapiship-preloader-animation {
+	display: inline-block;
+	animation: 3s linear 0s normal none infinite running wpapiship-preloader;
+  	-webkit-animation: 3s linear 0s normal none infinite running wpapiship-preloader;
+}
+
+@keyframes wpapiship-preloader {
+	0% {
+	  transform: rotate(0deg);
+	}
+	100% {
+	  transform: rotate(360deg);
+	}
+}
+
+@-webkit-keyframes wpapiship-preloader {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
