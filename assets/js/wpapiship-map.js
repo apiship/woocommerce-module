@@ -232,8 +232,7 @@
 					new ymaps.Placemark(
 						[pointOut.lat, pointOut.lng], 
 						{
-							balloonContent: mapApi.getBalloonContent(pointOut),
-							iconCaption: mapApi.getCaption(pointOut)
+							balloonContent: mapApi.getBalloonContent(pointOut)
 						}, 
 						{
 							preset: 'islands#icon',
@@ -251,7 +250,7 @@
 					controls: []
 				}
 			);
-			
+
 			let button = new ymaps.control.Button(WPApiShip.__('closeButtonCaption'));
 
 			button.events.add('click', function(e){

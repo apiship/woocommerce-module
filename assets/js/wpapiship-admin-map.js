@@ -126,8 +126,7 @@
 					new ymaps.Placemark(
 						[pointOut.lat, pointOut.lng], 
 						{
-							balloonContent: mapApi.getBalloonContent(pointOut),
-							iconCaption: mapApi.getCaption(pointOut)
+							balloonContent: mapApi.getBalloonContent(pointOut)
 						}, 
 						{
 							preset: 'islands#icon',
