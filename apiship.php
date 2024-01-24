@@ -1,16 +1,16 @@
 <?php
 /**
- *  Plugin Name: WP ApiShip for WooCommerce
+ *  Plugin Name: ApiShip
  *  Plugin URI: 
  *  Description: The plugin allows you to automatically calculate the shipping cost from various providers.
  *  Version: 1.6.0
- *  Author: 
+ *  Author: ApiShip
  *  Author URI: https://apiship.ru/
  *  Text Domain: wp-apiship
  *  Domain Path: /languages
  *  License: GPLv3
  *  WC requires at least: 6.3
- *  WC tested up to: 6.5
+ *  WC tested up to: 8.5
  */
 
 namespace WP_ApiShip;
