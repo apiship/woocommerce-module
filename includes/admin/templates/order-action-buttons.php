@@ -50,7 +50,7 @@ if ( (int) $integrator_order > 0 ) {
 			<span class="close-viewer-button">
 				<button onclick="return false;" class="button button-primary wpapiship-close-viewer" 
 					data-order-id="<?php echo $order->get_id(); ?>">
-					<?php echo esc_html__('Закрыть', 'wp-apiship'); ?>
+					<?php echo esc_html__('Закрыть', 'apiship'); ?>
 				</button>
 			</span>
 			<!--

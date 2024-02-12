@@ -951,7 +951,11 @@
 				var request = {
 					action: 'updatePointInData',
 					postOrderID: api.getParam('post_id'),
-					data: {id:pointInId, address:pointInAddress}
+					data: {
+						id:pointInId,
+						address:pointInAddress,
+						nonce: WPApiShipAdmin.nonce
+					}
 				}
 				api.ajax(request);	
 				return;
@@ -1214,7 +1218,11 @@
 					var request = {
 						action: action,
 						postOrderID: api.getParam('post_id'),
-						data: {id:id, address:address},
+						data: {
+							id:id,
+							address:address,
+							nonce: WPApiShipAdmin.nonce
+						},
 						tariff: tariff
 					}
 					api.ajax(request);	
@@ -1772,7 +1780,8 @@
 				url: api.getAjaxUrl(),
 				data: {
 					action:api.getProcessAjax(), 
-					request:request
+					request:request,
+					nonce: WPApiShipAdmin.nonce
 				},
 				dataType: 'json' 
 			})

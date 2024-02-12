@@ -3,10 +3,10 @@
  *  Plugin Name: ApiShip
  *  Plugin URI: 
  *  Description: The plugin allows you to automatically calculate the shipping cost from various providers.
- *  Version: 1.6.0
+ *  Version: 1.6
  *  Author: ApiShip
  *  Author URI: https://apiship.ru/
- *  Text Domain: wp-apiship
+ *  Text Domain: apiship
  *  Domain Path: /languages
  *  License: GPLv3
  *  WC requires at least: 6.3
@@ -35,7 +35,7 @@ define('WP_APISHIP_ACTIVATOR_LIMIT', 25);
 define('WP_APISHIP_ACTIVATOR_WRITE_LOG', false);
 
 add_action('plugins_loaded', function() {
-	load_plugin_textdomain( 'wp-apiship', false, dirname( plugin_basename(__FILE__) ) . '/languages' );
+	load_plugin_textdomain( 'apiship', false, dirname( plugin_basename(__FILE__) ) . '/languages' );
 });
 
 if ( ! function_exists('is_plugin_active' ) ) {
@@ -43,6 +43,13 @@ if ( ! function_exists('is_plugin_active' ) ) {
 }
 
 if ( is_plugin_active('woocommerce/woocommerce.php') ) {
+
+	global $wp_filesystem;
+
+	if (!$wp_filesystem){
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+		WP_Filesystem();
+	} 
 
 	require 'includes/class-wp-apiship-options.php';
 	Options\WP_ApiShip_Options::get_instance();

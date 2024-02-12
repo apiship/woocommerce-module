@@ -63,8 +63,8 @@ if (!class_exists('WP_ApiShip_Cron')) :
 			set_time_limit(0);
 
 			$now = time();
-			$query_date = date('Y-m-d\TH:i:s', $this->last_query) . $this->timezone;
-
+			$query_date = (new DateTime($this->last_query))->format('Y-m-d\TH:i:s') . $this->timezone;
+			
 			$this->log("Дата: $query_date");
 
 			update_option('wp_apiship_status_api_query_date', $now);
@@ -156,7 +156,7 @@ if (!class_exists('WP_ApiShip_Cron')) :
 			$this->db_prefix = $wpdb->base_prefix;
 			
 			$this->integratorOrderKey = Options\WP_ApiShip_Options::INTEGRATOR_ORDER_KEY;
-			$this->mapping_options = WC_Admin_Settings::get_option(
+			$this->mapping_options = get_option(
 				'wp_apiship_mapping',
 				WP_ApiShip_Options::APISHIP_MAPPING_SETTINGS
 			);
@@ -198,13 +198,20 @@ if (!class_exists('WP_ApiShip_Cron')) :
 
 		protected function log($row)
 		{
+            global $wp_filesystem;
+
 			if (self::LOG_ENABLED === false) {
 				return;
 			}
 			if (!is_scalar($row)) {
 				$row = print_r($row, true);
 			}
-			file_put_contents(__DIR__ . '/.log', $row . PHP_EOL, FILE_APPEND);
+
+            $content = '';
+            if (file_exists(__DIR__ . '/.log')) {
+                $content = $wp_filesystem->get_contents(__DIR__ . '/.log');
+            }
+            $wp_filesystem->put_contents(__DIR__ . '/.log', $content . $row . PHP_EOL);
 		}
 	}
 	

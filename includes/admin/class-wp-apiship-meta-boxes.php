@@ -130,10 +130,8 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 				return $post_id;
 			}
 	 
-			$nonce = $_POST[ $this->wpapiship_box_nonce ];
-	 
 			// Verify that the nonce is valid.
-			if ( ! wp_verify_nonce( $nonce, $this->wpapiship_box_action ) ) {
+			if ( ! wp_verify_nonce($_POST[ $this->wpapiship_box_nonce ], $this->wpapiship_box_action ) ) {
 				return $post_id;
 			}
 	 
@@ -363,7 +361,7 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 		 */		
 		public function get_sender_title() {
 			
-			$title = esc_html__('Отправитель','wp-apiship');
+			$title = esc_html__('Отправитель','apiship');
 	
 			if ( $this->integrator_order_exists() ) {
 				
@@ -380,9 +378,9 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 				);
 
 				if ( $warehouse_address_use === 'no' ) {
-					$title .= ' (' . esc_html__('магазин','wp-apiship') . ')';
+					$title .= ' (' . esc_html__('магазин','apiship') . ')';
 				} else {
-					$title .= ' (' . esc_html__('склад','wp-apiship') . ')';
+					$title .= ' (' . esc_html__('склад','apiship') . ')';
 				}
 			}				
 			

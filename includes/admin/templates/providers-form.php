@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo esc_html( $value['title'] ); ?> <?php //echo '$tooltip_html'; // WPCS: XSS ok. ?></label>
 	</th>
 	<td class="forminp hidden" id="wp_apiship_providers_form">
-		<h2><?php esc_html_e('Выбранные службы доставки','wp-apiship'); ?></h2>
+		<h2><?php esc_html_e('Выбранные службы доставки','apiship'); ?></h2>
 		<div class="provider-cards selected"></div>
 	</td>
 </tr>

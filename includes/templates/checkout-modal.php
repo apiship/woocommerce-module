@@ -3,10 +3,10 @@
     <?php if ($point_display_mode === 3) : ?>
         <div id="wpapiship_map_options" class="wpapiship-map-options-container">
             <select id="wpapiship_provider_select" class="wpapiship-map-select" >
-                <!-- <option selected disabled><?= __('Служба доставки', 'wp-apiship') ?></option> -->
-                <option value="all-providers"><?= __('Все службы доставки', 'wp-apiship') ?></option>
+                <!-- <option selected disabled><?php echo __('Служба доставки', 'apiship') ?></option> -->
+                <option value="all-providers"><?php echo __('Все службы доставки', 'apiship') ?></option>
                 <?php foreach ($providers as $provider) : ?>
-                    <option value="<?= $provider['key'] ?>"><?= $provider['name'] ?></option>
+                    <option value="<?php echo $provider['key'] ?>"><?php echo $provider['name'] ?></option>
                 <?php endforeach; ?>
             </select>
         </div>

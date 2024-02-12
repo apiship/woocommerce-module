@@ -120,7 +120,7 @@ if ( ! class_exists('WP_ApiShip_Shipping') ) :
 				
 				if ( count( $this->rates ) == $this->get_rates_max() ) {	?>
 					<select size="1" name="wpapiship-shipping-methods" id="wpapiship-shipping-methods">
-						<option value="none"><?php esc_html_e('Выберите метод доставки', 'wp-apiship'); ?></option><?php
+						<option value="none"><?php esc_html_e('Выберите метод доставки', 'apiship'); ?></option><?php
 						foreach( $this->rates as $key=>$rate  ) {	?>
 							<option value="rate-<?php echo $key; ?>">
 								<?php echo $rate->meta_data['tariffProvider'] . ':' . wc_cart_totals_shipping_method_label( $rate ); ?>
@@ -141,7 +141,7 @@ if ( ! class_exists('WP_ApiShip_Shipping') ) :
 		 * @return array
 		 */		 
 		public function filter__settings_page( $sections ) {
-			$sections['apiship'] = esc_html__('ApiShip', 'wp-apiship');
+			$sections['apiship'] = esc_html__('ApiShip', 'apiship');
 			return $sections;
 		}
 		

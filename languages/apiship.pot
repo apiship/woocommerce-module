@@ -1,4 +1,4 @@
-# Copyright (C) 2022 WP ApiShip
+# Copyright (C) 2022 ApiShip
 # This file is distributed under the same license as the WP ApiShip package.
 msgid ""
 msgstr ""

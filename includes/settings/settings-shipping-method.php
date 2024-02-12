@@ -10,9 +10,9 @@
  
 $settings = array(
 	'title' => array(
-		'title'       => esc_html__('Название метода', 'wp-apiship'),
+		'title'       => esc_html__('Название метода', 'apiship'),
 		'type'        => 'text',
-		'default'     => esc_html__('ApiShip интегратор', 'wp-apiship'),
+		'default'     => esc_html__('ApiShip интегратор', 'apiship'),
 	),
 );	
 

@@ -9,6 +9,7 @@
  */
 namespace WP_ApiShip;
 
+use DateTime;
 use Throwable;
 
 // Exit if accessed directly.
@@ -164,14 +165,20 @@ if (!class_exists('WP_ApiShip\\WP_ApiShip_Activator')) :
          */
         private static function write_log(string $message): void
         {
+            global $wp_filesystem;
+
             if (self::WRITE_LOG === false) {
                 return;
             }
 
-            $datetime = date('d.m.Y H:i:s');
+            $datetime = (new DateTime())->format('d.m.Y H:i:s');
             $action = self::$current_action;
 
-            file_put_contents(self::LOG_PATH, "[$datetime] [$action] $message" . PHP_EOL, FILE_APPEND);
+            $content = '';
+            if (file_exists(self::LOG_PATH)) {
+                $content = $wp_filesystem->get_contents(self::LOG_PATH);
+            }
+            $wp_filesystem->put_contents(self::LOG_PATH, $content . "[$datetime] [$action] $message" . PHP_EOL);
         }
 
         /**
@@ -208,16 +215,18 @@ if (!class_exists('WP_ApiShip\\WP_ApiShip_Activator')) :
                     $order_item_ids = $wpdb->get_col(
                         $wpdb->prepare(
                             "SELECT DISTINCT oi.order_item_id
-                            FROM $meta_table AS oim
-                            INNER JOIN $table AS oi ON oim.order_item_id = oi.order_item_id
+                            FROM %s AS oim
+                            INNER JOIN %s AS oi ON oim.order_item_id = oi.order_item_id
                             WHERE oim.meta_key = %s
                             AND oim.meta_value = %s
                             LIMIT %d
                             OFFSET %d",
+                            $meta_table,
+                            $table,
                             $meta_key,
                             $meta_value,
-                            $limit,
-                            $offset
+                            intval($limit),
+                            intval($offset)
                         )
                     );
 

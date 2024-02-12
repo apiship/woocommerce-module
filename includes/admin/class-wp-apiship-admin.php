@@ -103,14 +103,18 @@ if ( ! class_exists('WP_ApiShip_Admin') ) :
 				return;
 			}
 
-			$data = json_decode(base64_decode($_REQUEST['wpapiship_action_data']));
+			if ( ! wp_verify_nonce( $_REQUEST['nonce'], 'ajax-nonce' ) ) {
+				die;
+			}
+			
+			$data = json_decode($_REQUEST['wpapiship_action_data']);
 
 			if (!empty($data->success)) {
 				$url = $data->url;
 				$class = 'notice-success success';
-				$defaultMessage = esc_html__('Запрос успешно обработан.', 'wp-apiship');
+				$defaultMessage = esc_html__('Запрос успешно обработан.', 'apiship');
 				foreach ($data->success as $url) {
-					$message = $defaultMessage . ' <a target="_blank" href="' . $url . '">' . esc_html__('Скачать файл', 'wp-apiship') . '</a>';
+					$message = $defaultMessage . ' <a target="_blank" href="' . $url . '">' . esc_html__('Скачать файл', 'apiship') . '</a>';
 					self::display_notice($message, $class);
 				}
 			}
@@ -206,7 +210,7 @@ if ( ! class_exists('WP_ApiShip_Admin') ) :
 					'headers' 	=> array( 
 						'Content-Type' => 'application/json' 
 					),
-					'body' 	  => json_encode($body),
+					'body' 	  => wp_json_encode($body),
 					'timeout' => 20000,
 				)
 			);
@@ -239,10 +243,10 @@ if ( ! class_exists('WP_ApiShip_Admin') ) :
 			}
 
 			$redirect_to = add_query_arg(array(
-				'wpapiship_action_data' => base64_encode(json_encode([
+				'wpapiship_action_data' => wp_json_encode([
 					'errors' => $errors,
 					'success' => $success
-				])),
+				]),
 			), $redirect_to);
 			
 			return $redirect_to;
@@ -254,8 +258,8 @@ if ( ! class_exists('WP_ApiShip_Admin') ) :
 		 * @since 1.0.0
 		 */
 		public function filter__add_actions($bulk_actions) {
-			$bulk_actions[ Options\WP_ApiShip_Options::PRINT_LABELS_ACTION ] = esc_html__('Печать наклеек','wp-apiship');
-			$bulk_actions[ Options\WP_ApiShip_Options::PRINT_WAYBILLS_ACTION ] = esc_html__('Печать акта приема-передачи','wp-apiship');	
+			$bulk_actions[ Options\WP_ApiShip_Options::PRINT_LABELS_ACTION ] = esc_html__('Печать наклеек','apiship');
+			$bulk_actions[ Options\WP_ApiShip_Options::PRINT_WAYBILLS_ACTION ] = esc_html__('Печать акта приема-передачи','apiship');	
 			return $bulk_actions;
 		}
 		
@@ -335,10 +339,10 @@ if ( ! class_exists('WP_ApiShip_Admin') ) :
 			
 			// Protect the folder from reading via URL
 			if ( ! file_exists( $logs_dir . '/.htaccess' ) ) {
-				file_put_contents( $logs_dir . '/.htaccess', 'deny from all' );
+				$GLOBALS['wp_filesystem']->put_contents($logs_dir . '/.htaccess', 'deny from all');
 			}
 			if ( ! file_exists( $logs_dir . '/index.php' ) ) {
-				file_put_contents( $logs_dir . '/index.php', '' );
+				$GLOBALS['wp_filesystem']->put_contents($logs_dir . '/index.php', '');
 			}			
 		}
 		

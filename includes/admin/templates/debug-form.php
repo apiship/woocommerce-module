@@ -15,8 +15,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 global $wpdb;
 
-$options_query = $wpdb->prepare( "SELECT * FROM $wpdb->options WHERE 1=1 AND option_name LIKE '%wp_apiship_%'", '*' );
-$options = $wpdb->get_results( $options_query, ARRAY_A );
+// $options = $wpdb->get_results($wpdb->prepare( "SELECT * FROM $wpdb->options WHERE 1=1 AND option_name LIKE '%wp_apiship_%'", '*' ), ARRAY_A);
+
+$options = [];
+
 ?>
 <tr valign="top">
 	<th scope="row" class="titledesc">
@@ -44,4 +46,3 @@ $options = $wpdb->get_results( $options_query, ARRAY_A );
 		</table>
 	</td>
 </tr>
-<?php

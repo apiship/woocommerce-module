@@ -369,7 +369,8 @@
 				url: mapApi.getAjaxUrl(),
 				data: {
 					action: mapApi.getProcessAjax(), 
-					request: request
+					request: request,
+					nonce: WPApiShipMap.nonce
 				},
 				dataType: 'json' 
 			})
