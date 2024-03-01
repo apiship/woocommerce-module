@@ -904,13 +904,18 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 		 *
 		 * @since 1.0.0
 		 */
-		public static function update_order_meta( $order = false, $meta = false, $value = null ) {
+		public static function update_order_meta( $order_id = false, $meta = false, $value = null ) {
 			
-			if ( ! $order || ! $meta ) {
+			if ( ! $order_id || ! $meta ) {
 				return false;
 			}
-			
-			return update_post_meta( $order, $meta, $value );
+				
+			if (WP_APISHIP_HPOS_IS_ENABLED === true) {
+				$order = wc_get_order( $order_id );
+				$order->update_meta_data( $meta, $value );
+			} else {
+				return update_post_meta( $order_id, $meta, $value );
+			}
 		}			
 
 		/**
@@ -918,19 +923,24 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 		 *
 		 * @since 1.0.0
 		 */	
-		public static function get_order_meta( $order = false, $meta = false, $default_value = null ) {
+		public static function get_order_meta( $order_id = false, $meta = false, $default_value = null ) {
 			
-			if ( ! $order || ! $meta ) {
+			if ( ! $order_id || ! $meta ) {
 				return null;
 			}
 			
-			$value = get_post_meta( $order, $meta, true );
+			if (WP_APISHIP_HPOS_IS_ENABLED === true) {
+				$order = wc_get_order( $order_id );
+				$value = $order->get_meta( $meta, true );
+			} else {
+				$value = get_post_meta( $order_id, $meta, true );
+			}
 			
 			if ( empty($value) ) {
 				return $default_value;
 			}
 			
-			return get_post_meta( $order, $meta, true );
+			return $value;
 		}	
 	
 		/**

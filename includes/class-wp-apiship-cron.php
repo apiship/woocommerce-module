@@ -185,8 +185,15 @@ if (!class_exists('WP_ApiShip_Cron')) :
 				$order = new WC_Order($orderId);
 
 				if ($order->has_status($wp_status) === false) {
-					update_post_meta($order->get_id(), WP_ApiShip_Options::PROVIDER_NUMBER_KEY, $providerNumber);
+					
+					if (WP_APISHIP_HPOS_IS_ENABLED === true) {
+						$order->update_meta_data( WP_ApiShip_Options::PROVIDER_NUMBER_KEY, $providerNumber );
+					} else {
+						update_post_meta($order->get_id(), WP_ApiShip_Options::PROVIDER_NUMBER_KEY, $providerNumber);
+					}
+
 					$order->update_status($wp_status);
+
 					$this->log("Обновление статуса заказа на $wp_status. orderId" . $order->get_id());
 				} else {
 					$this->log("Статус заказа уже изменён на $wp_status. orderId" . $order->get_id());

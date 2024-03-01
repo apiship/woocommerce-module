@@ -9,10 +9,17 @@
  */
 
 use WP_ApiShip\Options;
+use WP_ApiShip\WP_ApiShip_Core;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
+}
+
+if (WP_APISHIP_HPOS_IS_ENABLED === true) {
+	$order_id = WP_ApiShip_Core::get_order_from_page();
+} else {
+	$order_id = $post->ID;
 }
 
 $line_items_shipping = $this->order->get_items( 'shipping' );
@@ -263,7 +270,7 @@ if (isset($tariff->isDeliveryToPoint)) {
 				// 	echo ' checked';
 				// }
 
-				echo ' data-order-id="' . $post->ID . '"';
+				echo ' data-order-id="' . $order_id . '"';
 				echo ' data-cost="' . $price . '"';
 				echo ' data-meta-data="' . htmlspecialchars(wp_json_encode($method['meta_data'])) . '"';
 				echo ' data-method-title="' . $method_title . '"';

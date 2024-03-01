@@ -62,34 +62,6 @@ if ( ! class_exists('WP_ApiShip_Admin') ) :
 				$this,
 				'on__bulk_actions_notices'
 			) );
-
-			// $ajax_callback = function() {
-			// 	$method_id = $_POST['method_id'];
-			// 	$order_id = $_POST['order_id'];
-			
-			// 	// Сохраняем выбранный метод доставки в метаданных заказа
-			// 	update_post_meta($order_id, '_custom_shipping_method', $method_id);
-			
-			// 	// Получите объект метода доставки
-			// 	$shipping_method = WC()->shipping->get_shipping_for_package(array('chosen_method' => $method_id));
-			
-			// 	// Проверяем, существует ли объект метода доставки и у него есть метод calculate_shipping
-			// 	if ($shipping_method && method_exists($shipping_method, 'calculate_shipping')) {
-			// 		// Рассчитайте стоимость доставки с использованием объекта метода доставки
-			// 		$order = wc_get_order($order_id);
-			// 		$shipping_cost = $shipping_method->calculate_shipping($order);
-			// 	} else {
-			// 		// Если метод calculate_shipping не доступен, установите стоимость доставки в ноль или другое значение по умолчанию
-			// 		$shipping_cost = 0.00;
-			// 	}
-			
-			// 	echo $shipping_cost;
-			// 	wp_die();
-			// };
-			
-			// add_action('wp_ajax_calculate_custom_shipping_cost', $ajax_callback);
-			// add_action('wp_ajax_nopriv_calculate_custom_shipping_cost', $ajax_callback);
-
 		}
 		
 		/**

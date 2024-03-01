@@ -200,7 +200,7 @@ if (!class_exists('WP_ApiShip\\WP_ApiShip_Activator')) :
                     $is_done        = self::$is_done;
                     
                     self::write_log("Start. OFFSET $offset LIMIT $limit");
-                  
+                
                     if ($action === 'activation') {
                         $from_status    = '__apiship_shipping';
                         $to_status      = 'shipping';
@@ -215,14 +215,12 @@ if (!class_exists('WP_ApiShip\\WP_ApiShip_Activator')) :
                     $order_item_ids = $wpdb->get_col(
                         $wpdb->prepare(
                             "SELECT DISTINCT oi.order_item_id
-                            FROM %s AS oim
-                            INNER JOIN %s AS oi ON oim.order_item_id = oi.order_item_id
+                            FROM $meta_table AS oim
+                            INNER JOIN $table AS oi ON oim.order_item_id = oi.order_item_id
                             WHERE oim.meta_key = %s
                             AND oim.meta_value = %s
                             LIMIT %d
                             OFFSET %d",
-                            $meta_table,
-                            $table,
                             $meta_key,
                             $meta_value,
                             intval($limit),

@@ -14,6 +14,7 @@ use WP_ApiShip\Options,
 	WP_ApiShip;
 use WP_ApiShip\WP_ApiShip_Core;
 use WP_ApiShip_Shipping_Method;
+use WP_Post;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -158,8 +159,10 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 				Options\WP_ApiShip_Options::WC_ORDER_POST_TYPE
 			);
 	 
-			if ( ! in_array( $post_type, $post_types ) ) {
-				return;
+			if (WP_APISHIP_HPOS_IS_ENABLED === false) {
+				if ( ! in_array( $post_type, $post_types ) ) {
+					return;
+				}
 			}
 
 			$this->order = $this->wc_get_order($post);	
@@ -204,14 +207,18 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 			unset( $formatted_meta_data );
 			unset( $meta_data );
 
+			$screen = class_exists( '\Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController' ) && wc_get_container()->get( \Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController::class )->custom_orders_table_usage_is_enabled()
+			? wc_get_page_screen_id( 'shop-order' )
+			: 'shop_order';
+		
 			add_meta_box(
-                'wpapiship-order-metabox',
+				'wpapiship-order-metabox',
                 esc_html__( 'ApiShip', 'wp-apiship' ),
                 array( $this, 'render_content' ),
-                Options\WP_ApiShip_Options::WC_ORDER_POST_TYPE,
-                'advanced',
-                'high'
-            );
+				$screen,
+				'side',
+				'high'
+			);
 		}
 					
 		/**
@@ -295,7 +302,9 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 		 *
 		 * @param WP_Post $post The post object.
 		 */
-		public function render_content( $post ) {
+		public function render_content( $post_or_order_object ) {
+
+			$order = ( $post_or_order_object instanceof WP_Post ) ? wc_get_order( $post_or_order_object->ID ) : $post_or_order_object;
 
 			/**
 			 * Add an nonce field so we can check for it later.
@@ -323,11 +332,11 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 		 *
 		 * @param WP_Post $post The post object.
 		 */		
-		protected function wc_get_order($post) {
+		protected function wc_get_order($post_or_order_object) {
 			if ( is_null( $this->order ) ) {
-				$this->order = wc_get_order( $post->ID );
+				$this->order = ( $post_or_order_object instanceof WP_Post ) ? wc_get_order( $post_or_order_object->ID ) : $post_or_order_object;
 			}
-			return $this->order;	
+			return $this->order;
 		}
 
 		/**

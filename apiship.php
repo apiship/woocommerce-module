@@ -51,6 +51,26 @@ if ( is_plugin_active('woocommerce/woocommerce.php') ) {
 		WP_Filesystem();
 	} 
 
+	add_action( 'before_woocommerce_init', function() {
+		if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+		}
+
+		$hsop_is_enabled = false;
+
+		if (\Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled() ) {
+			$hsop_is_enabled = true;
+		}
+
+		if ($hsop_is_enabled !== WP_APISHIP_HPOS_IS_ENABLED) {
+			update_option('wpapiship_hsop_is_enabled', $hsop_is_enabled);
+		}
+	} );
+	
+	$hsop_is_enabled = boolval(get_option('wpapiship_hsop_is_enabled', 0));
+
+	define('WP_APISHIP_HPOS_IS_ENABLED', $hsop_is_enabled);
+
 	require 'includes/class-wp-apiship-options.php';
 	Options\WP_ApiShip_Options::get_instance();
 	

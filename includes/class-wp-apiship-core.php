@@ -8,6 +8,7 @@
  */
 namespace WP_ApiShip;
 
+use Automattic\WooCommerce\Utilities\OrderUtil;
 use stdClass;
 use Throwable;
 use WP_ApiShip\HTTP\WP_ApiShip_HTTP;
@@ -522,12 +523,17 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 					'address' => $obj->address,
 					'id' 	  => $obj->id,
 				);
-				
-				update_post_meta( 
-					$order_id,
-					Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
-					$point_out
-				);
+
+				if (WP_APISHIP_HPOS_IS_ENABLED === true) {
+					$order = wc_get_order( $order_id );
+					$order->update_meta_data( Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META, $point_out );
+				} else {
+					update_post_meta( 
+						$order_id,
+						Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
+						$point_out
+					);
+				}
 				
 			}
 			
@@ -870,16 +876,21 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				
 					if ( ! empty($request['postOrderID']) && (int)  $request['postOrderID'] > 0 && is_array($request['data']) ) {
 					
-						if ( update_post_meta( 
+						if (WP_APISHIP_HPOS_IS_ENABLED === true) {
+							$order = wc_get_order( $request['postOrderID'] );
+							$order->update_meta_data( Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META, $request['data'] );
+						} else {
+							if ( update_post_meta( 
 								$request['postOrderID'],
 								Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
 								$request['data']
 							)
-						) {
-							// Do nothing.
-						} else {
-							$response['success'] = 'error';
-						}				
+							) {
+								// Do nothing.
+							} else {
+								$response['success'] = 'error';
+							}			
+						}		
 					} else {
 						$response['success'] = 'error';
 					}				
@@ -889,16 +900,21 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 					if ( ! empty($request['postOrderID']) && (int)  $request['postOrderID'] > 0 ) {
 					
-						if ( update_post_meta( 
-								$request['postOrderID'],
-								Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
-								''
-							)
-						) {
-							// Do nothing.
+						if (WP_APISHIP_HPOS_IS_ENABLED === true) {
+							$order = wc_get_order( $request['postOrderID'] );
+							$order->update_meta_data( Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META, '' );
 						} else {
-							$response['success'] = 'error';
-						}				
+							if ( update_post_meta( 
+									$request['postOrderID'],
+									Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
+									''
+								)
+							) {
+								// Do nothing.
+							} else {
+								$response['success'] = 'error';
+							}			
+						}	
 					} else {
 						$response['success'] = 'error';
 					}				
@@ -907,17 +923,21 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				case 'deletePointOutData':
 					
 					if ( ! empty($request['postOrderID']) && (int)  $request['postOrderID'] > 0 ) {
-					
-						if ( update_post_meta( 
-								$request['postOrderID'],
-								Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
-								''
-							)
-						) {
-							// Do nothing.
+						if (WP_APISHIP_HPOS_IS_ENABLED === true) {
+							$order = wc_get_order( $request['postOrderID'] );
+							$order->update_meta_data( Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META, '' );
 						} else {
-							$response['success'] = 'error';
-						}				
+							if ( update_post_meta( 
+									$request['postOrderID'],
+									Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
+									''
+								)
+							) {
+								// Do nothing.
+							} else {
+								$response['success'] = 'error';
+							}			
+						}	
 					} else {
 						$response['success'] = 'error';
 					}
@@ -984,11 +1004,15 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 						$order->save();
 
-						update_post_meta( 
-							$order_id,
-							Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
-							$pointData
-						);
+						if (WP_APISHIP_HPOS_IS_ENABLED === true) {
+							$order->update_meta_data( Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META, $pointData );
+						} else {
+							update_post_meta( 
+								$order_id,
+								Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
+								$pointData
+							);
+						}
 					} else {
 						$response['success'] = 'error';
 					}
@@ -1029,17 +1053,22 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 						$order->save();
 
-						update_post_meta( 
-							$order_id,
-							Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
-							''
-						);
-
-						update_post_meta( 
-							$order_id,
-							Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
-							''
-						);
+						if (WP_APISHIP_HPOS_IS_ENABLED === true) {
+							$order->update_meta_data( Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META, '' );
+							$order->update_meta_data( Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META, '' );
+						} else {
+							update_post_meta( 
+								$order_id,
+								Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
+								''
+							);
+	
+							update_post_meta( 
+								$order_id,
+								Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
+								''
+							);
+						}
 					} else {
 						$response['success'] = 'error';
 					}
@@ -2065,10 +2094,10 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		 */	
 		public static function on__admin_styles( $hook ) {
 			
-			global $post;
-			
-			if ( 'post.php' === $hook ) {
+			if ( WP_APISHIP_HPOS_IS_ENABLED === false and 'post.php' === $hook ) {
 				
+				global $post;
+			
 				if ( 
 					isset($post->post_type) && 
 					Options\WP_ApiShip_Options::WC_ORDER_POST_TYPE == $post->post_type )
@@ -2086,6 +2115,22 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 					return;
 				}						
 						
+			} else if (WP_APISHIP_HPOS_IS_ENABLED === true and self::get_order_from_page() !== false ) {
+				
+				$order_id = self::get_order_from_page();
+
+				if ($order_id === false) {
+					return;
+				}
+
+				if ( is_null( self::$wc_order ) ) {
+					self::$wc_order = wc_get_order( $order_id );
+				}
+
+				if ( ! self::is_shipping_integrator(self::$wc_order) ) {
+					return;
+				}	
+
 			} else {
 			
 				/**
@@ -2186,13 +2231,27 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		 * @since 1.0.0
 		 */
 		public static function on__shop_order_admin_scripts( $hook ) {
+						
+			global $pagenow;
+
+			$is_order = false;
+
+			if (WP_APISHIP_HPOS_IS_ENABLED === true) {
+				$order_id = self::get_order_from_page();
+				$is_order = self::is_shop_order($order_id);
+			} else {
+				global $post;
+	
+				if (isset($post->post_type) && Options\WP_ApiShip_Options::WC_ORDER_POST_TYPE == $post->post_type ) {
+					$is_order = true;
+				}
+				$order_id = $post->ID;
+			}
 			
-			global $post, $pagenow;
-			
-			if ( isset($post->post_type) && Options\WP_ApiShip_Options::WC_ORDER_POST_TYPE == $post->post_type ) {
+			if ( $is_order === true ) {
 
 				if ( is_null( self::$wc_order ) ) {
-					self::$wc_order = wc_get_order( $post->ID );
+					self::$wc_order = wc_get_order( $order_id );
 				}
 
 				if ( ! self::is_shipping_integrator(self::$wc_order) ) {
@@ -2234,7 +2293,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 					'pagenow' 		 	  	   => $pagenow,
 					'providersSectionUrl'  	   => $providersSectionUrl,
 					'post_type' 		  	   => Options\WP_ApiShip_Options::WC_ORDER_POST_TYPE,
-					'post_id'			  	   => $post->ID,
+					'post_id'			  	   => $order_id,
 					'shippingMethodMeta'  	   => self::get_shipping_method_meta(self::$wc_order),
 					'shippingOrderItemId' 	   => self::$shipping_order_item_id ? self::$shipping_order_item_id : null,
 					'INTEGRATOR_ORDER_KEY' 	   => Options\WP_ApiShip_Options::INTEGRATOR_ORDER_KEY,
@@ -2722,19 +2781,33 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		 */
 		public static function is_shipping_integrator($wc_order = null) {
 			
-			global $post;
-			
+			if (WP_APISHIP_HPOS_IS_ENABLED === true) {
+				if ( is_null($wc_order) || ! $wc_order ) {
+					$order_id = self::get_order_from_page();
+					if ($order_id === false) {
+						return false;
+					}
+				} else {
+					$order_id = $wc_order->get_id();
+				}
+				$post_type = \Automattic\WooCommerce\Utilities\OrderUtil::get_order_type( $order_id );
+			} else {
+				global $post;
+				$order_id = $post->ID;
+				$post_type = $post->post_type;
+			}
+
 			if ( is_null($wc_order) || ! $wc_order ) {
 				
-				if ( ! isset( $post->ID ) ) {
+				if ( ! isset( $order_id ) ) {
 					return false;
 				}
 
-				if ( $post->post_type !== Options\WP_ApiShip_Options::WC_ORDER_POST_TYPE ) {
+				if ( $post_type !== Options\WP_ApiShip_Options::WC_ORDER_POST_TYPE ) {
 					return false;
 				}
 				
-				$wc_order = wc_get_order( $post->ID );
+				$wc_order = wc_get_order( $order_id );
 			}
 
 			$meta = self::get_shipping_method_meta($wc_order);
@@ -2750,6 +2823,19 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				return true;
 			}
 			
+			return false;
+		}
+
+		public static function is_shop_order($order_id)
+		{
+			return \Automattic\WooCommerce\Utilities\OrderUtil::is_order( $order_id, wc_get_order_types() );
+		}
+
+		public static function get_order_from_page()
+		{
+			if (isset($_GET['page']) and $_GET['page'] === 'wc-orders' and isset($_GET['action']) and $_GET['action'] === 'edit' and isset($_GET['id'])) {
+				return intval($_GET['id']);
+			}
 			return false;
 		}
 
@@ -2816,7 +2902,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		protected static function set_shipping_method_meta($wc_order) {
 
 			$shipping_methods = $wc_order->get_shipping_methods();
-				
+
 			foreach( $shipping_methods as $method ) {
 				/**
 				 * @see woocommerce\includes\class-wc-order-item.php
@@ -2825,9 +2911,11 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 			}
 			
 			self::$shipping_method_meta = array();
-			foreach ( $meta_data as $_meta_id=>$_meta ) {
-				self::$shipping_method_meta[ $_meta->key ] = $_meta;
-			}			
+			if (isset($meta_data) and is_array($meta_data)) {
+				foreach ( $meta_data as $_meta_id=>$_meta ) {
+					self::$shipping_method_meta[ $_meta->key ] = $_meta;
+				}		
+			}	
 		}
 		
 		/**
