@@ -154,10 +154,16 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 		public function on__add_meta_boxes( $post_type, $post ) {
 	
 			/**
+			 * Get correct screen ID for HPOS compatibility.
+			 */
+			$order_screen = \WP_ApiShip\WP_ApiShip_HPOS_Compatibility::get_order_screen_id();
+			
+			/**
 			 * Limit meta box to certain post types.
 			 */
 			$post_types = array( 
-				Options\WP_ApiShip_Options::WC_ORDER_POST_TYPE
+				Options\WP_ApiShip_Options::WC_ORDER_POST_TYPE,
+				$order_screen
 			);
 	 
 			if ( ! in_array( $post_type, $post_types ) ) {
@@ -210,7 +216,7 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
                 'wpapiship-order-metabox',
                 esc_html__( 'ApiShip', 'wp-apiship' ),
                 array( $this, 'render_content' ),
-                Options\WP_ApiShip_Options::WC_ORDER_POST_TYPE,
+                $order_screen,
                 'advanced',
                 'high'
             );

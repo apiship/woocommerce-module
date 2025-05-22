@@ -770,6 +770,11 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		 */
 		public static function on__process_ajax() {
 			
+			// Verify nonce for security
+			if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'wp_apiship_admin_ajax' ) ) {
+				wp_die( esc_html__( 'Security check failed', 'wp-apiship' ) );
+			}
+			
 			$request = $_POST['request'];
 
 			$response = array();	
@@ -2297,6 +2302,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						'version' 		=> WP_APISHIP_VERSION,
 						'process_ajax' 	=> self::get_class_name() . '_process_ajax',
 						'ajaxurl' 		=> admin_url('admin-ajax.php'),
+						'nonce'			=> wp_create_nonce('wp_apiship_admin_ajax'),
 						'i18n' 			=> $i18n,
 						'data' 			=> $data,
 					)

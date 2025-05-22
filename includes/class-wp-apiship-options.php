@@ -910,7 +910,7 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 				return false;
 			}
 			
-			return update_post_meta( $order, $meta, $value );
+			return \WP_ApiShip\WP_ApiShip_HPOS_Compatibility::update_order_meta( $order, $meta, $value );
 		}			
 
 		/**
@@ -924,13 +924,7 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 				return null;
 			}
 			
-			$value = get_post_meta( $order, $meta, true );
-			
-			if ( empty($value) ) {
-				return $default_value;
-			}
-			
-			return get_post_meta( $order, $meta, true );
+			return \WP_ApiShip\WP_ApiShip_HPOS_Compatibility::get_order_meta( $order, $meta, true, $default_value );
 		}	
 	
 		/**
@@ -1158,6 +1152,42 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 				return $list[$provider_key]['name'];
 			}
 			return $provider_key;
+		}
+
+		/**
+		 * Get bulk actions hook name for HPOS compatibility.
+		 *
+		 * @since 1.7.0
+		 */
+		public static function get_bulk_actions_hook() {
+			return \WP_ApiShip\WP_ApiShip_HPOS_Compatibility::get_bulk_actions_hook();
+		}
+
+		/**
+		 * Get handle bulk actions hook name for HPOS compatibility.
+		 *
+		 * @since 1.7.0
+		 */
+		public static function get_handle_bulk_actions_hook() {
+			return \WP_ApiShip\WP_ApiShip_HPOS_Compatibility::get_handle_bulk_actions_hook();
+		}
+
+		/**
+		 * Check if current screen is order edit screen for HPOS compatibility.
+		 *
+		 * @since 1.7.0
+		 */
+		public static function is_order_edit_screen() {
+			return \WP_ApiShip\WP_ApiShip_HPOS_Compatibility::is_order_edit_screen();
+		}
+
+		/**
+		 * Check if current screen is orders list screen for HPOS compatibility.
+		 *
+		 * @since 1.7.0
+		 */
+		public static function is_orders_list_screen() {
+			return \WP_ApiShip\WP_ApiShip_HPOS_Compatibility::is_orders_list_screen();
 		}
 	}
 	

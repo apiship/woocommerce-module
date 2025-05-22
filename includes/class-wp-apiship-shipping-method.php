@@ -128,7 +128,7 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 				$timeout = $timeout / 1000;
 			}
 
-			$request_hash = 'wp_apiship_cache_' . md5( json_encode($request) );			
+			$request_hash = 'wp_apiship_cache_' . md5( wp_json_encode($request) );			
 
 			/**
 			 * Init $response.
@@ -161,7 +161,7 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 						'headers' => array(
 							'Content-Type' => 'application/json'
 						),
-						'body' 	  => json_encode($request),
+						'body' 	  => wp_json_encode($request),
 						'timeout' => $timeout,
 					)
 				);
@@ -368,10 +368,10 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 					'daysMax' 			=> $tariff->daysMax,
 					'integrator' 		=> Options\WP_ApiShip_Options::INTEGRATOR,
 					'integratorOrder'	=> Options\WP_ApiShip_Options::INTEGRATOR_ORDER_INIT_VALUE,
-					'tariffList'		=> json_encode($tariffList),
+					'tariffList'		=> wp_json_encode($tariffList),
 					'tariff' 			=> $this->get_tariff_data($tariff),
 					'methodId' 			=> $tariff->methodId,
-					'places'			=> json_encode($request['places']),
+					'places'			=> wp_json_encode($request['places']),
 					'pointInId'			=> $tariff->pointInId,
 					#'radioHidden' 	 	=> false, // @see Options\WP_ApiShip_Options::is_dropdown_selector()
 				);
@@ -540,7 +540,7 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 		 * @since 1.0.0
 		 */
 		protected function get_tariff_data($tariff) {
-			return json_encode($tariff);
+			return wp_json_encode($tariff);
 		}
 		
 		/**

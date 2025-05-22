@@ -38,19 +38,19 @@ if ( ! class_exists('WP_ApiShip_Admin') ) :
 			) );
 
 			/**
-			 * Add `Print labels` menu item.
+			 * Add `Print labels` menu item with HPOS compatibility.
 			 *
 			 * @see wp-admin\includes\class-wp-list-table.php
 			 */
-			add_filter( 'bulk_actions-edit-' . Options\WP_ApiShip_Options::WC_ORDER_POST_TYPE, array(
+			add_filter( Options\WP_ApiShip_Options::get_bulk_actions_hook(), array(
 				$this,
 				'filter__add_actions'
 			), 10999 );
 
 			/**
-			 * Handle `Print labels` action.
+			 * Handle `Print labels` action with HPOS compatibility.
 			 */
-			add_filter( 'handle_bulk_actions-edit-' . Options\WP_ApiShip_Options::WC_ORDER_POST_TYPE, array(
+			add_filter( Options\WP_ApiShip_Options::get_handle_bulk_actions_hook(), array(
 				$this,
 				'filter__handle_actions'
 			), 10999, 3 );			
