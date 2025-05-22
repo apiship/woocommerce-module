@@ -3,14 +3,14 @@
  *  Plugin Name: WP ApiShip for WooCommerce
  *  Plugin URI: 
  *  Description: The plugin allows you to automatically calculate the shipping cost from various providers.
- *  Version: 1.6.0
+ *  Version: 1.7.0
  *  Author: 
  *  Author URI: https://apiship.ru/
  *  Text Domain: wp-apiship
  *  Domain Path: /languages
  *  License: GPLv3
- *  WC requires at least: 6.3
- *  WC tested up to: 6.5
+ *  WC requires at least: 8.0
+ *  WC tested up to: 9.0
  */
 
 namespace WP_ApiShip;
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Plugin constants.
 
-define('WP_APISHIP_VERSION', '1.6.0');
+define('WP_APISHIP_VERSION', '1.7.0');
 
 if (!defined('WP_APISHIP_SHIPPING_CACHE')) {
 	define('WP_APISHIP_SHIPPING_CACHE', false);
@@ -38,11 +38,22 @@ add_action('plugins_loaded', function() {
 	load_plugin_textdomain( 'wp-apiship', false, dirname( plugin_basename(__FILE__) ) . '/languages' );
 });
 
+// Declare compatibility with WooCommerce High-Performance Order Storage (HPOS)
+add_action('before_woocommerce_init', function() {
+	if (class_exists('\Automattic\WooCommerce\Utilities\FeaturesUtil')) {
+		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables', __FILE__, true);
+	}
+});
+
 if ( ! function_exists('is_plugin_active' ) ) {
 	include_once(ABSPATH . 'wp-admin/includes/plugin.php');
 }
 
 if ( is_plugin_active('woocommerce/woocommerce.php') ) {
+
+	require 'includes/class-wp-apiship-hpos-compatibility.php';
+	require 'includes/class-wp-apiship-hpos-migration.php';
+	require 'includes/class-wp-apiship-hpos-test.php';
 
 	require 'includes/class-wp-apiship-options.php';
 	Options\WP_ApiShip_Options::get_instance();
@@ -58,6 +69,9 @@ if ( is_plugin_active('woocommerce/woocommerce.php') ) {
 	
 	require 'includes/class-wp-apiship-cron.php';
 	new WP_ApiShip_Cron();
+
+	// Initialize HPOS migration
+	WP_ApiShip\WP_ApiShip_HPOS_Migration::init();
 
 	/** Include activator core. */
 	require_once __DIR__ . '/includes/class-wp-apiship-activator.php';
