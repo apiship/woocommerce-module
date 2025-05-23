@@ -265,7 +265,7 @@ if (isset($tariff->isDeliveryToPoint)) {
 
 				echo ' data-order-id="' . $post->ID . '"';
 				echo ' data-cost="' . $price . '"';
-				echo ' data-meta-data="' . htmlspecialchars(json_encode($method['meta_data'])) . '"';
+				echo ' data-meta-data="' . htmlspecialchars(wp_json_encode($method['meta_data'])) . '"';
 				echo ' data-method-title="' . $method_title . '"';
 
 				echo '>';

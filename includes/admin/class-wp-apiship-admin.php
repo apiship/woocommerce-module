@@ -206,7 +206,7 @@ if ( ! class_exists('WP_ApiShip_Admin') ) :
 					'headers' 	=> array( 
 						'Content-Type' => 'application/json' 
 					),
-					'body' 	  => json_encode($body),
+					'body' 	  => wp_json_encode($body),
 					'timeout' => 20000,
 				)
 			);
@@ -239,7 +239,7 @@ if ( ! class_exists('WP_ApiShip_Admin') ) :
 			}
 
 			$redirect_to = add_query_arg(array(
-				'wpapiship_action_data' => base64_encode(json_encode([
+				'wpapiship_action_data' => base64_encode(wp_json_encode([
 					'errors' => $errors,
 					'success' => $success
 				])),

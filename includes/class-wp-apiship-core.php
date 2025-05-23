@@ -499,7 +499,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		 */
 		protected static function saveSelectedPointData(object $data)
 		{
-			setcookie('wp_apiship_selected_point_out_data', json_encode($data), time() + 3600 * 24, '/');
+			setcookie('wp_apiship_selected_point_out_data', wp_json_encode($data), time() + 3600 * 24, '/');
 		}
 
 		/**
@@ -852,7 +852,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 							) 
 						);
 						
-						$response['response'][$point_type]['html'] = json_encode($html);					
+						$response['response'][$point_type]['html'] = wp_json_encode($html);				
 						
 					} else {	
 						$response['success'] = 'error';
@@ -1175,7 +1175,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 								'rows' => $rows
 							];
 
-							$response['response']['body'] = json_encode($mergedBody);
+							$response['response']['body'] = wp_json_encode($mergedBody);
 
 						} else {
 
@@ -1187,7 +1187,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 								$body->rows[$key] = $row;
 							}
 
-							$response['response']['body'] = json_encode($body);
+							$response['response']['body'] = wp_json_encode($body);
 						}
 					} catch (Throwable $exception) {
 						$response['success'] = 'error';
@@ -1273,7 +1273,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 								)
 							);
 							
-							$response['response']['customHtml'] = json_encode($html);
+							$response['response']['customHtml'] = wp_json_encode($html);
 
 						} else {
 							$response['success'] = 'error';
@@ -1347,7 +1347,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 							'limit' => 99,
 							'total' => count($rows)
 						];
-						$response['response']['body'] = json_encode($body);
+						$response['response']['body'] = wp_json_encode($body);
 					} else {
 						$response['success'] = 'error';
 					}	
@@ -1435,7 +1435,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 									'headers' 	=> array( 
 										'Content-Type' => 'application/json' 
 									),
-									'body' 	  => json_encode($new_connection),
+									'body' 	  => wp_json_encode($new_connection),
 									'timeout' => 20000,
 								)
 							);
@@ -1634,7 +1634,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 								'headers' 	=> array( 
 									'Content-Type' => 'application/json' 
 								),
-								'body' 	  => json_encode($body_request),
+								'body' 	  => wp_json_encode($body_request),
 								'timeout' => 20000,
 							)							
 						);
@@ -1661,7 +1661,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 							'headers' 	=> array( 
 								'Content-Type' => 'application/json' 
 							),
-							'body' 	  => json_encode($request),
+							'body' 	  => wp_json_encode($request),
 							'timeout' => 20000,
 						)
 					);
@@ -1685,7 +1685,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 								'headers' 	=> array( 
 									'Content-Type' => 'application/json' 
 								),
-								'body' => json_encode($body_request)
+								'body' => wp_json_encode($body_request)
 							)
 						);
 					
@@ -1719,7 +1719,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 								'headers' 	=> array( 
 									'Content-Type' => 'application/json' 
 								),
-								'body' => json_encode($body_request),
+								'body' => wp_json_encode($body_request),
 							)
 						);
 					
