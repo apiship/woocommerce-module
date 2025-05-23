@@ -5,6 +5,10 @@
 .claude/
 CLAUDE.md
 
+# Игнорировать тестовые Docker файлы
+Dockerfile.test
+run-tests.sh
+
 # Игнорировать логи ошибок
 *.log
 
