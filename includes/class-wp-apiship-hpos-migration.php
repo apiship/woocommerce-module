@@ -167,9 +167,7 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Migration' ) ) :
 		 * @return array Migration result.
 		 */
 		public static function migrate_batch( $offset = 0 ) {
-			global $wpdb;
-
-			// Get orders with ApiShip meta data from post meta
+			// Get orders with ApiShip meta data from legacy post meta
 			$meta_keys = array(
 				Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
 				Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
@@ -179,20 +177,32 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Migration' ) ) :
 				Options\WP_ApiShip_Options::TARIFF_DATA_KEY,
 			);
 
-			$meta_keys_placeholder = implode( ',', array_fill( 0, count( $meta_keys ), '%s' ) );
-
-			$query = $wpdb->prepare(
-				"SELECT DISTINCT p.ID 
-				FROM {$wpdb->posts} p 
-				INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id 
-				WHERE p.post_type = 'shop_order' 
-				AND pm.meta_key IN ({$meta_keys_placeholder})
-				ORDER BY p.ID ASC 
-				LIMIT %d OFFSET %d",
-				array_merge( $meta_keys, array( self::BATCH_SIZE, $offset ) )
+			// Build meta query for WP_Query to find orders with ApiShip data
+			$meta_query = array(
+				'relation' => 'OR'
 			);
 
-			$order_ids = $wpdb->get_col( $query );
+			foreach ( $meta_keys as $meta_key ) {
+				$meta_query[] = array(
+					'key' => $meta_key,
+					'compare' => 'EXISTS'
+				);
+			}
+
+			// Use WP_Query to find orders (this works with legacy system during migration)
+			$query_args = array(
+				'post_type' => 'shop_order',
+				'post_status' => array_keys( wc_get_order_statuses() ),
+				'meta_query' => $meta_query,
+				'fields' => 'ids',
+				'posts_per_page' => self::BATCH_SIZE,
+				'offset' => $offset,
+				'orderby' => 'ID',
+				'order' => 'ASC'
+			);
+
+			$query = new \WP_Query( $query_args );
+			$order_ids = $query->posts;
 
 			if ( empty( $order_ids ) ) {
 				// Migration completed
