@@ -523,7 +523,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 					'id' 	  => $obj->id,
 				);
 				
-				update_post_meta( 
+				Options\WP_ApiShip_Options::update_order_meta( 
 					$order_id,
 					Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
 					$point_out
@@ -867,7 +867,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				
 					if ( ! empty($request['postOrderID']) && (int)  $request['postOrderID'] > 0 && is_array($request['data']) ) {
 					
-						if ( update_post_meta( 
+						if ( Options\WP_ApiShip_Options::update_order_meta( 
 								$request['postOrderID'],
 								Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
 								$request['data']
@@ -886,7 +886,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 					if ( ! empty($request['postOrderID']) && (int)  $request['postOrderID'] > 0 ) {
 					
-						if ( update_post_meta( 
+						if ( Options\WP_ApiShip_Options::update_order_meta( 
 								$request['postOrderID'],
 								Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
 								''
@@ -905,7 +905,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 					
 					if ( ! empty($request['postOrderID']) && (int)  $request['postOrderID'] > 0 ) {
 					
-						if ( update_post_meta( 
+						if ( Options\WP_ApiShip_Options::update_order_meta( 
 								$request['postOrderID'],
 								Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
 								''
@@ -981,7 +981,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 						$order->save();
 
-						update_post_meta( 
+						Options\WP_ApiShip_Options::update_order_meta( 
 							$order_id,
 							Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
 							$pointData
@@ -1026,13 +1026,13 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 						$order->save();
 
-						update_post_meta( 
+						Options\WP_ApiShip_Options::update_order_meta( 
 							$order_id,
 							Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
 							''
 						);
 
-						update_post_meta( 
+						Options\WP_ApiShip_Options::update_order_meta( 
 							$order_id,
 							Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
 							''
