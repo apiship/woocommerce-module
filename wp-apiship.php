@@ -71,7 +71,7 @@ if ( is_plugin_active('woocommerce/woocommerce.php') ) {
 	new WP_ApiShip_Cron();
 
 	// Initialize HPOS migration
-	WP_ApiShip\WP_ApiShip_HPOS_Migration::init();
+	WP_ApiShip_HPOS_Migration::init();
 
 	/** Include activator core. */
 	require_once __DIR__ . '/includes/class-wp-apiship-activator.php';

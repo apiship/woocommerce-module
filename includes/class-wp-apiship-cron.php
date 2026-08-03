@@ -148,6 +148,24 @@ if (!class_exists('WP_ApiShip_Cron')) :
 			}
 		}
 
+		/**
+		 * Опция wp_apiship_status_api_query_date могла быть записана старой версией
+		 * плагина в виде строки даты, а новыми версиями — как unix timestamp.
+		 */
+		protected static function normalize_timestamp($value)
+		{
+			if (is_numeric($value)) {
+				return (int) $value;
+			}
+			if (is_string($value) && $value !== '') {
+				$parsed = strtotime($value);
+				if ($parsed !== false) {
+					return $parsed;
+				}
+			}
+			return time() - 3600 * 24;
+		}
+
 		protected function set_params()
 		{
 			global $wpdb;
@@ -161,7 +179,9 @@ if (!class_exists('WP_ApiShip_Cron')) :
 				WP_ApiShip_Options::APISHIP_MAPPING_SETTINGS
 			);
 
-			$this->last_query = get_option('wp_apiship_status_api_query_date', time() - 3600 * 24);
+			$this->last_query = self::normalize_timestamp(
+				get_option('wp_apiship_status_api_query_date', false)
+			);
 
 			$this->timezone = (new DateTime())->format('P');
 		}
