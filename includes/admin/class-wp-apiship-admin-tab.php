@@ -26,12 +26,28 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 	class WP_ApiShip_Admin_Tab {
 
 		/**
+		 * Tab ID.
+		 */
+		protected $id;
+
+		/**
+		 * Tab label.
+		 */
+		protected $label;
+
+		/**
 		 * Constructor.
 		 */
 		public function __construct() {
 
 			$this->id = Options\WP_ApiShip_Options::get_wc_settings_plugin_tab();
-			$this->label = esc_html__('ApiShip', 'wp-apiship');
+			/**
+			 * Заголовок вкладки НЕ переводится здесь: конструктор выполняется на
+			 * `plugins_loaded`, а с WordPress 6.7 обращение к переводам до `init`
+			 * вызывает notice `_load_textdomain_just_in_time`. Перевод выполняется
+			 * лениво в `fiter__add_tab()`.
+			 */
+			$this->label = 'ApiShip';
 
 			add_filter( 'woocommerce_settings_tabs_array', array($this, 'fiter__add_tab'), 500);
 			add_action( 'woocommerce_sections_' . $this->id, array( $this, 'on__output_sections') );
@@ -133,7 +149,7 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 		 * @since 1.0.0
 		 */
 		public function fiter__add_tab($settings_tabs) {
-			$settings_tabs[$this->id] = $this->label;
+			$settings_tabs[$this->id] = esc_html__('ApiShip', 'wp-apiship');
 			return $settings_tabs;
 		}
 
@@ -232,7 +248,7 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 			$settings = $this->get_settings($current_section);
 
 			if ($current_section === 'general' || $current_section === ' ' || $current_section === '') {
-				self::check_api_token($postData['wp_apiship_token']);
+				self::check_api_token( (string) ( isset($postData['wp_apiship_token']) ? $postData['wp_apiship_token'] : '' ) );
 			}
 
 			foreach( $settings as $id=>$setting ) {
@@ -257,7 +273,7 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 					'headers' => [
 						'Authorization' => $token,
 					],
-					'timeout' => 20000
+					'timeout' => 20
 				)
 			);
 			if ( wp_remote_retrieve_response_code($response) !== WP_ApiShip_HTTP::OK ) {

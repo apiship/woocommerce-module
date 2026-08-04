@@ -40,20 +40,39 @@ if ( ! class_exists('WP_ApiShip_Admin') ) :
 			/**
 			 * Add `Print labels` menu item.
 			 *
+			 * Регистрируются оба варианта хуков — для HPOS и для legacy-хранилища:
+			 * активен всегда только один экран, поэтому конфликта нет, а выбор
+			 * по is_hpos_enabled() здесь был бы преждевременным (WooCommerce
+			 * может быть ещё не полностью инициализирован).
+			 *
 			 * @see wp-admin\includes\class-wp-list-table.php
 			 */
-			add_filter( 'bulk_actions-edit-' . Options\WP_ApiShip_Options::WC_ORDER_POST_TYPE, array(
-				$this,
-				'filter__add_actions'
-			), 10999 );
+			$bulk_actions_hooks = array(
+				'bulk_actions-edit-shop_order',
+				'bulk_actions-woocommerce_page_wc-orders',
+			);
+
+			foreach ( $bulk_actions_hooks as $hook ) {
+				add_filter( $hook, array(
+					$this,
+					'filter__add_actions'
+				), 10999 );
+			}
 
 			/**
 			 * Handle `Print labels` action.
 			 */
-			add_filter( 'handle_bulk_actions-edit-' . Options\WP_ApiShip_Options::WC_ORDER_POST_TYPE, array(
-				$this,
-				'filter__handle_actions'
-			), 10999, 3 );			
+			$handle_bulk_actions_hooks = array(
+				'handle_bulk_actions-edit-shop_order',
+				'handle_bulk_actions-woocommerce_page_wc-orders',
+			);
+
+			foreach ( $handle_bulk_actions_hooks as $hook ) {
+				add_filter( $hook, array(
+					$this,
+					'filter__handle_actions'
+				), 10999, 3 );
+			}
 			
 			/**
 			 * @see wp-admin\admin-header.php
@@ -103,30 +122,44 @@ if ( ! class_exists('WP_ApiShip_Admin') ) :
 				return;
 			}
 
-			$data = json_decode(base64_decode($_REQUEST['wpapiship_action_data']));
+			if (!current_user_can('manage_woocommerce')) {
+				return;
+			}
+
+			$data = json_decode(base64_decode(sanitize_text_field(wp_unslash($_REQUEST['wpapiship_action_data']))));
+
+			if (!is_object($data)) {
+				return;
+			}
 
 			if (!empty($data->success)) {
-				$url = $data->url;
 				$class = 'notice-success success';
 				$defaultMessage = esc_html__('Запрос успешно обработан.', 'wp-apiship');
-				foreach ($data->success as $url) {
-					$message = $defaultMessage . ' <a target="_blank" href="' . $url . '">' . esc_html__('Скачать файл', 'wp-apiship') . '</a>';
+				foreach ((array) $data->success as $url) {
+					$message = $defaultMessage
+						. ' <a target="_blank" href="' . esc_url($url) . '">'
+						. esc_html__('Скачать файл', 'wp-apiship') . '</a>';
 					self::display_notice($message, $class);
 				}
 			}
 
 			if (!empty($data->errors)) {
 				$class = 'notice-error error';
-				foreach ($data->errors as $error) {
-					self::display_notice($error, $class);
+				foreach ((array) $data->errors as $error) {
+					self::display_notice(esc_html($error), $class);
 				}
 			}
 		}
 
+		/**
+		 * @param string $message Готовая к выводу разметка (уже экранированная).
+		 */
 		private static function display_notice($message, $class = 'notice-success success')
 		{
-			printf( 
-				'<div id="wpapiship-message" class="notice ' . $class . '"><p>' . $message . '</p></div>'
+			printf(
+				'<div id="wpapiship-message" class="notice %1$s"><p>%2$s</p></div>',
+				esc_attr($class),
+				wp_kses_post($message)
 			);
 		}
 		
@@ -140,11 +173,21 @@ if ( ! class_exists('WP_ApiShip_Admin') ) :
 			$integrator_orders = false;
 			
 			foreach( (array) $ids as $id ) {
-			
-				$order = wc_get_order($id);			
-			
+
+				$order = wc_get_order($id);
+
+				if ( ! $order ) {
+					continue;
+				}
+
+				/**
+				 * Сбрасывается на каждой итерации: иначе заказ без строки доставки
+				 * получил бы номер заказа интегратора от предыдущего заказа.
+				 */
+				$shipping_order_item_id = false;
+
 				$line_items_shipping = $order->get_items('shipping');
-				
+
 				foreach( $line_items_shipping as $item_id=>$item ) {
 					/**
 					 * $item is WC_Order_Item_Shipping Object.
@@ -153,8 +196,12 @@ if ( ! class_exists('WP_ApiShip_Admin') ) :
 					break;
 				}
 
-				$integrator_order = wc_get_order_item_meta( 
-					$shipping_order_item_id, 
+				if ( ! $shipping_order_item_id ) {
+					continue;
+				}
+
+				$integrator_order = wc_get_order_item_meta(
+					$shipping_order_item_id,
 					Options\WP_ApiShip_Options::INTEGRATOR_ORDER_KEY
 				);
 
@@ -206,40 +253,51 @@ if ( ! class_exists('WP_ApiShip_Admin') ) :
 					'headers' 	=> array( 
 						'Content-Type' => 'application/json' 
 					),
-					'body' 	  => json_encode($body),
-					'timeout' => 20000,
+					'body' 	  => wp_json_encode($body),
+					'timeout' => 20,
 				)
 			);
 
-			$body = json_decode(wp_remote_retrieve_body($response['response']));
 			$errors = [];
 			$success = [];
 
-			if (wp_remote_retrieve_response_code($response['response']) == HTTP\WP_ApiShip_HTTP::OK) {
-				if (!empty($body->failedOrders)) {
-					foreach($body->failedOrders as $error) {
-						$errors[] = esc_html__('Заказ #') . $error->orderId . ': ' . $error->message;
+			if (is_wp_error($response['response'])) {
+
+				$response['success'] = 'error';
+				$errors[] = $response['response']->get_error_message();
+
+			} else {
+
+				$body = json_decode(wp_remote_retrieve_body($response['response']));
+
+				if (wp_remote_retrieve_response_code($response['response']) == HTTP\WP_ApiShip_HTTP::OK) {
+					if (!empty($body->failedOrders)) {
+						foreach($body->failedOrders as $error) {
+							$errors[] = esc_html__('Заказ #') . $error->orderId . ': ' . $error->message;
+						}
 					}
-				}
-				if (Options\WP_ApiShip_Options::PRINT_WAYBILLS_ACTION == $doaction) {
-					foreach($body->waybillItems as $providerWaybills) {
-						$success[] = $providerWaybills->file;
+					if (Options\WP_ApiShip_Options::PRINT_WAYBILLS_ACTION == $doaction) {
+						foreach((array) ($body->waybillItems ?? []) as $providerWaybills) {
+							$success[] = $providerWaybills->file;
+						}
+					} elseif (!empty($body->url)) {
+						$success[] = $body->url;
 					}
 				} else {
-					$success[] = $body->url;
-				}
-			} else {
-				$response['success'] = 'error';
-				$errors[] = $body->message;	
-				if (!empty($body->errors)) {
-					foreach($body->errors as $error) {
-						$errors[] = esc_html__('Ошибка валидации. Поле ') . $error->field . ': ' . $error->message;
+					$response['success'] = 'error';
+					$errors[] = !empty($body->message)
+						? $body->message
+						: esc_html__('Не удалось получить ответ от ApiShip', 'wp-apiship');
+					if (!empty($body->errors)) {
+						foreach($body->errors as $error) {
+							$errors[] = esc_html__('Ошибка валидации. Поле ') . $error->field . ': ' . $error->message;
+						}
 					}
-				}		
+				}
 			}
 
 			$redirect_to = add_query_arg(array(
-				'wpapiship_action_data' => base64_encode(json_encode([
+				'wpapiship_action_data' => base64_encode(wp_json_encode([
 					'errors' => $errors,
 					'success' => $success
 				])),

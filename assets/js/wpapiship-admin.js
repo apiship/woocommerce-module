@@ -48,6 +48,9 @@
 		getProcessAjax: function(){
 			return WPApiShipAdmin.process_ajax;
 		},
+		getNonce: function(){
+			return WPApiShipAdmin.nonce;
+		},
 		getShippingOrderItemId: function(){
 			var id = api.getParam('shippingOrderItemId');
 			if ( null === id ) {
@@ -1771,8 +1774,9 @@
 				type: 'POST',
 				url: api.getAjaxUrl(),
 				data: {
-					action:api.getProcessAjax(), 
-					request:request
+					action:api.getProcessAjax(),
+					request:request,
+					nonce:api.getNonce()
 				},
 				dataType: 'json' 
 			})

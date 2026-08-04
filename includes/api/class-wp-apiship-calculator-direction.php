@@ -117,7 +117,8 @@ if ( ! class_exists('WP_ApiShip_Calculator_Direction') ) :
 				}
 			}
 
-			if ($addressElements['region'] === $addressElements['city']) {
+			if ( isset($addressElements['region'], $addressElements['city'])
+				and $addressElements['region'] === $addressElements['city'] ) {
 				unset($addressElements['region']);
 			}
 

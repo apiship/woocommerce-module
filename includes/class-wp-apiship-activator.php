@@ -72,8 +72,13 @@ if (!class_exists('WP_ApiShip\\WP_ApiShip_Activator')) :
                 });
             }
 
-            /** Call callback. */
-            if (isset($_GET['apiship_deactivation'])) {
+            /**
+             * Call callback.
+             *
+             * Обработка запускается только администратором в админке: колбэк
+             * массово переписывает типы order_item и меняет опции плагина.
+             */
+            if (isset($_GET['apiship_deactivation']) and is_admin() and current_user_can('activate_plugins')) {
                 $callback = self::get_callback();
                 $callback(self::$current_action, self::LIMIT);
             }
@@ -168,10 +173,17 @@ if (!class_exists('WP_ApiShip\\WP_ApiShip_Activator')) :
                 return;
             }
 
-            $datetime = date('d.m.Y H:i:s');
             $action = self::$current_action;
 
-            file_put_contents(self::LOG_PATH, "[$datetime] [$action] $message" . PHP_EOL, FILE_APPEND);
+            /**
+             * Каталог плагина доступен по HTTP, поэтому пишем в лог WooCommerce.
+             */
+            if (function_exists('wc_get_logger')) {
+                wc_get_logger()->debug("[$action] $message", array('source' => 'wp-apiship-activator'));
+                return;
+            }
+
+            error_log("[wp-apiship] [$action] $message");
         }
 
         /**

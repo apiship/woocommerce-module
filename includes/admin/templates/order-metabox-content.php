@@ -263,9 +263,9 @@ if (isset($tariff->isDeliveryToPoint)) {
 				// 	echo ' checked';
 				// }
 
-				echo ' data-order-id="' . $post->ID . '"';
+				echo ' data-order-id="' . esc_attr( $this->order->get_id() ) . '"';
 				echo ' data-cost="' . $price . '"';
-				echo ' data-meta-data="' . htmlspecialchars(json_encode($method['meta_data'])) . '"';
+				echo ' data-meta-data="' . htmlspecialchars(wp_json_encode($method['meta_data'])) . '"';
 				echo ' data-method-title="' . $method_title . '"';
 
 				echo '>';
@@ -588,7 +588,7 @@ if (isset($tariff->isDeliveryToPoint)) {
 		<div class="meta--item meta-key meta-caption"><?php echo $field['caption']; ?>:</div>
 		<div class="meta--item meta-value">
 			<input type="<?php echo $field['type']; ?>" 
-				value="<?php echo $this->get_order_point_out_id(); ?>" 
+				value="<?php echo esc_attr( $this->get_order_point_out_id() ); ?>" 
 				name="<?php echo $field['name']; ?>" 
 				id="<?php echo $field['id']; ?>" 
 				size="<?php echo $field['size']; ?>" 
@@ -601,7 +601,7 @@ if (isset($tariff->isDeliveryToPoint)) {
 		<div class="meta--item meta-key meta-caption"><?php echo $field['caption']; ?>:</div>
 		<div class="meta--item meta-value">
 			<input type="<?php echo $field['type']; ?>" 
-				value="<?php echo $this->get_order_point_out_address(); ?>" 
+				value="<?php echo esc_attr( $this->get_order_point_out_address() ); ?>" 
 				name="<?php echo $field['name']; ?>" 
 				id="<?php echo $field['id']; ?>" 
 				class="meta-value-point-out-address wpapiship-transmitting-field" 
@@ -720,15 +720,24 @@ if (isset($tariff->isDeliveryToPoint)) {
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach($this->get_order_statuses() as $row) { ?>
+				<?php foreach((array) $this->get_order_statuses() as $row) {
+
+					$created = '';
+					if ( ! empty($row->created) ) {
+						try {
+							$created = (new DateTime($row->created))->format('Y-m-d H:i:s');
+						} catch ( \Throwable $e ) {
+							$created = $row->created;
+						}
+					}
+					?>
 					<tr>
-						<td><?= $row->name ?></td>
-						<td><?= $row->providerName ?></td>
-						<td><?= $row->providerDescription ?></td>
-						<td><?= (new DateTime($row->created))->format('Y-m-d H:i:s') ?></td>
+						<td><?php echo esc_html( isset($row->name) ? $row->name : '' ); ?></td>
+						<td><?php echo esc_html( isset($row->providerName) ? $row->providerName : '' ); ?></td>
+						<td><?php echo esc_html( isset($row->providerDescription) ? $row->providerDescription : '' ); ?></td>
+						<td><?php echo esc_html( $created ); ?></td>
 					</tr>
 				<?php } ?>
-			</tbody>
 		</table>
 	</div>
 <?php } ?>

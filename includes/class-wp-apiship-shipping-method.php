@@ -30,6 +30,12 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 		public $admin_rates = [];
 
 		/**
+		 * Флаг административного контекста, передаётся в конструктор.
+		 * Объявлено явно: динамические свойства объявлены устаревшими в PHP 8.2.
+		 */
+		public $is_admin = false;
+
+		/**
 		 * Constructor.
 		 *
 		 * @param int $instance_id id.
@@ -128,7 +134,7 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 				$timeout = $timeout / 1000;
 			}
 
-			$request_hash = 'wp_apiship_cache_' . md5( json_encode($request) );			
+			$request_hash = 'wp_apiship_cache_' . md5( wp_json_encode($request) );			
 
 			/**
 			 * Init $response.
@@ -161,7 +167,7 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 						'headers' => array(
 							'Content-Type' => 'application/json'
 						),
-						'body' 	  => json_encode($request),
+						'body' 	  => wp_json_encode($request),
 						'timeout' => $timeout,
 					)
 				);
@@ -199,8 +205,13 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 				}
 			
 			} else {
-				
-				$response_body = $this->body_decode( wp_remote_retrieve_body($response) );
+
+				try {
+					$response_body = $this->body_decode( wp_remote_retrieve_body($response) );
+				} catch ( Exception $e ) {
+					WP_ApiShip\WP_ApiShip_Core::__log( $e->getMessage(), __CLASS__ .'::'. __FUNCTION__ );
+					return;
+				}
 			}
 			
 			/**
@@ -237,9 +248,18 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 					$is_delivery_to_point = true;
 				}
 
+				if ( empty($response_body->$delivery_type) ) {
+					continue;
+				}
+
 				foreach($response_body->$delivery_type as $tariffGroupKey => $tariff_group) {
-					
+
 					$pickup_types = [];
+
+					if ( empty($providers_data[$tariff_group->providerKey]) ) {
+						continue;
+					}
+
 					$providerData = $providers_data[$tariff_group->providerKey]->data;
 
 					if (!empty($providerData['pickup_types'])) {
@@ -368,10 +388,10 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 					'daysMax' 			=> $tariff->daysMax,
 					'integrator' 		=> Options\WP_ApiShip_Options::INTEGRATOR,
 					'integratorOrder'	=> Options\WP_ApiShip_Options::INTEGRATOR_ORDER_INIT_VALUE,
-					'tariffList'		=> json_encode($tariffList),
+					'tariffList'		=> wp_json_encode($tariffList),
 					'tariff' 			=> $this->get_tariff_data($tariff),
 					'methodId' 			=> $tariff->methodId,
-					'places'			=> json_encode($request['places']),
+					'places'			=> wp_json_encode($request['places']),
 					'pointInId'			=> $tariff->pointInId,
 					#'radioHidden' 	 	=> false, // @see Options\WP_ApiShip_Options::is_dropdown_selector()
 				);
@@ -497,12 +517,16 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 			  $isCached = $tariff->isCached;
 			}
 
+			/**
+			 * Название и адрес ПВЗ приходят из cookie покупателя, а санитизация
+			 * лейблов доставки отключена в init() — экранируем вручную.
+			 */
 			$variables = [
-				'type' => $type,
-				'company' => $name,
-				'tariff' => $tariffName,
-				'name' => "<span class='pointName'>$pointName</span>",
-				'address' => "<span class='pointAddress'>$pointAddress</span>",
+				'type' => esc_html($type),
+				'company' => esc_html($name),
+				'tariff' => esc_html($tariffName),
+				'name' => "<span class='pointName'>" . esc_html($pointName) . "</span>",
+				'address' => "<span class='pointAddress'>" . esc_html($pointAddress) . "</span>",
 				'time' => $this->get_label_suffix($tariff, $is_delivery_to_point, $point_display_mode)
 			];
 
@@ -540,7 +564,7 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 		 * @since 1.0.0
 		 */
 		protected function get_tariff_data($tariff) {
-			return json_encode($tariff);
+			return wp_json_encode($tariff);
 		}
 		
 		/**
@@ -557,6 +581,7 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 				switch($tariff->daysMax) {
 					case 1 :
 						$label_suffix = 'срок от '.$tariff->daysMin.' дня';
+						break;
 					default:
 						$label_suffix = 'срок от '.$tariff->daysMin.' дней';
 						break;

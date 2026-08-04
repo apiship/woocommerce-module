@@ -134,7 +134,10 @@
 		},
 		getProcessAjax: function(){
 			return WPApiShipMap.process_ajax;
-		},		
+		},
+		getNonce: function(){
+			return WPApiShipMap.nonce;
+		},
 		getMap: function(){
 			return mapApi.map;
 		},
@@ -368,8 +371,9 @@
 				type: 'POST',
 				url: mapApi.getAjaxUrl(),
 				data: {
-					action: mapApi.getProcessAjax(), 
-					request: request
+					action: mapApi.getProcessAjax(),
+					request: request,
+					nonce: mapApi.getNonce()
 				},
 				dataType: 'json' 
 			})
