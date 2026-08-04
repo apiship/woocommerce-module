@@ -373,7 +373,7 @@ if ( ! class_exists('ApiShip_Admin') ) :
 			$this->labels_log_file = Options\ApiShip_Options::get_labels_file();
 			
 			if ( file_exists($this->labels_log_file) ) {
-				unlink( $this->labels_log_file );
+				wp_delete_file( $this->labels_log_file );
 			}
 		}
 

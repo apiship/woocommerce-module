@@ -356,7 +356,7 @@ if ( ! class_exists( __NAMESPACE__ . '\ApiShip_HPOS_Migration' ) ) :
 			
 			return array(
 				'completed' => (bool) $completed,
-				'completed_at' => $completed ? date( 'Y-m-d H:i:s', $completed ) : null,
+				'completed_at' => $completed ? gmdate( 'Y-m-d H:i:s', $completed ) : null,
 				'hpos_enabled' => ApiShip_HPOS_Compatibility::is_hpos_enabled(),
 			);
 		}
