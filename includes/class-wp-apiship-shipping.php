@@ -122,8 +122,8 @@ if ( ! class_exists('ApiShip_Shipping') ) :
 					<select size="1" name="wpapiship-shipping-methods" id="wpapiship-shipping-methods">
 						<option value="none"><?php esc_html_e('Выберите метод доставки', 'apiship'); ?></option><?php
 						foreach( $this->rates as $key=>$rate  ) {	?>
-							<option value="rate-<?php echo $key; ?>">
-								<?php echo $rate->meta_data['tariffProvider'] . ':' . wc_cart_totals_shipping_method_label( $rate ); ?>
+							<option value="rate-<?php echo esc_attr( $key ); ?>">
+								<?php echo esc_html( $rate->meta_data['tariffProvider'] . ':' . wc_cart_totals_shipping_method_label( $rate ) ); ?>
 							</option><?php
 						} ?>
 				   </select><?php

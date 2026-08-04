@@ -293,7 +293,7 @@ if ( ! class_exists( __NAMESPACE__ . '\ApiShip_HPOS_Test' ) ) :
 		 */
 		public static function admin_test_page() {
 			if ( ! current_user_can( 'manage_woocommerce' ) ) {
-				wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
+				wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'apiship' ) );
 			}
 
 			echo '<div class="wrap">';

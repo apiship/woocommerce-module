@@ -40,7 +40,7 @@ switch ($point_in_select_action) :
 endswitch;
 
 if ( 'initial' == $point_in_select_action ) { ?>
-	<div class="point-in-select-wrapper <?php echo $type; ?>">
+	<div class="point-in-select-wrapper <?php echo esc_attr( $type ); ?>">
 		<select name="point-in-id-<?php echo esc_attr( $type ); ?>" class="point-select" data-type="<?php echo esc_attr( $type ); ?>">
 		  <option class="" value="not-selected" selected><?php esc_html_e('-- не выбрано --','apiship'); ?></option>
 		  <option class="point-in-select-option" value="load-points"><?php esc_html_e('Загрузить список','apiship'); ?></option>

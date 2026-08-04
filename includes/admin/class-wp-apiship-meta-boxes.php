@@ -422,7 +422,7 @@ if ( ! class_exists('ApiShip_Meta_Boxes') ) :
 		 * @since 1.0.0
 		 */	
 		public function the_sender_title() {
-			echo $this->get_sender_title();
+			echo esc_html( $this->get_sender_title() );
 		}	
 	
 	    /**
@@ -497,7 +497,8 @@ if ( ! class_exists('ApiShip_Meta_Boxes') ) :
 		 * @since 1.0.0
 		 */
 		public function the_sender_address() {
-			echo $this->get_sender_address();
+			// Адрес собирается с тегами <strong> — они разрешены при выводе явно.
+			echo wp_kses( $this->get_sender_address(), array( 'strong' => array() ) );
 		}
 
 		/**
@@ -927,7 +928,7 @@ if ( ! class_exists('ApiShip_Meta_Boxes') ) :
 		 * @since 1.0.0
 		 */	
 		public function the_order_label_image() {
-			echo $this->get_order_label_image();
+			echo esc_url( $this->get_order_label_image() );
 		}
 
 		/**
@@ -981,9 +982,9 @@ if ( ! class_exists('ApiShip_Meta_Boxes') ) :
 			$delivery_type = '1';
 			
 			if ( is_array( $this->get_delivery_type() ) ) {
-				echo implode( ',', $this->get_delivery_type() );
+				echo esc_attr( implode( ',', $this->get_delivery_type() ) );
 			} else {
-				echo $delivery_type;
+				echo esc_attr( $delivery_type );
 			}
 		}
 		
@@ -1002,7 +1003,7 @@ if ( ! class_exists('ApiShip_Meta_Boxes') ) :
 				$text[] = Options\ApiShip_Options::get_delivery_type_text($type);
 			}
 
-			echo implode( '; ', $text );
+			echo esc_html( implode( '; ', $text ) );
 		}
 		
 		/**
@@ -1035,9 +1036,9 @@ if ( ! class_exists('ApiShip_Meta_Boxes') ) :
 			$pickup_type = '1';
 			
 			if ( is_array( $this->get_pickup_type() ) ) {
-				echo implode( ',', $this->get_pickup_type() );
+				echo esc_attr( implode( ',', $this->get_pickup_type() ) );
 			} else {
-				echo $pickup_type;
+				echo esc_attr( $pickup_type );
 			}
 		}
 		
@@ -1057,7 +1058,7 @@ if ( ! class_exists('ApiShip_Meta_Boxes') ) :
 				$text[] = Options\ApiShip_Options::get_pickup_type_text($type);
 			}
 
-			echo implode( '; ', $text );
+			echo esc_html( implode( '; ', $text ) );
 		}		
 		
 	}

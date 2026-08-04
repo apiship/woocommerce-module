@@ -162,7 +162,7 @@ if ( ! class_exists( __NAMESPACE__ . '\ApiShip_HPOS_Migration' ) ) :
 						data: {
 							action: 'wp_apiship_hpos_migration',
 							offset: offset,
-							nonce: '<?php echo wp_create_nonce( 'wp_apiship_hpos_migration' ); ?>'
+							nonce: '<?php echo esc_js( wp_create_nonce( 'wp_apiship_hpos_migration' ) ); ?>'
 						},
 						success: function(response) {
 							if (response.success) {

@@ -51,23 +51,23 @@ if ( self::is_godmode(true) ) {
 <div class="view">
 	<table cellspacing="0" class="display_meta">
 		<tr>
-			<th class="<?php echo $wpapiship_debug_class; ?>"><?php esc_html_e('Заказ в системе ApiShip', 'apiship'); ?>:</th>
+			<th class="<?php echo esc_attr( $wpapiship_debug_class ); ?>"><?php esc_html_e('Заказ в системе ApiShip', 'apiship'); ?>:</th>
 			<td>
 				<div id="wpapiship-integrator-line-items"  
 					class="wpapiship-integrator-line-items" 
-					data-shipping-order-item-id="<?php echo self::$shipping_order_item_id; ?>">
+					data-shipping-order-item-id="<?php echo esc_attr( self::$shipping_order_item_id ); ?>">
 					<div class="integrator-line--item integrator-order-id">
-						<?php echo $integrator_order_id; ?>
+						<?php echo esc_html( $integrator_order_id ); ?>
 					</div>				
 					<div class="integrator-line--item integrator-order-status">
-						<?php echo $message; ?>
+						<?php echo esc_html( $message ); ?>
 					</div>
 					<div class="integrator-line--item">
 						<span title="Валидация данных перед созданием заказа" 
 							class="validate-orders dashicons dashicons-code-standards <?php if($integrator_order_id){ echo 'hidden';} else { echo '';} ?>">
 						</span>
 						<span 
-							title="Создать заказ в системе <?php echo Options\ApiShip_Options::BRAND; ?>"  
+							title="Создать заказ в системе <?php echo esc_attr( Options\ApiShip_Options::BRAND ); ?>"  
 							class="post-orders dashicons dashicons-welcome-add-page <?php if($integrator_order_id){ echo 'hidden';} else { echo '';} ?>">
 						</span>
 						<span title="Получить информацию по заказу" 
