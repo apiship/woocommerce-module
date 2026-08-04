@@ -78,7 +78,7 @@ if ( ! class_exists('ApiShip_Admin_Tab', false) ) :
 		public function on__wc_field_table($value) {
 			ob_start();
 			require_once( 'templates/provider-table.php' );
-			echo ob_get_clean();			
+			echo ob_get_clean(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- буфер содержит шаблон, экранирующий вывод.			
 		}
 
 		/**
@@ -87,7 +87,7 @@ if ( ! class_exists('ApiShip_Admin_Tab', false) ) :
 		public function on__wc_field_timezone($value) {
 			ob_start();
 			require_once( 'templates/timezone-field.php' );
-			echo ob_get_clean();			
+			echo ob_get_clean(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- буфер содержит шаблон, экранирующий вывод.			
 		}
 	
 		/**
@@ -96,7 +96,7 @@ if ( ! class_exists('ApiShip_Admin_Tab', false) ) :
 		public function on__wc_field_button($value) {
 			ob_start();
 			require( 'templates/button-field.php' );
-			echo ob_get_clean();	
+			echo ob_get_clean(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- буфер содержит шаблон, экранирующий вывод.	
 		}
 	
 		/**
@@ -107,7 +107,7 @@ if ( ! class_exists('ApiShip_Admin_Tab', false) ) :
 		public function on__wc_field_providers($value) {
 			ob_start();
 			require_once( 'templates/providers-form.php' );
-			echo ob_get_clean();
+			echo ob_get_clean(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- буфер содержит шаблон, экранирующий вывод.
 		}
 
 		/**
@@ -118,7 +118,7 @@ if ( ! class_exists('ApiShip_Admin_Tab', false) ) :
 		public function on__wc_field_docs($value) {
 			ob_start();
 			require_once( 'templates/docs-form.php' );
-			echo ob_get_clean();
+			echo ob_get_clean(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- буфер содержит шаблон, экранирующий вывод.
 		}
 
 		/**
@@ -129,7 +129,7 @@ if ( ! class_exists('ApiShip_Admin_Tab', false) ) :
 		public function on__wc_field_debug($value) {
 			ob_start();
 			require_once( 'templates/debug-form.php' );
-			echo ob_get_clean();			
+			echo ob_get_clean(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- буфер содержит шаблон, экранирующий вывод.			
 		}
 
 		/**
@@ -140,7 +140,7 @@ if ( ! class_exists('ApiShip_Admin_Tab', false) ) :
 		public function on__wc_field_calculator($value) {
 			ob_start();
 			require_once( 'templates/calculator-form.php' );
-			echo ob_get_clean();			
+			echo ob_get_clean(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- буфер содержит шаблон, экранирующий вывод.			
 		}
 		
 		/**
@@ -410,7 +410,8 @@ if ( ! class_exists('ApiShip_Admin_Tab', false) ) :
 					'class'		=> 'wp-apiship-remove-self',
 					'type' 		=> 'checkbox',
 					'desc' 		=> sprintf(
-						esc_html__('You can set the store address on the Woocommerce %sGeneral%s tab.', 'apiship'),
+						/* translators: %1$s: открывающий тег ссылки на вкладку General, %2$s: закрывающий тег ссылки */
+						esc_html__('You can set the store address on the Woocommerce %1$sGeneral%2$s tab.', 'apiship'),
 						'<a href="'.ApiShip\ApiShip_Core::get_admin_url(array('page'=>'wc-settings','tab'=>'general')).'">',
 						'</a>'
 					),
@@ -751,7 +752,8 @@ if ( ! class_exists('ApiShip_Admin_Tab', false) ) :
 					'id' 		=> 'wp_apiship_use_selected_providers',
 					'default' 	=> 'no',
 					'desc_tip' 	=> sprintf(
-						esc_html__('You can set the list of providers on %sProviders%s section', 'apiship'),
+						/* translators: %1$s: открывающий тег ссылки на секцию служб доставки, %2$s: закрывающий тег ссылки */
+						esc_html__('You can set the list of providers on %1$sProviders%2$s section', 'apiship'),
 						'<a href="'.ApiShip\ApiShip_Core::get_admin_url(
 							array(
 								'page'    => Options\ApiShip_Options::get_wc_settings_page(),
@@ -767,7 +769,8 @@ if ( ! class_exists('ApiShip_Admin_Tab', false) ) :
 					'type' 	=> 'timezone',  # @see `on__wc_field_timezone`.
 					'class' => 'wp-apiship-admin-tab-field options-field',
 					'desc' 	=>  sprintf(
-						esc_html__('Order dispatch date (pickupDate) will be set according to %sTimezone%s', 'apiship'),
+						/* translators: %1$s: открывающий тег ссылки на настройку часового пояса, %2$s: закрывающий тег ссылки */
+						esc_html__('Order dispatch date (pickupDate) will be set according to %1$sTimezone%2$s', 'apiship'),
 						'<a href="'.ApiShip\ApiShip_Core::get_admin_url('options-general.php').'" target="_blank">',
 						'</a>'
 					),

@@ -89,7 +89,7 @@ if (!class_exists('ApiShip\\ApiShip_Activator')) :
                     add_action('admin_notices', function(){
                         $offset = self::$offset;
 
-                        echo '<div class="notice notice-info"><p>Статус деактивации плагина WP ApiShip for WooCommerce: в процессе.</p><p>Offset: ' . $offset . '</p><p><a href="/wp-admin/plugins.php?apiship_deactivation">Обновить</a></p></div>';
+                        echo '<div class="notice notice-info"><p>Статус деактивации плагина WP ApiShip for WooCommerce: в процессе.</p><p>Offset: ' . absint( $offset ) . '</p><p><a href="' . esc_url( admin_url( 'plugins.php?apiship_deactivation' ) ) . '">Обновить</a></p></div>';
                     });
                 }
 
@@ -217,6 +217,7 @@ if (!class_exists('ApiShip\\ApiShip_Activator')) :
                     $meta_key = 'integrator';
                     $meta_value = 'WPApiShip';
 
+                    // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- имена таблиц берутся из $wpdb->prefix, значения передаются через prepare.
                     $order_item_ids = $wpdb->get_col(
                         $wpdb->prepare(
                             "SELECT DISTINCT oi.order_item_id
@@ -232,6 +233,7 @@ if (!class_exists('ApiShip\\ApiShip_Activator')) :
                             $offset
                         )
                     );
+                    // phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
                     if (boolval($is_done) === true or empty($order_item_ids) or $order_item_ids === null) {
                         self::write_log("[FINISH] All data has been processed" . PHP_EOL);

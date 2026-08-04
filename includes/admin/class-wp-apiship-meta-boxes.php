@@ -332,7 +332,7 @@ if ( ! class_exists('ApiShip_Meta_Boxes') ) :
 			
 			ob_start();
 			require_once( 'templates/order-metabox-content.php' );
-			echo ob_get_clean();
+			echo ob_get_clean(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- буфер содержит шаблон, экранирующий вывод.
 		}
 
 	    /**

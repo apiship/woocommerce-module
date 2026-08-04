@@ -503,6 +503,7 @@ if ( ! class_exists('ApiShip_Core') ) :
 		public static function getSelectedPointData($tariff_id, $method_id)
 		{
 			if (isset($_COOKIE['wp_apiship_selected_point_out_data'])) {
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput -- wp_unslash и валидация JSON выполняются внутри decodeSelectedPointData().
 				$selectedPointData = self::decodeSelectedPointData($_COOKIE['wp_apiship_selected_point_out_data']);
 				$tariffKey = 't' . $tariff_id . '|' . $method_id;;
 				if (isset($selectedPointData->$tariffKey)) {
@@ -614,6 +615,7 @@ if ( ! class_exists('ApiShip_Core') ) :
 				return $value;
 			}
 
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- проверка наличия полей формы чекаута, nonce проверяет ядро WooCommerce.
 			if ( empty( $_POST ) ) {
 				return $value;
 			}
@@ -625,7 +627,7 @@ if ( ! class_exists('ApiShip_Core') ) :
 
 			$_run = true;
 			foreach( $checked_fields as $field ) {
-				if ( empty( $_POST[$field] ) ) {
+				if ( empty( $_POST[$field] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- см. выше.
 					$_run = false;
 					break;
 				}
@@ -674,7 +676,8 @@ if ( ! class_exists('ApiShip_Core') ) :
 
 			$description = sprintf(
 				esc_html__('Use of warehouse address instead of store address.', 'apiship') . ' ' .
-				esc_html__('You can set it on %1sApiShip%2s tab.', 'apiship'),
+				/* translators: %1$s: открывающий тег ссылки на вкладку ApiShip, %2$s: закрывающий тег ссылки */
+				esc_html__('You can set it on %1$sApiShip%2$s tab.', 'apiship'),
 				'<a href="'.$apiship_tab_url.'">',
 				'</a>'
 			);
@@ -873,6 +876,7 @@ if ( ! class_exists('ApiShip_Core') ) :
 
 		public static function on__process_ajax() {
 
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce проверяется ниже в verify_ajax_request().
 			if ( ! isset( $_POST['request'] ) || ! is_array( $_POST['request'] ) ) {
 				wp_send_json_error( esc_html__( 'Некорректный запрос', 'apiship' ) );
 			}
@@ -881,7 +885,7 @@ if ( ! class_exists('ApiShip_Core') ) :
 			 * Слеши намеренно не снимаются глобально: отдельные обработчики
 			 * ниже вызывают wp_unslash() точечно.
 			 */
-			$request = $_POST['request'];
+			$request = $_POST['request']; // phpcs:ignore WordPress.Security -- nonce проверяется ниже, слеши и санитизация выполняются точечно в обработчиках.
 
 			if ( empty( $request['action'] ) || ! is_string( $request['action'] ) ) {
 				wp_send_json_error( esc_html__( 'Некорректный запрос', 'apiship' ) );
@@ -1993,6 +1997,7 @@ if ( ! class_exists('ApiShip_Core') ) :
 
 					$allData = (object) [];
 					if (isset($_COOKIE['wp_apiship_selected_point_out_data']) and !empty($_COOKIE['wp_apiship_selected_point_out_data'])) {
+						// phpcs:ignore WordPress.Security.ValidatedSanitizedInput -- wp_unslash и валидация JSON выполняются внутри decodeSelectedPointData().
 						$allData = self::decodeSelectedPointData($_COOKIE['wp_apiship_selected_point_out_data']);
 					}
 
@@ -2008,6 +2013,7 @@ if ( ! class_exists('ApiShip_Core') ) :
 
 					$allData = (object) [];
 					if (isset($_COOKIE['wp_apiship_selected_point_out_data']) and !empty($_COOKIE['wp_apiship_selected_point_out_data'])) {
+						// phpcs:ignore WordPress.Security.ValidatedSanitizedInput -- wp_unslash и валидация JSON выполняются внутри decodeSelectedPointData().
 						$allData = self::decodeSelectedPointData($_COOKIE['wp_apiship_selected_point_out_data']);
 					}
 
@@ -2826,7 +2832,7 @@ if ( ! class_exists('ApiShip_Core') ) :
 			$value = '';
 
 			if ( isset( $_GET[ $key ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-				$get_key = $_GET[ $key ]; // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+				$get_key = $_GET[ $key ]; // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput -- wp_unslash и sanitize_text_field применяются ниже.
 
 				if ( is_scalar( $get_key ) ) {
 					$value = sanitize_text_field( wp_unslash( $get_key ) );

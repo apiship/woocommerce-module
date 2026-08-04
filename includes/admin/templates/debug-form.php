@@ -15,11 +15,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 global $wpdb;
 
-$options_query = $wpdb->prepare(
-	"SELECT * FROM {$wpdb->options} WHERE option_name LIKE %s",
-	'%' . $wpdb->esc_like( 'wp_apiship_' ) . '%'
+$options = $wpdb->get_results(
+	$wpdb->prepare(
+		"SELECT * FROM {$wpdb->options} WHERE option_name LIKE %s",
+		'%' . $wpdb->esc_like( 'wp_apiship_' ) . '%'
+	),
+	ARRAY_A
 );
-$options = $wpdb->get_results( $options_query, ARRAY_A );
 
 /**
  * Значения, которые нельзя показывать открытым текстом.

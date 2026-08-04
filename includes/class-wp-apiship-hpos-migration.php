@@ -83,12 +83,14 @@ if ( ! class_exists( __NAMESPACE__ . '\ApiShip_HPOS_Migration' ) ) :
 
 			$placeholders = implode( ', ', array_fill( 0, count( $meta_keys ), '%s' ) );
 
+			// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $placeholders содержит только плейсхолдеры %s для prepare.
 			$found = $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key IN ($placeholders) LIMIT 1",
 					$meta_keys
 				)
 			);
+			// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 			return ! empty( $found );
 		}
@@ -206,7 +208,7 @@ if ( ! class_exists( __NAMESPACE__ . '\ApiShip_HPOS_Migration' ) ) :
 				wp_send_json_error( __( 'Недостаточно прав', 'apiship' ) );
 			}
 
-			$offset = intval( $_POST['offset'] );
+			$offset = isset( $_POST['offset'] ) ? absint( wp_unslash( $_POST['offset'] ) ) : 0;
 			$result = self::migrate_batch( $offset );
 
 			wp_send_json_success( $result );

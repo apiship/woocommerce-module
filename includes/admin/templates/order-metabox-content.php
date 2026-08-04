@@ -282,7 +282,7 @@ if (isset($tariff->isDeliveryToPoint)) {
 			<?php esc_html_e('Полное название', 'apiship'); ?>:
 		</div>
 		<div class="meta--item meta-value">
-			<?php echo esc_html( $item->get_name() ? $item->get_name() : __( 'Shipping', 'apiship' ) ) . $_price; ?>
+			<?php echo esc_html( $item->get_name() ? $item->get_name() : __( 'Shipping', 'apiship' ) ) . wp_kses_post( $_price ); ?>
 			<a href="#" onclick="return false;" class="edit-data edit-price"></a>
 		</div>
 		<!-- Pickup type -->

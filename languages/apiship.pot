@@ -35,7 +35,7 @@ msgstr ""
 msgid "Timezone"
 msgstr ""
 
-msgid "Order dispatch date (pickupDate) will be set according to %sTimezone%s"
+msgid "Order dispatch date (pickupDate) will be set according to %1$sTimezone%2$s"
 msgstr ""
 
 msgid "You can set Timezone on General Settings page"
@@ -56,7 +56,7 @@ msgstr ""
 msgid "Use of warehouse address instead of store address."
 msgstr ""
 
-msgid "You can set it on %1sApiShip%2s tab."
+msgid "You can set it on %1$sApiShip%2$s tab."
 msgstr ""
 
 msgid "Address line 1"
@@ -140,7 +140,7 @@ msgstr ""
 msgid "Contact name"
 msgstr ""
 
-msgid "You can set the store address on the Woocommerce %sGeneral%s tab."
+msgid "You can set the store address on the Woocommerce %1$sGeneral%2$s tab."
 msgstr ""
 
 msgid "The contact name will be indicated in the sender's address"
@@ -167,7 +167,7 @@ msgstr ""
 msgid "Using only selected providers"
 msgstr ""
 
-msgid "You can set the list of providers on %sProviders%s section"
+msgid "You can set the list of providers on %1$sProviders%2$s section"
 msgstr ""
 
 msgid "You should get a token for authorization"

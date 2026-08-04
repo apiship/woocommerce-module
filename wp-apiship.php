@@ -91,8 +91,10 @@ function apiship_bootstrap() {
 
 		if ( is_admin() ) {
 			add_action('admin_notices', function () {
-				$message = esc_html__('WP ApiShip needs WooCommerce to run. Please, install and active WooCommerce plugin.', 'apiship');
-				printf('<div class="%1$s"><p>%2$s</p></div>', 'notice notice-error', $message);
+				printf(
+					'<div class="notice notice-error"><p>%s</p></div>',
+					esc_html__('WP ApiShip needs WooCommerce to run. Please, install and active WooCommerce plugin.', 'apiship')
+				);
 			});
 		}
 
