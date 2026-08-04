@@ -53,7 +53,6 @@ if (!class_exists('ApiShip_Cron')) :
 
 		public function providers_callback()
 		{
-			set_time_limit(0);
 			$response = ApiShip_HTTP::get("lists/providers?limit=999");
 			if(wp_remote_retrieve_response_code($response) == ApiShip_HTTP::OK) {
 				$body = json_decode($response['body']);
@@ -72,7 +71,12 @@ if (!class_exists('ApiShip_Cron')) :
 
 		public function callback($offset = 0)
 		{
-			set_time_limit(0);
+			/**
+			 * Ограничение задаётся только внутри этой функции (гайдлайн WP.org
+			 * запрещает глобальные безлимитные значения): синхронизация статусов
+			 * постранично обходит ответ API и может не уложиться в стандартные 30 сек.
+			 */
+			set_time_limit(300);
 
 			$now = time();
 			$query_date = date('Y-m-d\TH:i:s', $this->last_query) . $this->timezone;

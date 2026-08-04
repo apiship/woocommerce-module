@@ -523,7 +523,14 @@ if ( ! class_exists('ApiShip_Core') ) :
 		 */
 		protected static function decodeSelectedPointData(string $data)
 		{
-			return json_decode(stripcslashes($data));
+			/**
+			 * Cookie приходит с magic-quotes-слешами ядра — снимаются через
+			 * wp_unslash(); результат валидируется: при повреждённом JSON
+			 * возвращается пустой объект, а не null.
+			 */
+			$decoded = json_decode( wp_unslash( $data ) );
+
+			return is_object( $decoded ) ? $decoded : (object) array();
 		}
 
 		/**
@@ -1210,7 +1217,13 @@ if ( ! class_exists('ApiShip_Core') ) :
 					 */
 
 					try {
-						set_time_limit(0);
+						/**
+						 * Ограничение задаётся только внутри этого обработчика
+						 * (гайдлайн WP.org запрещает глобальные безлимитные значения):
+						 * загрузка списка ПВЗ крупной службы доставки идёт постранично
+						 * и может не уложиться в стандартные 30 сек.
+						 */
+						set_time_limit(120);
 
 						$pointsCallback = function($endpoint, $response) {
 							$response['response'] = HTTP\ApiShip_HTTP::get($endpoint);
@@ -2812,11 +2825,11 @@ if ( ! class_exists('ApiShip_Core') ) :
 
 			$value = '';
 
-			if ( isset( $_GET[ $key ] ) ) { // Input var okay.
-				$get_key = $_GET[ $key ]; // Input var okay; sanitization okay.
+			if ( isset( $_GET[ $key ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				$get_key = $_GET[ $key ]; // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
 				if ( is_scalar( $get_key ) ) {
-					$value = sanitize_text_field( $get_key );
+					$value = sanitize_text_field( wp_unslash( $get_key ) );
 				}
 			}
 

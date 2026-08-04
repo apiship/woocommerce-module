@@ -119,7 +119,18 @@ if ( ! class_exists('ApiShip_Shipping_Method') ) :
 				include_once dirname( __FILE__ ) . '/api/class-wp-apiship-calculator-request.php';
 			}
 
-			$calc = new \ApiShip_Calculator_Request( $package, $_POST );
+			/**
+			 * Из запроса чекаута калькулятору нужен только способ оплаты —
+			 * весь $_POST не передаётся (см. ревью WP.org).
+			 * Nonce не проверяется: расчёт стоимости вызывается ядром WooCommerce
+			 * при обновлении фрагментов чекаута, данные используются только для чтения.
+			 */
+			$post_data = array();
+			if ( isset( $_POST['payment_method'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+				$post_data['payment_method'] = sanitize_text_field( wp_unslash( $_POST['payment_method'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			}
+
+			$calc = new \ApiShip_Calculator_Request( $package, $post_data );
 
 			$request = $calc->get_request();
 			

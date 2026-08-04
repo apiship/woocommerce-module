@@ -45,7 +45,7 @@ if ( ! class_exists('ApiShip_HTTP', false) ) :
 		/**
 		 * Test api url.
 		 */
-		protected static $test_api_url = 'http://api.dev.apiship.ru/';
+		protected static $test_api_url = 'https://api.dev.apiship.ru/';
 		
 		/**
 		 * Api url.

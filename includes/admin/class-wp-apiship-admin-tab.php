@@ -244,11 +244,18 @@ if ( ! class_exists('ApiShip_Admin_Tab', false) ) :
 		{
 			global $current_section;
 
-			$postData = $_POST;
+			/**
+			 * Nonce проверяет WooCommerce (check_admin_referer('woocommerce-settings'))
+			 * до вызова хука woocommerce_settings_save_*. Из запроса точечно читается
+			 * только токен — весь $_POST не копируется (см. ревью WP.org).
+			 */
 			$settings = $this->get_settings($current_section);
 
 			if ($current_section === 'general' || $current_section === ' ' || $current_section === '') {
-				self::check_api_token( (string) ( isset($postData['wp_apiship_token']) ? $postData['wp_apiship_token'] : '' ) );
+				$token = isset( $_POST['wp_apiship_token'] ) // phpcs:ignore WordPress.Security.NonceVerification.Missing
+					? sanitize_text_field( wp_unslash( $_POST['wp_apiship_token'] ) ) // phpcs:ignore WordPress.Security.NonceVerification.Missing
+					: '';
+				self::check_api_token( $token );
 			}
 
 			foreach( $settings as $id=>$setting ) {
@@ -256,8 +263,8 @@ if ( ! class_exists('ApiShip_Admin_Tab', false) ) :
 					unset( $settings[$id] );
 				}
 			}
-			
-			WC_Admin_Settings::save_fields($settings, $postData);
+
+			WC_Admin_Settings::save_fields($settings);
 		}
 
 		/**

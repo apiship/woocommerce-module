@@ -7,7 +7,12 @@
  *
  * @since 1.0.0
  */
- 
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 $settings = array(
 	'title' => array(
 		'title'       => esc_html__('Название метода', 'apiship'),
