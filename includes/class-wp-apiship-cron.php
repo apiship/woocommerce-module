@@ -87,7 +87,7 @@ if (!class_exists('ApiShip_Cron')) :
 			set_time_limit(300);
 
 			$now = time();
-			$query_date = date('Y-m-d\TH:i:s', $this->last_query) . $this->timezone;
+			$query_date = gmdate('Y-m-d\TH:i:s', $this->last_query) . $this->timezone;
 
 			$this->log("Дата: $query_date");
 

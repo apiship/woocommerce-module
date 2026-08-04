@@ -22,9 +22,7 @@ $message = array();
 
 if ( file_exists( $labels_file ) ) {
 	
-	$handle = fopen($labels_file, "r");
-	$data = fread($handle, filesize($labels_file));
-	fclose($handle);
+	$data = file_get_contents( $labels_file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- локальный файл журнала плагина.
 
 	$data = json_decode($data);
 
@@ -41,7 +39,7 @@ if ( file_exists( $labels_file ) ) {
 		if ( $response->response->code == HTTP\ApiShip_HTTP::OK ) {
 
 			if ( $timestamp ) {
-				$message[] = esc_html__('Дата получения наклеек: ', 'apiship') . esc_html( date( 'd.m.Y', $timestamp ) );
+				$message[] = esc_html__('Дата получения наклеек: ', 'apiship') . esc_html( gmdate( 'd.m.Y', $timestamp ) );
 				$message[] = '<br />';
 			}
 			
