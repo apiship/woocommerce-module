@@ -123,7 +123,13 @@ if ( ! class_exists('ApiShip_Shipping') ) :
 						<option value="none"><?php esc_html_e('Выберите метод доставки', 'apiship'); ?></option><?php
 						foreach( $this->rates as $key=>$rate  ) {	?>
 							<option value="rate-<?php echo esc_attr( $key ); ?>">
-								<?php echo esc_html( $rate->meta_data['tariffProvider'] . ':' . wc_cart_totals_shipping_method_label( $rate ) ); ?>
+								<?php
+								/**
+								 * Подпись содержит HTML от wc_price() (span/bdi) и &nbsp; —
+								 * внутри <option> допустим только текст, поэтому теги и
+								 * сущности снимаются до экранирования.
+								 */
+								echo esc_html( $rate->meta_data['tariffProvider'] . ':' . html_entity_decode( wp_strip_all_tags( wc_cart_totals_shipping_method_label( $rate ) ) ) ); ?>
 							</option><?php
 						} ?>
 				   </select><?php

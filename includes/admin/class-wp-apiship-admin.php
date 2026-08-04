@@ -273,7 +273,7 @@ if ( ! class_exists('ApiShip_Admin') ) :
 				if (wp_remote_retrieve_response_code($response['response']) == HTTP\ApiShip_HTTP::OK) {
 					if (!empty($body->failedOrders)) {
 						foreach($body->failedOrders as $error) {
-							$errors[] = esc_html__('Заказ #', 'apiship') . esc_html( $error->orderId ) . ': ' . esc_html( $error->message );
+							$errors[] = esc_html__('Заказ #', 'apiship') . $error->orderId . ': ' . $error->message; // Экранируется на выводе в display_notice().
 						}
 					}
 					if (Options\ApiShip_Options::PRINT_WAYBILLS_ACTION == $doaction) {
@@ -290,7 +290,7 @@ if ( ! class_exists('ApiShip_Admin') ) :
 						: esc_html__('Не удалось получить ответ от ApiShip', 'apiship');
 					if (!empty($body->errors)) {
 						foreach($body->errors as $error) {
-							$errors[] = esc_html__('Ошибка валидации. Поле ', 'apiship') . esc_html( $error->field ) . ': ' . esc_html( $error->message );
+							$errors[] = esc_html__('Ошибка валидации. Поле ', 'apiship') . $error->field . ': ' . $error->message; // Экранируется на выводе в display_notice().
 						}
 					}
 				}

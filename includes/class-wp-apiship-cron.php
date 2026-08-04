@@ -53,6 +53,14 @@ if (!class_exists('ApiShip_Cron')) :
 
 		public function providers_callback()
 		{
+			/**
+			 * Ограничение задаётся только внутри этой функции (гайдлайн WP.org
+			 * запрещает глобальные безлимитные значения): HTTP-таймаут запроса — 20 сек,
+			 * на хостингах с max_execution_time=30 медленный ответ API приводил бы
+			 * к фаталу до update_option().
+			 */
+			set_time_limit(120);
+
 			$response = ApiShip_HTTP::get("lists/providers?limit=999");
 			if(wp_remote_retrieve_response_code($response) == ApiShip_HTTP::OK) {
 				$body = json_decode($response['body']);

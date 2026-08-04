@@ -193,3 +193,12 @@ msgstr "Вы должны получить токен для авторизац�
 
 msgid "Shipping"
 msgstr "Доставка"
+
+msgid "Settings"
+msgstr "Настройки"
+
+msgid "General"
+msgstr "Общие"
+
+msgid "You do not have sufficient permissions to access this page."
+msgstr "У вас недостаточно прав для доступа к этой странице."

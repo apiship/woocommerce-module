@@ -32,6 +32,11 @@ if (!defined('APISHIP_SHIPPING_CACHE')) {
 	define('APISHIP_SHIPPING_CACHE', defined('WP_APISHIP_SHIPPING_CACHE') ? WP_APISHIP_SHIPPING_CACHE : false);
 }
 
+if (!defined('APISHIP_GODMODE') && defined('WP_APISHIP_GODMODE')) {
+	// Константа могла быть определена в wp-config.php под старым именем.
+	define('APISHIP_GODMODE', WP_APISHIP_GODMODE);
+}
+
 define('APISHIP_PLUGIN_BASE', plugin_basename(__FILE__));
 
 // Activator settings.
