@@ -42,7 +42,7 @@ if ( ! isset( $value['desc_tip'] ) ) {
 }
 				
 $tooltip_html 	= wc_help_tip( $value['desc_tip'] );
-$local_time_tip = esc_html__('Местное время', 'wp-apiship');
+$local_time_tip = esc_html__('Местное время', 'apiship');
 $description 	= '<p class="description">' . wp_kses_post( $value['desc'] ) . '</p>';
 
 $date = new DateTime('now', new DateTimeZone( wp_timezone_string() ) );

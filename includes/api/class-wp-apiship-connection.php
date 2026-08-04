@@ -74,7 +74,7 @@ if ( ! class_exists('WP_ApiShip_Connection') ) :
 		 */		
 		public function __construct($request) {
 			$this->providerKey  = $request['providerKey'];
-			$this->name		 	= esc_html__('Новое соединение для', 'wp-apiship').' '.$request['providerKey'];
+			$this->name		 	= esc_html__('Новое соединение для', 'apiship').' '.$request['providerKey'];
 		}	
 
 		/**

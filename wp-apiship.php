@@ -6,7 +6,7 @@
  *  Version: 1.7.1
  *  Author: 
  *  Author URI: https://apiship.ru/
- *  Text Domain: wp-apiship
+ *  Text Domain: apiship
  *  Domain Path: /languages
  *  License: GPLv3
  *  Requires at least: 6.0
@@ -42,7 +42,7 @@ define('WP_APISHIP_ACTIVATOR_WRITE_LOG', false);
  * иначе ядро пишет notice `_load_textdomain_just_in_time`.
  */
 add_action('init', function() {
-	load_plugin_textdomain( 'wp-apiship', false, dirname( plugin_basename(__FILE__) ) . '/languages' );
+	load_plugin_textdomain( 'apiship', false, dirname( plugin_basename(__FILE__) ) . '/languages' );
 });
 
 // Declare compatibility with WooCommerce features.
@@ -90,7 +90,7 @@ function wp_apiship_bootstrap() {
 
 		if ( is_admin() ) {
 			add_action('admin_notices', function () {
-				$message = esc_html__('WP ApiShip needs WooCommerce to run. Please, install and active WooCommerce plugin.', 'wp-apiship');
+				$message = esc_html__('WP ApiShip needs WooCommerce to run. Please, install and active WooCommerce plugin.', 'apiship');
 				printf('<div class="%1$s"><p>%2$s</p></div>', 'notice notice-error', $message);
 			});
 		}

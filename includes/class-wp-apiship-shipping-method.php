@@ -44,8 +44,8 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 			
 			$this->id                 = Options\WP_ApiShip_Options::SHIPPING_METHOD_ID;
 			$this->instance_id        = absint( $instance_id );
-			$this->method_title       = esc_html__('ApiShip integrator', 'wp-apiship');
-			$this->method_description = esc_html__('Select tariffs from various providers.', 'wp-apiship');
+			$this->method_title       = esc_html__('ApiShip integrator', 'apiship');
+			$this->method_description = esc_html__('Select tariffs from various providers.', 'apiship');
 			$this->supports           = array(
 				'shipping-zones',
 				'instance-settings',

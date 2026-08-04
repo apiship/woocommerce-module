@@ -30,19 +30,19 @@ ob_start();
 	<div class="card--item card--description"></div>
 	<div class="card--item card--point-in-id pickup-type">
 		<div class="caption">
-			<?php esc_html_e('Способ отгрузки заказов','wp-apiship'); ?>
+			<?php esc_html_e('Способ отгрузки заказов','apiship'); ?>
 		</div>
 		<div style="margin-top: 5px;"> 
 			<label class="provider-card-pickup-label">
-				<input {{pickuptype1}} type="checkbox" class="provider-card-pickup-select pickupType1" name="pickup_types[]" value="1"> <?php esc_html_e('Курьер службы доставки приезжает на мой склад за заказами', 'wp-apiship'); ?>
+				<input {{pickuptype1}} type="checkbox" class="provider-card-pickup-select pickupType1" name="pickup_types[]" value="1"> <?php esc_html_e('Курьер службы доставки приезжает на мой склад за заказами', 'apiship'); ?>
 			</label>
 			<label class="wpapiship-pickup-label">
-				<input {{pickuptype2}} type="checkbox" class="provider-card-pickup-select pickupType2" name="pickup_types[]" value="2"> <?php esc_html_e('Я сам привожу заказы в пункт приема службы доставки', 'wp-apiship'); ?>
+				<input {{pickuptype2}} type="checkbox" class="provider-card-pickup-select pickupType2" name="pickup_types[]" value="2"> <?php esc_html_e('Я сам привожу заказы в пункт приема службы доставки', 'apiship'); ?>
 			</label>
 		</div>
 		<div class="card--item pickup-point hidden">
 			<div class="caption">
-				<?php esc_html_e('Пункт приёма заказов в СД','wp-apiship'); ?>
+				<?php esc_html_e('Пункт приёма заказов в СД','apiship'); ?>
 			</div><?php 
 			$point_in_select_type = 'pickup';
 			require('point-in-select.php'); ?>

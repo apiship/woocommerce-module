@@ -377,7 +377,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 			$fields['order'][ Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META ] = array(
 				'type'		=> 'text',
-				'label'     => esc_html__('Пункт выдачи заказа','wp-apiship'),
+				'label'     => esc_html__('Пункт выдачи заказа','apiship'),
 				'required'  => false,
 				'class'     => $class,
 			);
@@ -433,7 +433,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 			$elem = '';
 
-			$buttonText = __('Выбрать ПВЗ', 'wp-apiship');
+			$buttonText = __('Выбрать ПВЗ', 'apiship');
 			$labelTariff = $tariff->tariffId;
 			$pointOutId = '0';
 			$pointName = '';
@@ -441,7 +441,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 			$tariffSelected = '0';
 
 			if (isset($tariff->isCached) and $tariff->isCached === true) {
-				$buttonText = __('Сменить ПВЗ', 'wp-apiship');
+				$buttonText = __('Сменить ПВЗ', 'apiship');
 				$pointOutId = $tariff->cachedData->point_id;
 				$pointName = $tariff->cachedData->name;
 				$pointAddress = $tariff->cachedData->address;
@@ -666,8 +666,8 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 			);
 
 			$description = sprintf(
-				esc_html__('Use of warehouse address instead of store address.', 'wp-apiship') . ' ' .
-				esc_html__('You can set it on %1sApiShip%2s tab.', 'wp-apiship'),
+				esc_html__('Use of warehouse address instead of store address.', 'apiship') . ' ' .
+				esc_html__('You can set it on %1sApiShip%2s tab.', 'apiship'),
 				'<a href="'.$apiship_tab_url.'">',
 				'</a>'
 			);
@@ -676,7 +676,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 			 * New setting.
 			 */
 			$new_setting = array(
-				'title' 	=> esc_html__('Warehouse address', 'wp-apiship'),
+				'title' 	=> esc_html__('Warehouse address', 'apiship'),
 				'desc' 		=> $description,
 				'id' 		=> 'wp_apiship_warehouse_address_use',
 				'default' 	=> 'no',
@@ -867,7 +867,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		public static function on__process_ajax() {
 
 			if ( ! isset( $_POST['request'] ) || ! is_array( $_POST['request'] ) ) {
-				wp_send_json_error( esc_html__( 'Некорректный запрос', 'wp-apiship' ) );
+				wp_send_json_error( esc_html__( 'Некорректный запрос', 'apiship' ) );
 			}
 
 			/**
@@ -877,11 +877,11 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 			$request = $_POST['request'];
 
 			if ( empty( $request['action'] ) || ! is_string( $request['action'] ) ) {
-				wp_send_json_error( esc_html__( 'Некорректный запрос', 'wp-apiship' ) );
+				wp_send_json_error( esc_html__( 'Некорректный запрос', 'apiship' ) );
 			}
 
 			if ( ! self::verify_ajax_request( $request['action'] ) ) {
-				wp_send_json_error( esc_html__( 'Security check failed', 'wp-apiship' ) );
+				wp_send_json_error( esc_html__( 'Security check failed', 'apiship' ) );
 			}
 
 			$response = array();
@@ -2191,13 +2191,13 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 			}
 
 			wp_register_style(
-				'wp-apiship',
+				'apiship',
 				self::$PLUGIN_DIR_URL . 'assets/css/wpapiship-admin' . self::SCRIPT_SUFFIX() . '.css',
 				array(),
 				WP_APISHIP_VERSION,
 				'all'
 			);
-			wp_enqueue_style('wp-apiship');
+			wp_enqueue_style('apiship');
 		}
 
 		/**
@@ -2292,22 +2292,22 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				}
 
 				$i18n = array();
-				$i18n['orderStatus']  	= esc_html__('Получение статуса заказа по номеру заказа в системе клиента (GET)', 'wp-apiship');
-				$i18n['orderInfo']    	= esc_html__('Получение информации по заказу (GET)', 'wp-apiship');
-				$i18n['orderCancel']  	= esc_html__('Отмена заказа (GET)', 'wp-apiship');
-				$i18n['orderDelete']  	= esc_html__('Удаление заказа (DELETE)','wp-apiship');
-				$i18n['Error'] 	      	= esc_html__('Error','wp-apiship');
-				$i18n['error'] 	      	= esc_html__('Error','wp-apiship');
-				$i18n['parsingError'] 	= esc_html__('Parsing error.', 'wp-apiship');
-				$i18n['orderExists']  	= esc_html__('В системе ApiShip существует заказ для #{{id}}','wp-apiship');
-				$i18n['incorrectToken'] = esc_html__('Некорректный ключ безопасности','wp-apiship');
-				$i18n['labelNotExists']	= esc_html__('Ярлык не доступен для скачивания','wp-apiship');
-				$i18n['connections']	= esc_html__('Соединений','wp-apiship');
-				$i18n['select']			= esc_html__('выбрать','wp-apiship');
-				$i18n['Select']			= esc_html__('Выбрать','wp-apiship');
-				$i18n['postamat']		= esc_html__('постамат','wp-apiship');
-				$i18n['Postamat']		= esc_html__('Постамат','wp-apiship');
-				$i18n['notYMap']		= esc_html__('Яндекс карты не загружены','wp-apiship');
+				$i18n['orderStatus']  	= esc_html__('Получение статуса заказа по номеру заказа в системе клиента (GET)', 'apiship');
+				$i18n['orderInfo']    	= esc_html__('Получение информации по заказу (GET)', 'apiship');
+				$i18n['orderCancel']  	= esc_html__('Отмена заказа (GET)', 'apiship');
+				$i18n['orderDelete']  	= esc_html__('Удаление заказа (DELETE)','apiship');
+				$i18n['Error'] 	      	= esc_html__('Error','apiship');
+				$i18n['error'] 	      	= esc_html__('Error','apiship');
+				$i18n['parsingError'] 	= esc_html__('Parsing error.', 'apiship');
+				$i18n['orderExists']  	= esc_html__('В системе ApiShip существует заказ для #{{id}}','apiship');
+				$i18n['incorrectToken'] = esc_html__('Некорректный ключ безопасности','apiship');
+				$i18n['labelNotExists']	= esc_html__('Ярлык не доступен для скачивания','apiship');
+				$i18n['connections']	= esc_html__('Соединений','apiship');
+				$i18n['select']			= esc_html__('выбрать','apiship');
+				$i18n['Select']			= esc_html__('Выбрать','apiship');
+				$i18n['postamat']		= esc_html__('постамат','apiship');
+				$i18n['Postamat']		= esc_html__('Постамат','apiship');
+				$i18n['notYMap']		= esc_html__('Яндекс карты не загружены','apiship');
 
 				$providersSectionUrl = add_query_arg(
 					array(
@@ -2451,10 +2451,10 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 			}
 
 			$i18n = array();
-			$i18n['connSuccessful'] = esc_html__('Connection successful.', 'wp-apiship');
-			$i18n['connFailed'] 	= esc_html__('Connection failed.', 'wp-apiship');
-			$i18n['connError'] 	    = esc_html__('Error', 'wp-apiship');
-			$i18n['Error'] 	    	= esc_html__('Error', 'wp-apiship');
+			$i18n['connSuccessful'] = esc_html__('Connection successful.', 'apiship');
+			$i18n['connFailed'] 	= esc_html__('Connection failed.', 'apiship');
+			$i18n['connError'] 	    = esc_html__('Error', 'apiship');
+			$i18n['Error'] 	    	= esc_html__('Error', 'apiship');
 
 			$data = array();
 			$data['wcSettingsPage'] = Options\WP_ApiShip_Options::get_wc_settings_page();
@@ -2506,7 +2506,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 					//
 			endswitch;
 
-			$data['nameTitle'] = esc_html__('Наименование','wp-apiship');
+			$data['nameTitle'] = esc_html__('Наименование','apiship');
 
 			wp_register_script(
 				'wpapiship-admin',
@@ -2544,11 +2544,11 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 			}
 
 			$i18n = array();
-			$i18n['postamat'] = esc_html__('постамат', 'wp-apiship');
-			$i18n['select']	  = esc_html__('выбрать','wp-apiship');
-			$i18n['Select']	  = esc_html__('Выбрать','wp-apiship');
-			$i18n['closeButtonCaption']  = esc_html__('Закрыть', 'wp-apiship');
-			$i18n['selectedPointButtonText']  = esc_html__('Сменить ПВЗ', 'wp-apiship');
+			$i18n['postamat'] = esc_html__('постамат', 'apiship');
+			$i18n['select']	  = esc_html__('выбрать','apiship');
+			$i18n['Select']	  = esc_html__('Выбрать','apiship');
+			$i18n['closeButtonCaption']  = esc_html__('Закрыть', 'apiship');
+			$i18n['selectedPointButtonText']  = esc_html__('Сменить ПВЗ', 'apiship');
 
 			$map_start 					= 'wpapiship-map-start';
 			$map_start_selector 		= '.wpapiship-map-start';
@@ -2682,13 +2682,13 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 			}
 
 			wp_register_style(
-				'wp-apiship',
+				'apiship',
 				self::$PLUGIN_DIR_URL . 'assets/css/wpapiship' . self::SCRIPT_SUFFIX() . '.css',
 				array(),
 				WP_APISHIP_VERSION,
 				'all'
 			);
-			wp_enqueue_style('wp-apiship');
+			wp_enqueue_style('apiship');
 		}
 
 
@@ -3000,7 +3000,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				$i++;
 			}
 
-			$title = esc_html__('ApiShip Order','wp-apiship');
+			$title = esc_html__('ApiShip Order','apiship');
 
 			$posts_columns =
 				array_slice( $posts_columns, 0, $i + 1 ) + array( 'wpapiship_order' => $title ) + array_slice( $posts_columns, $i + 1 );

@@ -550,8 +550,8 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 		 */	
 		public static function get_delivery_types() {
 			return array(
-				self::DELIVERY_BY_COURIER 	=> esc_html__('Доставка курьером','wp-apiship'),
-				self::DELIVERY_TO_POINT_OUT => esc_html__('Доставка на ПВЗ','wp-apiship'),
+				self::DELIVERY_BY_COURIER 	=> esc_html__('Доставка курьером','apiship'),
+				self::DELIVERY_TO_POINT_OUT => esc_html__('Доставка на ПВЗ','apiship'),
 			);
 		}
 		
@@ -578,8 +578,8 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 		 */			
 		public static function get_pickup_types() {
 			return array(
-				1 => esc_html__('Отгрузка груза курьером','wp-apiship'),
-				2 => esc_html__('Отгрузка груза на ПВЗ','wp-apiship'),
+				1 => esc_html__('Отгрузка груза курьером','apiship'),
+				2 => esc_html__('Отгрузка груза на ПВЗ','apiship'),
 			);			
 		}
 		
@@ -741,7 +741,7 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 			self::$metabox_fields = array(
 				'pickupDate' => array( 
 					'requestID'	  => 'pickupDate',
-					'caption'     => esc_html__('Дата передачи груза в службу доставки','wp-apiship'),
+					'caption'     => esc_html__('Дата передачи груза в службу доставки','apiship'),
 					'type' 	      => 'date',
 					'name' 	      => 'wpapiship-pickup-date',
 					'id'   	   	  => 'wpapiship-pickup-date',
@@ -751,7 +751,7 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 				),
 				'contactName' => array( 
 					'requestID'	  => 'contactName',
-					'caption' 	  => esc_html__('ФИО контактного лица','wp-apiship'),
+					'caption' 	  => esc_html__('ФИО контактного лица','apiship'),
 					'type' 	   	  => 'text',
 					'name' 	   	  => 'wpapiship-contact-name',
 					'id'   	   	  => 'wpapiship-contact-name',
@@ -762,7 +762,7 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 				),
 				'phone' => array( 
 					'requestID'	  => 'phone',
-					'caption' 	  => esc_html__('Телефон','wp-apiship'),
+					'caption' 	  => esc_html__('Телефон','apiship'),
 					'type' 	   	  => 'text',
 					'name' 	   	  => 'wpapiship-phone',
 					'id'   	   	  => 'wpapiship-phone',
@@ -773,7 +773,7 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 				),				
 				'pointInId' => array( 
 					'requestID'	  => 'pointInId',
-					'caption' 	  => esc_html__('ID пункта приёма','wp-apiship'),
+					'caption' 	  => esc_html__('ID пункта приёма','apiship'),
 					'type' 	   	  => 'text',
 					'name' 	   	  => 'wpapiship-point-in-id',
 					'id'   	   	  => 'wpapiship-point-in-id',
@@ -783,7 +783,7 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 				),
 				'pointInAddress' => array( 
 					'requestID'	  => 'pointInAddress',
-					'caption' 	  => esc_html__('Адрес','wp-apiship'),
+					'caption' 	  => esc_html__('Адрес','apiship'),
 					'type' 	   	  => 'text',
 					'name' 	   	  => 'wpapiship-point-in-address',
 					'id'   	   	  => 'wpapiship-point-in-address',
@@ -792,7 +792,7 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 				),
 				'pointOutId' => array( 
 					'requestID'	  => 'pointOutId',
-					'caption' 	  => esc_html__('ID пункта выдачи','wp-apiship'),
+					'caption' 	  => esc_html__('ID пункта выдачи','apiship'),
 					'type' 	   	  => 'text',
 					'name' 	   	  => 'wpapiship-point-out-id',
 					'id'   	   	  => 'wpapiship-point-out-id',
@@ -802,7 +802,7 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 				),
 				'pointOutAddress' => array( 
 					'requestID'	  => 'pointOutAddress',
-					'caption' 	  => esc_html__('Адрес','wp-apiship'),
+					'caption' 	  => esc_html__('Адрес','apiship'),
 					'type' 	   	  => 'text',
 					'name' 	   	  => 'wpapiship-point-out-address',
 					'id'   	   	  => 'wpapiship-point-out-address',

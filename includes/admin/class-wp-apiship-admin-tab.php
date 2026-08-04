@@ -149,7 +149,7 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 		 * @since 1.0.0
 		 */
 		public function fiter__add_tab($settings_tabs) {
-			$settings_tabs[$this->id] = esc_html__('ApiShip', 'wp-apiship');
+			$settings_tabs[$this->id] = esc_html__('ApiShip', 'apiship');
 			return $settings_tabs;
 		}
 
@@ -161,9 +161,9 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 		public function get_sections(){
 
 			$sections = array(
-				'' 			=> esc_html__('General', 'wp-apiship'),
-				'providers' => esc_html__('Providers', 'wp-apiship'),
-				// 'docs' 		=> esc_html__('Docs', 'wp-apiship'),
+				'' 			=> esc_html__('General', 'apiship'),
+				'providers' => esc_html__('Providers', 'apiship'),
+				// 'docs' 		=> esc_html__('Docs', 'apiship'),
 			);
 
 			if ( WP_ApiShip\WP_ApiShip_Core::is_godmode(false) ) {
@@ -277,7 +277,7 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 				)
 			);
 			if ( wp_remote_retrieve_response_code($response) !== WP_ApiShip_HTTP::OK ) {
-				WC_Admin_Settings::add_error( esc_html__( 'Ошибка проверки токена, укажите корректный токен', 'wp-apiship' ) );
+				WC_Admin_Settings::add_error( esc_html__( 'Ошибка проверки токена, укажите корректный токен', 'apiship' ) );
 			}
 		}
 		
@@ -290,13 +290,13 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 
 			$settings = array(
 				'section_title' => array(
-					'name' 	=> esc_html__('Список доступных Служб Доставки', 'wp-apiship'),
+					'name' 	=> esc_html__('Список доступных Служб Доставки', 'apiship'),
 					'type' 	=> 'title',
 					'desc' 	=> '',
 					'id' 	=> 'wp_apiship_section_providers'
 				),
 				'providers_form' => array(
-					#'name'	 	  => esc_html__('Кликайте по карточке для получения информации о тарифах и количестве подключений','wp-apiship'),
+					#'name'	 	  => esc_html__('Кликайте по карточке для получения информации о тарифах и количестве подключений','apiship'),
 					'name'	 	  => '',
 					'type' 		  => 'providers', # @see action `woocommerce_admin_field_providers`
 					'class' 	  => 'wp-apiship-admin-tab-field',
@@ -324,7 +324,7 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 			
 			$settings = array(
 				array(
-					'name' 	=> esc_html__('Наклейки заказов', 'wp-apiship'),
+					'name' 	=> esc_html__('Наклейки заказов', 'apiship'),
 					'type' 	=> 'title',
 					'desc' 	=> '',
 					'id' 	=> 'wp_apiship_section_docs'
@@ -360,7 +360,7 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 				 * Main.
 				 */
 				array(
-					'name' 	=> esc_html__('Настройки подключения к сервису ApiShip','wp-apiship'),
+					'name' 	=> esc_html__('Настройки подключения к сервису ApiShip','apiship'),
 					'type'	=> 'title',
 					'desc' 	=> '',
 					'id' 	=> 'wp_apiship_section_connection'
@@ -375,11 +375,11 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 					'save' 		=> true
 				),				
 				array(
-					'name' 	=> esc_html__('Token', 'wp-apiship'),
+					'name' 	=> esc_html__('Token', 'apiship'),
 					'type' 	=> 'password',
 					'class' => 'wp-apiship-admin-tab-field options-field',
-					'desc' 	=>  esc_html__('Скопируйте токен из личного кабинета ApiShip (Dashboard - Главная страница)', 'wp-apiship'),
-					'desc_tip' 	  => esc_html__('You should get a token for authorization', 'wp-apiship'),
+					'desc' 	=>  esc_html__('Скопируйте токен из личного кабинета ApiShip (Dashboard - Главная страница)', 'apiship'),
+					'desc_tip' 	  => esc_html__('You should get a token for authorization', 'apiship'),
 					'id' 		  => 'wp_apiship_token',
 					'placeholder' => ''
 				),
@@ -391,7 +391,7 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 				 * Store address.
 				 */
 				array(
-					'name' 	=> esc_html__('Store address', 'wp-apiship'),
+					'name' 	=> esc_html__('Store address', 'apiship'),
 					'type'	=> 'title',
 					'desc' 	=> '',
 					'id' 	=> 'wp_apiship_section_store_address'
@@ -403,19 +403,19 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 					'class'		=> 'wp-apiship-remove-self',
 					'type' 		=> 'checkbox',
 					'desc' 		=> sprintf(
-						esc_html__('You can set the store address on the Woocommerce %sGeneral%s tab.', 'wp-apiship'),
+						esc_html__('You can set the store address on the Woocommerce %sGeneral%s tab.', 'apiship'),
 						'<a href="'.WP_ApiShip\WP_ApiShip_Core::get_admin_url(array('page'=>'wc-settings','tab'=>'general')).'">',
 						'</a>'
 					),
 				),
 				array(
-					'title' => esc_html__('Contact name', 'wp-apiship'),
+					'title' => esc_html__('Contact name', 'apiship'),
 					'type'  => 'text',
 					'id'    => 'wp_apiship_store_contact_name',
-					'desc' 	=> esc_html__("The contact name will be indicated in the sender's address", 'wp-apiship'),
+					'desc' 	=> esc_html__("The contact name will be indicated in the sender's address", 'apiship'),
 				),
 				array(
-					'title' => esc_html__('Phone', 'wp-apiship'),
+					'title' => esc_html__('Phone', 'apiship'),
 					'type'  => 'text',
 					'id'    => 'wp_apiship_store_phone',
 					'desc' 	=> '',
@@ -428,37 +428,37 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 				 * Warehouse address.
 				 */				
 				array(
-					'name' 	=> esc_html__('Warehouse address', 'wp-apiship'),
+					'name' 	=> esc_html__('Warehouse address', 'apiship'),
 					'type'	=> 'title',
 					'desc' 	=> '',
 					'id' 	=> 'wp_apiship_section_warehouse_address'
 				),
 				array(
-					'desc' 		=> esc_html__('Use of warehouse address instead of store address.', 'wp-apiship'),
+					'desc' 		=> esc_html__('Use of warehouse address instead of store address.', 'apiship'),
 					'id' 		=> 'wp_apiship_warehouse_address_use',
 					'default' 	=> 'no',
 					'type' 		=> 'checkbox',
 				),
 				array(
-					'title' => esc_html__('Address line 1', 'wp-apiship'),
+					'title' => esc_html__('Address line 1', 'apiship'),
 					'type'  => 'text',
-					#'desc'  => esc_html__('This is where your business is located. Tax rates and shipping rates will use this address.', 'wp-apiship'),
-					'desc'  => esc_html__('Место где расположен ваш склад. Расчёт стоимости доставки будет производиться учитывая данный адрес.', 'wp-apiship'),
+					#'desc'  => esc_html__('This is where your business is located. Tax rates and shipping rates will use this address.', 'apiship'),
+					'desc'  => esc_html__('Место где расположен ваш склад. Расчёт стоимости доставки будет производиться учитывая данный адрес.', 'apiship'),
 					'id'    => 'wp_apiship_warehouse_address',
 				),
 				array(
-					'title' => esc_html__('Address line 2', 'wp-apiship'),
+					'title' => esc_html__('Address line 2', 'apiship'),
 					'type'  => 'text',
 					'id'    => 'wp_apiship_warehouse_address_2',
 				),				
 				array(
-					'title' => esc_html__('City', 'wp-apiship'),
+					'title' => esc_html__('City', 'apiship'),
 					'type'  => 'text',
 					'id'    => 'wp_apiship_warehouse_city',
 				),
 				array(
-					'title'   => esc_html__('Country / State', 'wp-apiship'),
-					'desc'    => esc_html__('Устанавливается на странице настроек Woocommerce, вкладка General', 'wp-apiship' ), # WC()->countries->countries['RU'];
+					'title'   => esc_html__('Country / State', 'apiship'),
+					'desc'    => esc_html__('Устанавливается на странице настроек Woocommerce, вкладка General', 'apiship' ), # WC()->countries->countries['RU'];
 					'type'    => 'text',
 					'id'      => 'wp_apiship_warehouse_country',
 					'default' => Options\WP_ApiShip_Options::get_wc_option(
@@ -471,18 +471,18 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 					),
 				),
 				array(
-					'title' => esc_html__('Postcode / ZIP', 'wp-apiship'),
+					'title' => esc_html__('Postcode / ZIP', 'apiship'),
 					'type'  => 'text',
 					'id'    => 'wp_apiship_warehouse_index',
 				),
 				array(
-					'title' => esc_html__('Contact name', 'wp-apiship'),
+					'title' => esc_html__('Contact name', 'apiship'),
 					'type'  => 'text',
 					'id'    => 'wp_apiship_warehouse_contact_name',
-					'desc' 	=> esc_html__("The contact name will be indicated in the sender's address", 'wp-apiship'),
+					'desc' 	=> esc_html__("The contact name will be indicated in the sender's address", 'apiship'),
 				),
 				array(
-					'title' => esc_html__('Phone', 'wp-apiship'),
+					'title' => esc_html__('Phone', 'apiship'),
 					'type'  => 'text',
 					'id'    => 'wp_apiship_warehouse_phone',
 					'desc' 	=> '',
@@ -495,13 +495,13 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 				 * Dimensions and weight of product.
 				 */
 				array(
-					'title' => esc_html__('Dimensions of product by default', 'wp-apiship'),
+					'title' => esc_html__('Dimensions of product by default', 'apiship'),
 					'type'  => 'title',
 					'id'    => 'wp_apiship_section_dimensions',
 				),
 				array(
-					'title' 	=> esc_html__('Default item length (cm)', 'wp-apiship'),
-					'desc'  	=> esc_html__('Default item length if it not specified', 'wp-apiship' ),
+					'title' 	=> esc_html__('Default item length (cm)', 'apiship'),
+					'desc'  	=> esc_html__('Default item length if it not specified', 'apiship' ),
 					'type'  	=> 'number', #'text',
 					'id'    	=> 'wp_apiship_length',
 					'default'	=> Options\WP_ApiShip_Options::get_wc_option(
@@ -512,8 +512,8 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 					'placeholder' => Options\WP_ApiShip_Options::ITEM_LENGTH
 				),
 				array(
-					'title' 	=> esc_html__('Default item width (cm)', 'wp-apiship'),
-					'desc'  	=> esc_html__('Default item width if it not specified', 'wp-apiship' ),
+					'title' 	=> esc_html__('Default item width (cm)', 'apiship'),
+					'desc'  	=> esc_html__('Default item width if it not specified', 'apiship' ),
 					'type'  	=> 'number',
 					'id'    	=> 'wp_apiship_width',
 					'default'	=> Options\WP_ApiShip_Options::get_wc_option(
@@ -524,8 +524,8 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 					'placeholder' => Options\WP_ApiShip_Options::ITEM_WIDTH
 				),
 				array(
-					'title' 	=> esc_html__('Default item height (cm)', 'wp-apiship'),
-					'desc'  	=> esc_html__('Default item height if it not specified', 'wp-apiship' ),
+					'title' 	=> esc_html__('Default item height (cm)', 'apiship'),
+					'desc'  	=> esc_html__('Default item height if it not specified', 'apiship' ),
 					'type'  	=> 'number',
 					'id'    	=> 'wp_apiship_height',
 					'default'   => Options\WP_ApiShip_Options::get_wc_option(
@@ -537,8 +537,8 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 					'min' => 1
 				),
 				array(
-					'title' 	=> esc_html__('Default item weight (g)', 'wp-apiship'),
-					'desc'  	=> esc_html__('Default item weight if it not specified', 'wp-apiship' ),
+					'title' 	=> esc_html__('Default item weight (g)', 'apiship'),
+					'desc'  	=> esc_html__('Default item weight if it not specified', 'apiship' ),
 					'type'  	=> 'number',
 					'id'    	=> 'wp_apiship_weight',
 					'default'   => Options\WP_ApiShip_Options::get_wc_option(
@@ -556,12 +556,12 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 				 * Default cargo place params
 				 */
 				array(
-					'title' => esc_html__('Параметры грузоместа (используются, если заполнено)', 'wp-apiship'),
+					'title' => esc_html__('Параметры грузоместа (используются, если заполнено)', 'apiship'),
 					'type'  => 'title',
 					'id'    => 'wp_apiship_section_place',
 				),
 				array(
-					'title' 	=> esc_html__('Длина (см)', 'wp-apiship'),
+					'title' 	=> esc_html__('Длина (см)', 'apiship'),
 					'desc'  	=> '',
 					'type'  	=> 'number',
 					'id'    	=> 'wp_apiship_place_length',
@@ -570,10 +570,10 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 						'',
 						false
 					),
-					'placeholder' => esc_html__('Длина (см)', 'wp-apiship'),
+					'placeholder' => esc_html__('Длина (см)', 'apiship'),
 				),
 				array(
-					'title' 	=> esc_html__('Высота (см)', 'wp-apiship'),
+					'title' 	=> esc_html__('Высота (см)', 'apiship'),
 					'desc'  	=> '',
 					'type'  	=> 'number',
 					'id'    	=> 'wp_apiship_place_height',
@@ -582,10 +582,10 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 						'',
 						false
 					),
-					'placeholder' => esc_html__('Высота (см)', 'wp-apiship'),
+					'placeholder' => esc_html__('Высота (см)', 'apiship'),
 				),
 				array(
-					'title' 	=> esc_html__('Ширина (см)', 'wp-apiship'),
+					'title' 	=> esc_html__('Ширина (см)', 'apiship'),
 					'desc'  	=> '',
 					'type'  	=> 'number', #'text',
 					'id'    	=> 'wp_apiship_place_width',
@@ -594,10 +594,10 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 						'',
 						false
 					),
-					'placeholder' => esc_html__('Ширина (см)', 'wp-apiship'),
+					'placeholder' => esc_html__('Ширина (см)', 'apiship'),
 				),
 				array(
-					'title' 	=> esc_html__('Вес места (гр)', 'wp-apiship'),
+					'title' 	=> esc_html__('Вес места (гр)', 'apiship'),
 					'desc'  	=> '',
 					'type'  	=> 'number',
 					'id'    	=> 'wp_apiship_place_weight',
@@ -606,10 +606,10 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 						'',
 						false
 					),
-					'placeholder' => esc_html__('Вес места (гр)', 'wp-apiship'),
+					'placeholder' => esc_html__('Вес места (гр)', 'apiship'),
 				),
 				array(
-					'title' 	=> esc_html__('Вес упаковки (гр)', 'wp-apiship'),
+					'title' 	=> esc_html__('Вес упаковки (гр)', 'apiship'),
 					'desc'  	=> '',
 					'type'  	=> 'number',
 					'id'    	=> 'wp_apiship_place_package_weight',
@@ -618,7 +618,7 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 						'',
 						false
 					),
-					'placeholder' => esc_html__('Вес упаковки (гр)', 'wp-apiship'),
+					'placeholder' => esc_html__('Вес упаковки (гр)', 'apiship'),
 				),
 				array(
 					'type'  => 'sectionend',
@@ -628,21 +628,21 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 				 * Commission.
 				 */
 				array(
-					'name' 	=> esc_html__('Commission', 'wp-apiship'),
+					'name' 	=> esc_html__('Commission', 'apiship'),
 					'type'	=> 'title',
 					'desc' 	=> '',
 					'id' 	=> 'wp_apiship_section_commission_settings'
 				),
 				array(
-					'title' 	=> esc_html__('Commission', 'wp-apiship'),
+					'title' 	=> esc_html__('Commission', 'apiship'),
 					'type'  	=> 'radio', # @see woocommerce\includes\admin\class-wc-admin-settings.php
 					'id'    	=> 'wp_apiship_include_fees',
 					'default'   => 'yes',
 					'options'   => array(
-						#'yes' => esc_html__('Включать в стоимость доставки комиссию за наложенный платёж и страховку', 'wp-apiship'),
-						'yes' => esc_html__('Include COD and insurance fees commission in shipping costs', 'wp-apiship'),
-						#'no'  => esc_html__('Комиссия за наложенный платёж и страховку в стоимость не включена', 'wp-apiship'),
-						'no'  => esc_html__('Do not include COD and insurance fees commission in shipping costs', 'wp-apiship'),
+						#'yes' => esc_html__('Включать в стоимость доставки комиссию за наложенный платёж и страховку', 'apiship'),
+						'yes' => esc_html__('Include COD and insurance fees commission in shipping costs', 'apiship'),
+						#'no'  => esc_html__('Комиссия за наложенный платёж и страховку в стоимость не включена', 'apiship'),
+						'no'  => esc_html__('Do not include COD and insurance fees commission in shipping costs', 'apiship'),
 					),
 					'autoload' => true, #this is 3-rd option in `update_option` function.
 				),
@@ -656,7 +656,7 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 				 * @since 1.4.0
 				 */
 				array(
-					'name' 	=> esc_html__('Настройки шаблона пунктов доставки', 'wp-apiship'),
+					'name' 	=> esc_html__('Настройки шаблона пунктов доставки', 'apiship'),
 					'type'	=> 'title',
 					'desc' 	=> '',
 					'id' 	=> 'wp_apiship_section_points_template_setting'
@@ -666,12 +666,12 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 					'type'  	  => 'textarea',
 					'id'    	  => 'wp_apiship_points_template',
 					'desc' 	=> implode('<br>', [
-						'<strong>%type</strong> - ' . esc_html__('тип доставки', 'wp-apiship'),
-						'<strong>%company</strong> - ' . esc_html__('транспортная компания', 'wp-apiship'),
-						'<strong>%name</strong> - ' . esc_html__('название ПВЗ', 'wp-apiship'),
-						'<strong>%address</strong> - ' . esc_html__('адрес ПВЗ', 'wp-apiship'),
-						'<strong>%tariff</strong> - ' . esc_html__('название тарифа', 'wp-apiship'),
-						'<strong>%time</strong> - ' . esc_html__('сроки доставки', 'wp-apiship'),
+						'<strong>%type</strong> - ' . esc_html__('тип доставки', 'apiship'),
+						'<strong>%company</strong> - ' . esc_html__('транспортная компания', 'apiship'),
+						'<strong>%name</strong> - ' . esc_html__('название ПВЗ', 'apiship'),
+						'<strong>%address</strong> - ' . esc_html__('адрес ПВЗ', 'apiship'),
+						'<strong>%tariff</strong> - ' . esc_html__('название тарифа', 'apiship'),
+						'<strong>%time</strong> - ' . esc_html__('сроки доставки', 'apiship'),
 						'<div style="height: 5px;"></div>'
 					]),
 					'default'	=> Options\WP_ApiShip_Options::get_wc_option(
@@ -691,7 +691,7 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 				 * @since 1.4.0
 				 */
 				array(
-					'name' 	=> esc_html__('Параметры сопоставления статусов', 'wp-apiship'),
+					'name' 	=> esc_html__('Параметры сопоставления статусов', 'apiship'),
 					'type'	=> 'title',
 					'desc' 	=> '',
 					'id' 	=> 'wp_apiship_section_mapping_setting'
@@ -708,20 +708,20 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 				 * Point out display mode.
 				 */
 				array(
-					'name' 	=> esc_html__('Настройка вывода ПВЗ', 'wp-apiship'),
+					'name' 	=> esc_html__('Настройка вывода ПВЗ', 'apiship'),
 					'type'	=> 'title',
 					'desc' 	=> '',
 					'id' 	=> 'wp_apiship_section_point_out_display_settings'
 				),
 				array(
-					'title' 	=> esc_html__('Выберите один из режимов', 'wp-apiship'),
+					'title' 	=> esc_html__('Выберите один из режимов', 'apiship'),
 					'type'  	=> 'radio', # @see woocommerce\includes\admin\class-wc-admin-settings.php
 					'id'    	=> 'wp_apiship_point_out_display_mode',
 					'default'   => '1',
 					'options'   => array(
-						'1' => esc_html__('Отдельный способ доставки до ПВЗ для каждого тарифа', 'wp-apiship'),
-						'2' => esc_html__('Отдельный способ доставки до ПВЗ для каждой СД', 'wp-apiship'),
-						'3' => esc_html__('Все ПВЗ на одной карте', 'wp-apiship'),
+						'1' => esc_html__('Отдельный способ доставки до ПВЗ для каждого тарифа', 'apiship'),
+						'2' => esc_html__('Отдельный способ доставки до ПВЗ для каждой СД', 'apiship'),
+						'3' => esc_html__('Все ПВЗ на одной карте', 'apiship'),
 					),
 					'autoload' => true, #this is 3-rd option in `update_option` function.
 				),
@@ -733,18 +733,18 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 				 * Other settings.
 				 */
 				array(
-					'name' 	=> esc_html__('Others', 'wp-apiship'),
+					'name' 	=> esc_html__('Others', 'apiship'),
 					'type'	=> 'title',
 					'desc' 	=> '',
 					'id' 	=> 'wp_apiship_section_others_settings'
 				),
 				array(
-					'desc' 		=> esc_html__('Using only selected providers', 'wp-apiship'),
+					'desc' 		=> esc_html__('Using only selected providers', 'apiship'),
 					'type' 		=> 'checkbox',
 					'id' 		=> 'wp_apiship_use_selected_providers',
 					'default' 	=> 'no',
 					'desc_tip' 	=> sprintf(
-						esc_html__('You can set the list of providers on %sProviders%s section', 'wp-apiship'),
+						esc_html__('You can set the list of providers on %sProviders%s section', 'apiship'),
 						'<a href="'.WP_ApiShip\WP_ApiShip_Core::get_admin_url(
 							array(
 								'page'    => Options\WP_ApiShip_Options::get_wc_settings_page(),
@@ -756,26 +756,26 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 					),
 				),				
 				array(
-					'name' 	=> esc_html__('Timezone', 'wp-apiship'),
+					'name' 	=> esc_html__('Timezone', 'apiship'),
 					'type' 	=> 'timezone',  # @see `on__wc_field_timezone`.
 					'class' => 'wp-apiship-admin-tab-field options-field',
 					'desc' 	=>  sprintf(
-						esc_html__('Order dispatch date (pickupDate) will be set according to %sTimezone%s', 'wp-apiship'),
+						esc_html__('Order dispatch date (pickupDate) will be set according to %sTimezone%s', 'apiship'),
 						'<a href="'.WP_ApiShip\WP_ApiShip_Core::get_admin_url('options-general.php').'" target="_blank">',
 						'</a>'
 					),
-					'desc_tip' 	  => esc_html__('You can set Timezone on General Settings page', 'wp-apiship'),
+					'desc_tip' 	  => esc_html__('You can set Timezone on General Settings page', 'apiship'),
 					'id' 		  => 'wp_apiship_timezone',
 					'placeholder' => '',
 					'save' 		  => false		
 				),				
 				array(
-					'title' 	  => esc_html__('Yandex map API key', 'wp-apiship'),
+					'title' 	  => esc_html__('Yandex map API key', 'apiship'),
 					'type'  	  => 'text',
 					'id'    	  => 'wp_apiship_yandexmap_key',
-					'desc' 		  => esc_html__('For correct operation, you should set your own Yandex map key.','wp-apiship'),
+					'desc' 		  => esc_html__('For correct operation, you should set your own Yandex map key.','apiship'),
 					'placeholder' => Options\WP_ApiShip_Options::YANDEX_MAP_DEFAULT_KEY,
-					'desc_tip' 	  => esc_html__('We provide a default key, but no guarantee of correct operation', 'wp-apiship'),
+					'desc_tip' 	  => esc_html__('We provide a default key, but no guarantee of correct operation', 'apiship'),
 				),
 				array(
 					'type'  => 'sectionend',

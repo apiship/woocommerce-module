@@ -15,8 +15,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 <ul class="subsubsub">
   <?php foreach ($sections as $id => $label) : ?>
 	<li>
-		<a href="<?php echo admin_url('admin.php?page=wc-settings&tab=' . $this->id . '&section=' . $id); ?>"
-			class="<?php echo ($current_section == $id ? 'current' : ''); ?>"><?php esc_html_e($label); ?>
+		<a href="<?php echo esc_url( admin_url('admin.php?page=wc-settings&tab=' . $this->id . '&section=' . $id) ); ?>"
+			class="<?php echo ($current_section == $id ? 'current' : ''); ?>"><?php echo esc_html( $label ); ?>
 		</a>
 	</li> | 
   <?php endforeach; ?>

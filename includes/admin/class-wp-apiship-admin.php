@@ -134,11 +134,11 @@ if ( ! class_exists('WP_ApiShip_Admin') ) :
 
 			if (!empty($data->success)) {
 				$class = 'notice-success success';
-				$defaultMessage = esc_html__('Запрос успешно обработан.', 'wp-apiship');
+				$defaultMessage = esc_html__('Запрос успешно обработан.', 'apiship');
 				foreach ((array) $data->success as $url) {
 					$message = $defaultMessage
 						. ' <a target="_blank" href="' . esc_url($url) . '">'
-						. esc_html__('Скачать файл', 'wp-apiship') . '</a>';
+						. esc_html__('Скачать файл', 'apiship') . '</a>';
 					self::display_notice($message, $class);
 				}
 			}
@@ -287,7 +287,7 @@ if ( ! class_exists('WP_ApiShip_Admin') ) :
 					$response['success'] = 'error';
 					$errors[] = !empty($body->message)
 						? $body->message
-						: esc_html__('Не удалось получить ответ от ApiShip', 'wp-apiship');
+						: esc_html__('Не удалось получить ответ от ApiShip', 'apiship');
 					if (!empty($body->errors)) {
 						foreach($body->errors as $error) {
 							$errors[] = esc_html__('Ошибка валидации. Поле ') . $error->field . ': ' . $error->message;
@@ -312,8 +312,8 @@ if ( ! class_exists('WP_ApiShip_Admin') ) :
 		 * @since 1.0.0
 		 */
 		public function filter__add_actions($bulk_actions) {
-			$bulk_actions[ Options\WP_ApiShip_Options::PRINT_LABELS_ACTION ] = esc_html__('Печать наклеек','wp-apiship');
-			$bulk_actions[ Options\WP_ApiShip_Options::PRINT_WAYBILLS_ACTION ] = esc_html__('Печать акта приема-передачи','wp-apiship');	
+			$bulk_actions[ Options\WP_ApiShip_Options::PRINT_LABELS_ACTION ] = esc_html__('Печать наклеек','apiship');
+			$bulk_actions[ Options\WP_ApiShip_Options::PRINT_WAYBILLS_ACTION ] = esc_html__('Печать акта приема-передачи','apiship');	
 			return $bulk_actions;
 		}
 		

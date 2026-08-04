@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 $settings = array(
 	# Main title.
 	array(
-		'title' => esc_html__('ApiShip', 'wp-apiship'),
+		'title' => esc_html__('ApiShip', 'apiship'),
 		'type'  => 'title',
 		'id'    => 'wp_apiship_section_title',
 	),
@@ -27,7 +27,7 @@ $settings = array(
 	),
 	# Warehouse address.
 	array(
-		'title' => esc_html__('Адрес склада', 'wp-apiship'),
+		'title' => esc_html__('Адрес склада', 'apiship'),
 		'type'  => 'title',
 		'id'    => 'wp_apiship_section_warehouse_address',
 	),	
@@ -42,27 +42,27 @@ $settings = array(
 		#'save' 		=> true
 	),	
 	array(
-		'title' 	=> esc_html__('Адрес', 'wp-apiship'),
-		#'desc'  	=> esc_html__('', 'wp-apiship' ),
+		'title' 	=> esc_html__('Адрес', 'apiship'),
+		#'desc'  	=> esc_html__('', 'apiship' ),
 		'type'  	=> 'text',
 		'id'    	=> 'wp_apiship_warehouse_address',
 	),	
 	array(
-		'title' 	=> esc_html__('Город', 'wp-apiship'),
-		#'desc'  	=> esc_html__('', 'wp-apiship' ),
+		'title' 	=> esc_html__('Город', 'apiship'),
+		#'desc'  	=> esc_html__('', 'apiship' ),
 		'type'  	=> 'text',
 		'id'    	=> 'wp_apiship_warehouse_city',
 	),	
 	array(
-		'title' 	=> esc_html__('Страна/Регион', 'wp-apiship'),
-		#'desc'  	=> esc_html__('', 'wp-apiship' ),
+		'title' 	=> esc_html__('Страна/Регион', 'apiship'),
+		#'desc'  	=> esc_html__('', 'apiship' ),
 		'type'  	=> 'text',
 		'id'    	=> 'wp_apiship_warehouse_country',
 		'placeholder' => Options\WP_ApiShip_Options::WС_DEFAULT_COUNTRY
 	),
 	array(
-		'title' 	=> esc_html__('Почтовый индекс', 'wp-apiship'),
-		#'desc'  	=> esc_html__('', 'wp-apiship' ),
+		'title' 	=> esc_html__('Почтовый индекс', 'apiship'),
+		#'desc'  	=> esc_html__('', 'apiship' ),
 		'type'  	=> 'text',
 		'id'    	=> 'wp_apiship_warehouse_index',
 	),	
@@ -72,13 +72,13 @@ $settings = array(
 	),	
 	# Dimensions of product.
 	array(
-		'title' => esc_html__('Dimensions of product by default', 'wp-apiship'),
+		'title' => esc_html__('Dimensions of product by default', 'apiship'),
 		'type'  => 'title',
 		'id'    => 'wp_apiship_section_dimensions',
 	),
 	array(
-		'title' 	=> esc_html__('Default item length (cm)', 'wp-apiship'),
-		'desc'  	=> esc_html__('Default item length if it not specified', 'wp-apiship' ),
+		'title' 	=> esc_html__('Default item length (cm)', 'apiship'),
+		'desc'  	=> esc_html__('Default item length if it not specified', 'apiship' ),
 		'type'  	=> 'number', #'text',
 		'id'    	=> 'wp_apiship_length',
 		'default'	=> Options\WP_ApiShip_Options::get_wc_option(
@@ -89,8 +89,8 @@ $settings = array(
 		'placeholder' => Options\WP_ApiShip_Options::ITEM_LENGTH
 	),
 	array(
-		'title' 	=> esc_html__('Default item width (cm)', 'wp-apiship'),
-		'desc'  	=> esc_html__('Default item width if it not specified', 'wp-apiship' ),
+		'title' 	=> esc_html__('Default item width (cm)', 'apiship'),
+		'desc'  	=> esc_html__('Default item width if it not specified', 'apiship' ),
 		'type'  	=> 'number',
 		'id'    	=> 'wp_apiship_width',
 		'default'	=> Options\WP_ApiShip_Options::get_wc_option(
@@ -101,8 +101,8 @@ $settings = array(
 		'placeholder' => Options\WP_ApiShip_Options::ITEM_WIDTH
 	),
 	array(
-		'title' 	=> esc_html__('Default item height (cm)', 'wp-apiship'),
-		'desc'  	=> esc_html__('Default item height if it not specified', 'wp-apiship' ),
+		'title' 	=> esc_html__('Default item height (cm)', 'apiship'),
+		'desc'  	=> esc_html__('Default item height if it not specified', 'apiship' ),
 		'type'  	=> 'number',
 		'id'    	=> 'wp_apiship_height',
 		'default'   => Options\WP_ApiShip_Options::get_wc_option(
@@ -119,13 +119,13 @@ $settings = array(
 	),
 	# Weight of product.
 	array(
-		'title' => esc_html__('Weight of product by default', 'wp-apiship'),
+		'title' => esc_html__('Weight of product by default', 'apiship'),
 		'type'  => 'title',
 		'id'    => 'wp_apiship_section_weight',
 	),
 	array(
-		'title' 	=> esc_html__('Default item weight (g)', 'wp-apiship'),
-		'desc'  	=> esc_html__('Default item weight if it not specified', 'wp-apiship' ),
+		'title' 	=> esc_html__('Default item weight (g)', 'apiship'),
+		'desc'  	=> esc_html__('Default item weight if it not specified', 'apiship' ),
 		'type'  	=> 'number',
 		'id'    	=> 'wp_apiship_weight',
 		'default'   => Options\WP_ApiShip_Options::get_wc_option(

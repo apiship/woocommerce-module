@@ -190,3 +190,6 @@ msgstr "Вы должны получить токен для авторизац�
 
 #~ msgid "Guide"
 #~ msgstr "Руководство"
+
+msgid "Shipping"
+msgstr "Доставка"

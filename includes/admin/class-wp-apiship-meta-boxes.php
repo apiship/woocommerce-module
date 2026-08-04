@@ -225,7 +225,7 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 
 			add_meta_box(
                 'wpapiship-order-metabox',
-                esc_html__( 'ApiShip', 'wp-apiship' ),
+                esc_html__( 'ApiShip', 'apiship' ),
                 array( $this, 'render_content' ),
                 $order_screen,
                 'advanced',
@@ -390,7 +390,7 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 		 */		
 		public function get_sender_title() {
 			
-			$title = esc_html__('Отправитель','wp-apiship');
+			$title = esc_html__('Отправитель','apiship');
 	
 			if ( $this->integrator_order_exists() ) {
 				
@@ -407,9 +407,9 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 				);
 
 				if ( $warehouse_address_use === 'no' ) {
-					$title .= ' (' . esc_html__('магазин','wp-apiship') . ')';
+					$title .= ' (' . esc_html__('магазин','apiship') . ')';
 				} else {
-					$title .= ' (' . esc_html__('склад','wp-apiship') . ')';
+					$title .= ' (' . esc_html__('склад','apiship') . ')';
 				}
 			}				
 			

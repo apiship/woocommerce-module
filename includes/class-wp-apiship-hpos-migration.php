@@ -131,11 +131,11 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Migration' ) ) :
 			?>
 			<div class="notice notice-info wp-apiship-migration-notice">
 				<p>
-					<?php esc_html_e( 'WP ApiShip: Требуется миграция данных для поддержки высокопроизводительного хранилища заказов WooCommerce.', 'wp-apiship' ); ?>
+					<?php esc_html_e( 'WP ApiShip: Требуется миграция данных для поддержки высокопроизводительного хранилища заказов WooCommerce.', 'apiship' ); ?>
 				</p>
 				<p>
 					<button type="button" class="button button-primary" id="wp-apiship-start-migration">
-						<?php esc_html_e( 'Начать миграцию', 'wp-apiship' ); ?>
+						<?php esc_html_e( 'Начать миграцию', 'apiship' ); ?>
 					</button>
 					<span class="spinner" style="float: none; margin: 0 10px;"></span>
 					<span class="wp-apiship-migration-status"></span>
@@ -150,7 +150,7 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Migration' ) ) :
 					
 					$button.prop('disabled', true);
 					$spinner.addClass('is-active');
-        $status.text('<?php echo esc_js( __( 'Начинается миграция...', 'wp-apiship' ) ); ?>');
+        $status.text('<?php echo esc_js( __( 'Начинается миграция...', 'apiship' ) ); ?>');
 					
 					wpApiShipRunMigration(0, $status, $spinner, $button);
 				});
@@ -167,23 +167,23 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Migration' ) ) :
 						success: function(response) {
 							if (response.success) {
 								if (response.data.completed) {
-                            $status.text('<?php echo esc_js( __( 'Миграция завершена успешно!', 'wp-apiship' ) ); ?>');
+                            $status.text('<?php echo esc_js( __( 'Миграция завершена успешно!', 'apiship' ) ); ?>');
 									$spinner.removeClass('is-active');
 									setTimeout(function() {
 										$('.wp-apiship-migration-notice').fadeOut();
 									}, 2000);
 								} else {
-                                    $status.text('<?php echo esc_js( __( 'Обработано заказов:', 'wp-apiship' ) ); ?> ' + response.data.processed);
+                                    $status.text('<?php echo esc_js( __( 'Обработано заказов:', 'apiship' ) ); ?> ' + response.data.processed);
 									wpApiShipRunMigration(response.data.next_offset, $status, $spinner, $button);
 								}
 							} else {
-                                $status.text('<?php echo esc_js( __( 'Ошибка миграции:', 'wp-apiship' ) ); ?> ' + response.data);
+                                $status.text('<?php echo esc_js( __( 'Ошибка миграции:', 'apiship' ) ); ?> ' + response.data);
 								$spinner.removeClass('is-active');
 								$button.prop('disabled', false);
 							}
 						},
 						error: function() {
-                            $status.text('<?php echo esc_js( __( 'Произошла ошибка при миграции', 'wp-apiship' ) ); ?>');
+                            $status.text('<?php echo esc_js( __( 'Произошла ошибка при миграции', 'apiship' ) ); ?>');
 							$spinner.removeClass('is-active');
 							$button.prop('disabled', false);
 						}
@@ -199,11 +199,11 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Migration' ) ) :
 		 */
 		public static function ajax_migration() {
         if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'wp_apiship_hpos_migration' ) ) {
-            wp_send_json_error( __( 'Неверный nonce', 'wp-apiship' ) );
+            wp_send_json_error( __( 'Неверный nonce', 'apiship' ) );
         }
 
 			if ( ! current_user_can( 'manage_woocommerce' ) ) {
-				wp_send_json_error( __( 'Недостаточно прав', 'wp-apiship' ) );
+				wp_send_json_error( __( 'Недостаточно прав', 'apiship' ) );
 			}
 
 			$offset = intval( $_POST['offset'] );

@@ -25,7 +25,7 @@ if ( (int) $integrator_order > 0 ) {
 		if ( (int) $integrator_order > 0 ) { ?>
 			<!--
 			<span class="view-orders-status">
-				<?php //$status = esc_html__( 'Заказ %1s%2s%3s создан', 'wp-apiship' ); ?>
+				<?php //$status = esc_html__( 'Заказ %1s%2s%3s создан', 'apiship' ); ?>
 				<?php //echo sprintf( $status, '<strong>', $integrator_order, '</strong>' ); ?>
 			</span>-->
 			<!--
@@ -33,7 +33,7 @@ if ( (int) $integrator_order > 0 ) {
 				<button class="button button-primary view-orders" 
 					data-connect-id="" 
 					data-order-id="<?php // echo $order->get_id(); ?>">
-					<?php // echo esc_html__( 'Просмотреть', 'wp-apiship' ); ?>
+					<?php // echo esc_html__( 'Просмотреть', 'apiship' ); ?>
 				</button>
 			</span>--><?php
 		} else { ?>
@@ -41,7 +41,7 @@ if ( (int) $integrator_order > 0 ) {
 			<button class="button button-primary post-orders" 
 				data-connect-id="" 
 				data-order-id="<?php // echo $order->get_id(); ?>">
-				<?php // echo esc_html__( 'Отправить заказ', 'wp-apiship' ); ?>
+				<?php // echo esc_html__( 'Отправить заказ', 'apiship' ); ?>
 			</button>--><?php
 		} ?>
 	</div>	
@@ -50,7 +50,7 @@ if ( (int) $integrator_order > 0 ) {
 			<span class="close-viewer-button">
 				<button onclick="return false;" class="button button-primary wpapiship-close-viewer" 
 					data-order-id="<?php echo $order->get_id(); ?>">
-					<?php echo esc_html__('Закрыть', 'wp-apiship'); ?>
+					<?php echo esc_html__('Закрыть', 'apiship'); ?>
 				</button>
 			</span>
 			<!--
@@ -59,7 +59,7 @@ if ( (int) $integrator_order > 0 ) {
 					class="button button-primary delete-orders" 
 					data-order-id="<?php // echo $order->get_id(); ?>" 
 					data-shipping_order_item_id="<?php // echo $shipping_order_item_id; ?>"> 
-					<?php // echo esc_html__( 'Удалить заказ', 'wp-apiship' ); ?>
+					<?php // echo esc_html__( 'Удалить заказ', 'apiship' ); ?>
 				</button>
 			</span>-->
 		</div>	
@@ -70,7 +70,7 @@ if ( (int) $integrator_order > 0 ) {
 	<!--
 	<div class="wpapiship-reload-section hidden">
 		<button onclick="return false;" class="button button-primary wpapiship-reload-page">
-			<?php // echo esc_html__( 'Перезагрузить', 'wp-apiship' ); ?>
+			<?php // echo esc_html__( 'Перезагрузить', 'apiship' ); ?>
 		</button>	
 	</div>-->
 </div>

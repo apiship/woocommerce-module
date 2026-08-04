@@ -41,7 +41,7 @@ if ( file_exists( $labels_file ) ) {
 		if ( $response->response->code == HTTP\WP_ApiShip_HTTP::OK ) {
 
 			if ( $timestamp ) {
-				$message[] = esc_html('Дата получения наклеек: ','wp-apiship') . date( 'd.m.Y', $timestamp );
+				$message[] = esc_html('Дата получения наклеек: ','apiship') . date( 'd.m.Y', $timestamp );
 				$message[] = '<br />';
 			}
 			
@@ -54,7 +54,7 @@ if ( file_exists( $labels_file ) ) {
 			if ( ! empty( $body->failedOrders ) ) {
 				
 				$message[] = ''; 
-				$message[] = '<h3>'.esc_html__('Заказы без наклеек','wp-apiship').'</h3>'; 
+				$message[] = '<h3>'.esc_html__('Заказы без наклеек','apiship').'</h3>'; 
 				
 				$message[] = '<ul>'; 
 				foreach( $body->failedOrders as $order_data ) {
