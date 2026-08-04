@@ -55,11 +55,31 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Compatibility' ) ) :
 
 			if ( self::is_hpos_enabled() ) {
 				$value = $order->get_meta( $meta_key, $single );
+
+				if ( ! $single && is_array( $value ) ) {
+					/**
+					 * Приводим к тому же виду, что и get_post_meta():
+					 * массив значений, а не массив объектов WC_Meta_Data.
+					 */
+					$value = array_map(
+						function( $meta ) {
+							return $meta instanceof \WC_Meta_Data ? $meta->value : $meta;
+						},
+						$value
+					);
+				}
 			} else {
 				$value = get_post_meta( $order->get_id(), $meta_key, $single );
 			}
 
-			return ! empty( $value ) ? $value : $default;
+			/**
+			 * Значение отсутствует, а не равно '0'/0/false.
+			 */
+			if ( $value === '' || $value === null || $value === array() || $value === false ) {
+				return $default;
+			}
+
+			return $value;
 		}
 
 		/**
@@ -84,9 +104,19 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Compatibility' ) ) :
 				$order->update_meta_data( $meta_key, $meta_value );
 				$order->save();
 				return true;
-			} else {
-				return update_post_meta( $order->get_id(), $meta_key, $meta_value );
 			}
+
+			$result = update_post_meta( $order->get_id(), $meta_key, $meta_value );
+
+			if ( false !== $result ) {
+				return true;
+			}
+
+			/**
+			 * update_post_meta() возвращает false и когда значение не изменилось —
+			 * для вызывающего кода это успех, а не ошибка.
+			 */
+			return get_post_meta( $order->get_id(), $meta_key, true ) == $meta_value;
 		}
 
 		/**
@@ -203,11 +233,11 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Compatibility' ) ) :
 		 * @return string
 		 */
 		public static function get_order_post_type() {
-			if ( self::is_hpos_enabled() ) {
-				return 'woocommerce_page_wc-orders';
-			} else {
-				return 'shop_order';
-			}
+			/**
+			 * Тип записи заказа остаётся `shop_order` в обоих режимах хранения;
+			 * различается только идентификатор экрана — см. get_order_screen_id().
+			 */
+			return 'shop_order';
 		}
 
 		/**

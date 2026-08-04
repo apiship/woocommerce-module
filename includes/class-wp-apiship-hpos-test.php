@@ -69,7 +69,7 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Test' ) ) :
 					$result['message'] = 'HPOS detection mismatch between plugin and WooCommerce';
 				}
 				
-			} catch ( Exception $e ) {
+			} catch ( \Throwable $e ) {
 				$result['message'] = 'Error testing HPOS detection: ' . $e->getMessage();
 			}
 
@@ -124,7 +124,7 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Test' ) ) :
 					$result['message'] = 'Order meta operations failed';
 				}
 				
-			} catch ( Exception $e ) {
+			} catch ( \Throwable $e ) {
 				$result['message'] = 'Error testing order meta operations: ' . $e->getMessage();
 			}
 
@@ -152,7 +152,7 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Test' ) ) :
 				$result['data']['is_order_edit_screen'] = WP_ApiShip_HPOS_Compatibility::is_order_edit_screen();
 				$result['data']['is_orders_list_screen'] = WP_ApiShip_HPOS_Compatibility::is_orders_list_screen();
 				
-			} catch ( Exception $e ) {
+			} catch ( \Throwable $e ) {
 				$result['passed'] = false;
 				$result['message'] = 'Error testing screen detection: ' . $e->getMessage();
 			}
@@ -203,7 +203,7 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Test' ) ) :
 					$result['message'] = 'Hooks compatibility failed - unexpected hook names';
 				}
 				
-			} catch ( Exception $e ) {
+			} catch ( \Throwable $e ) {
 				$result['message'] = 'Error testing hooks compatibility: ' . $e->getMessage();
 			}
 
@@ -235,7 +235,7 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Test' ) ) :
 					$result['message'] = 'Migration status data incomplete';
 				}
 				
-			} catch ( Exception $e ) {
+			} catch ( \Throwable $e ) {
 				$result['passed'] = false;
 				$result['message'] = 'Error testing migration status: ' . $e->getMessage();
 			}

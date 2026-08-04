@@ -15,8 +15,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 global $wpdb;
 
-$options_query = $wpdb->prepare( "SELECT * FROM $wpdb->options WHERE 1=1 AND option_name LIKE '%wp_apiship_%'", '*' );
+$options_query = $wpdb->prepare(
+	"SELECT * FROM {$wpdb->options} WHERE option_name LIKE %s",
+	'%' . $wpdb->esc_like( 'wp_apiship_' ) . '%'
+);
 $options = $wpdb->get_results( $options_query, ARRAY_A );
+
+/**
+ * Значения, которые нельзя показывать открытым текстом.
+ */
+$masked_options = array( 'wp_apiship_token' );
 ?>
 <tr valign="top">
 	<th scope="row" class="titledesc">
@@ -32,12 +40,17 @@ $options = $wpdb->get_results( $options_query, ARRAY_A );
 					<th>autoload</th>
 				</tr>
 				<?php
-				foreach( $options as $option ) { ?>
+				foreach( $options as $option ) {
+
+					$option_value = in_array( $option['option_name'], $masked_options, true ) && $option['option_value'] !== ''
+						? str_repeat( '*', 12 )
+						: $option['option_value'];
+					?>
 					<tr class="data">
-						<td class="option_id"><?php echo $option['option_id']; ?></td>
-						<td class="option_name"><?php echo $option['option_name']; ?></td>
-						<td class="option_value"><?php echo $option['option_value']; ?></td>
-						<td class="option_autoload"><?php echo $option['autoload']; ?></td>
+						<td class="option_id"><?php echo esc_html( $option['option_id'] ); ?></td>
+						<td class="option_name"><?php echo esc_html( $option['option_name'] ); ?></td>
+						<td class="option_value"><?php echo esc_html( $option_value ); ?></td>
+						<td class="option_autoload"><?php echo esc_html( $option['autoload'] ); ?></td>
 					</tr><?php
 				} ?>
 			<tbody>

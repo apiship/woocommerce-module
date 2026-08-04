@@ -26,6 +26,16 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 	class WP_ApiShip_Admin_Tab {
 
 		/**
+		 * Tab ID.
+		 */
+		protected $id;
+
+		/**
+		 * Tab label.
+		 */
+		protected $label;
+
+		/**
 		 * Constructor.
 		 */
 		public function __construct() {
@@ -232,7 +242,7 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 			$settings = $this->get_settings($current_section);
 
 			if ($current_section === 'general' || $current_section === ' ' || $current_section === '') {
-				self::check_api_token($postData['wp_apiship_token']);
+				self::check_api_token( (string) ( isset($postData['wp_apiship_token']) ? $postData['wp_apiship_token'] : '' ) );
 			}
 
 			foreach( $settings as $id=>$setting ) {
@@ -257,7 +267,7 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 					'headers' => [
 						'Authorization' => $token,
 					],
-					'timeout' => 20000
+					'timeout' => 20
 				)
 			);
 			if ( wp_remote_retrieve_response_code($response) !== WP_ApiShip_HTTP::OK ) {

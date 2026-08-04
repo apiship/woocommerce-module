@@ -130,8 +130,8 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 				return $post_id;
 			}
 	 
-			$nonce = $_POST[ $this->wpapiship_box_nonce ];
-	 
+			$nonce = sanitize_text_field( wp_unslash( $_POST[ $this->wpapiship_box_nonce ] ) );
+
 			// Verify that the nonce is valid.
 			if ( ! wp_verify_nonce( $nonce, $this->wpapiship_box_action ) ) {
 				return $post_id;
@@ -170,11 +170,18 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 				return;
 			}
 
-			$this->order = $this->wc_get_order($post);	
+			$this->order = $this->wc_get_order($post);
+
+			if ( ! $this->order ) {
+				return;
+			}
 
 			if ( ! WP_ApiShip\WP_ApiShip_Core::is_shipping_integrator( $this->order ) ) {
 				return;
 			}
+
+			$shipping_order_item_id = false;
+			$item = false;
 
 			$line_items_shipping = $this->order->get_items('shipping');
 			foreach ( $line_items_shipping as $item_id=>$item ) {
@@ -182,6 +189,10 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 				 * $item is WC_Order_Item_Shipping Object.
 				 */
 				$shipping_order_item_id = $item_id;
+			}
+
+			if ( ! $item ) {
+				return;
 			}
 
 			/**
@@ -333,9 +344,19 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 		 */		
 		protected function wc_get_order($post) {
 			if ( is_null( $this->order ) ) {
-				$this->order = wc_get_order( $post->ID );
+				/**
+				 * При включённом HPOS WooCommerce передаёт в хуки экрана заказа
+				 * объект WC_Order вместо WP_Post.
+				 */
+				if ( $post instanceof \WC_Order ) {
+					$this->order = $post;
+				} elseif ( isset( $post->ID ) ) {
+					$this->order = wc_get_order( $post->ID );
+				} else {
+					$this->order = false;
+				}
 			}
-			return $this->order;	
+			return $this->order;
 		}
 
 		/**
@@ -938,11 +959,11 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 		 * @since 1.0.0
 		 */	
 		public function get_delivery_type() {
-			
+
 			if ( empty($this->get_tariff()->deliveryTypes) ) {
-				return false;
+				return array();
 			}
-			
+
 			return $this->get_tariff()->deliveryTypes;
 		}
 		
@@ -990,7 +1011,14 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 		 * @since 1.0.0
 		 */	
 		public function get_pickup_type() {
-			return $this->get_tariff()->pickupTypes;
+
+			$tariff = $this->get_tariff();
+
+			if ( empty($tariff->pickupTypes) ) {
+				return array();
+			}
+
+			return $tariff->pickupTypes;
 		}
 
 		/**

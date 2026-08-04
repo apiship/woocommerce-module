@@ -181,7 +181,15 @@ if ( ! class_exists('WP_ApiShip_Order_Places') ) :
 		protected function get_item($wc_order_item, $cod_cost, $wc_order) {
 
 			$product = $wc_order_item->get_product();
-			
+
+			if ( ! $product instanceof \WC_Product ) {
+				/**
+				 * Товар удалён из каталога: используем пустой продукт,
+				 * чтобы заказ всё равно можно было передать в ApiShip.
+				 */
+				$product = new \WC_Product();
+			}
+
 			$item = new stdClass();
 
 			/**
@@ -367,7 +375,14 @@ if ( ! class_exists('WP_ApiShip_Order_Places') ) :
 		protected function get_dimension( $dimension, $product ) {
 
 			$value = 0;
-			
+
+			/**
+			 * Товар мог быть удалён из каталога — берём значения по умолчанию.
+			 */
+			if ( ! $product instanceof \WC_Product ) {
+				$product = new \WC_Product();
+			}
+
 			switch( $dimension ) :
 				case 'height' :
 					$option 	   = 'wp_apiship_height';

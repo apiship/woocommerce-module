@@ -45,71 +45,78 @@ add_action('before_woocommerce_init', function() {
 	}
 });
 
-if ( ! function_exists('is_plugin_active' ) ) {
-	include_once(ABSPATH . 'wp-admin/includes/plugin.php');
-}
+/**
+ * Активация/деактивация регистрируются на верхнем уровне файла:
+ * хук `activate_{plugin}` срабатывает сразу после подключения файла плагина,
+ * когда `plugins_loaded` в этом запросе уже отработал.
+ */
+require_once __DIR__ . '/includes/class-wp-apiship-activator.php';
 
-if ( is_plugin_active('woocommerce/woocommerce.php') ) {
+register_activation_hook(__FILE__, function(){
+	WP_ApiShip_Activator::activate();
+});
 
-	require 'includes/class-wp-apiship-hpos-compatibility.php';
-	require 'includes/class-wp-apiship-hpos-migration.php';
-	require 'includes/class-wp-apiship-hpos-test.php';
+register_deactivation_hook(__FILE__, function(){
+	WP_ApiShip_Activator::deactivate();
+});
 
-	require 'includes/class-wp-apiship-options.php';
+/**
+ * Инициализация выполняется на `plugins_loaded`, а не при подключении файла:
+ * порядок загрузки плагинов определяется алфавитным порядком их каталогов,
+ * поэтому при слаге, идущем до `woocommerce/` (например `apiship/`), классы
+ * WooCommerce на момент подключения этого файла ещё не существуют.
+ */
+add_action('plugins_loaded', __NAMESPACE__ . '\wp_apiship_bootstrap', 20);
+
+function wp_apiship_bootstrap() {
+
+	if ( ! class_exists('WooCommerce') ) {
+
+		if ( is_admin() ) {
+			add_action('admin_notices', function () {
+				$message = esc_html__('WP ApiShip needs WooCommerce to run. Please, install and active WooCommerce plugin.', 'wp-apiship');
+				printf('<div class="%1$s"><p>%2$s</p></div>', 'notice notice-error', $message);
+			});
+		}
+
+		return;
+	}
+
+	require __DIR__ . '/includes/class-wp-apiship-hpos-compatibility.php';
+	require __DIR__ . '/includes/class-wp-apiship-hpos-migration.php';
+	require __DIR__ . '/includes/class-wp-apiship-hpos-test.php';
+
+	require __DIR__ . '/includes/class-wp-apiship-options.php';
 	Options\WP_ApiShip_Options::get_instance();
-	
-	require 'includes/class-wp-apiship-core.php';
+
+	require __DIR__ . '/includes/class-wp-apiship-core.php';
 	WP_ApiShip_Core::get_instance( __FILE__ );
 
-	require 'includes/class-wp-apiship-http.php';
+	require __DIR__ . '/includes/class-wp-apiship-http.php';
 	HTTP\WP_ApiShip_HTTP::get_instance();
-	
-	require 'includes/class-wp-apiship-shipping.php';
+
+	require __DIR__ . '/includes/class-wp-apiship-shipping.php';
 	new \WP_ApiShip_Shipping( __FILE__ );
-	
-	require 'includes/class-wp-apiship-cron.php';
+
+	require __DIR__ . '/includes/class-wp-apiship-cron.php';
 	new WP_ApiShip_Cron();
 
 	// Initialize HPOS migration
 	WP_ApiShip_HPOS_Migration::init();
 
-	/** Include activator core. */
-	require_once __DIR__ . '/includes/class-wp-apiship-activator.php';
-
-	/** Activation actions. */
-	(function(){
-		/** Load activator core */
-		new WP_ApiShip_Activator();
-
-		/** Register activation hook */
-		register_activation_hook(__FILE__, function(){
-			WP_ApiShip_Activator::activate();
-		});
-
-		/** Register deactivation hook */
-		register_deactivation_hook(__FILE__, function(){
-			WP_ApiShip_Activator::deactivate();
-		});
-	})();
+	/** Load activator core. */
+	new WP_ApiShip_Activator();
 
 	if ( is_admin() ) {
-		require 'includes/admin/class-wp-apiship-admin.php';
+		require __DIR__ . '/includes/admin/class-wp-apiship-admin.php';
 		new Admin\WP_ApiShip_Admin( __FILE__ );
-		require 'includes/admin/class-wp-apiship-admin-tab.php';
+		require __DIR__ . '/includes/admin/class-wp-apiship-admin-tab.php';
 		new Admin\WP_ApiShip_Admin_Tab();
-		require 'includes/admin/class-wp-apiship-meta-boxes.php';
+		require __DIR__ . '/includes/admin/class-wp-apiship-meta-boxes.php';
 		new Admin\WP_ApiShip_Meta_Boxes( __FILE__  );
-		require 'includes/admin/class-wp-apiship-mapping.php';
+		require __DIR__ . '/includes/admin/class-wp-apiship-mapping.php';
 		new Admin\WP_ApiShip_Mapping();
 	}
-	
-} elseif ( is_admin() ) {
-
-	add_action('admin_notices', function () {
-		$message = esc_html__('WP ApiShip needs WooCommerce to run. Please, install and active WooCommerce plugin.', 'wp-apiship');
-		printf('<div class="%1$s"><p>%2$s</p></div>', 'notice notice-error', $message);
-	});
-  
 }
 
 # --- EOF

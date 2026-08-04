@@ -80,9 +80,8 @@ if ( ! class_exists('WP_ApiShip_Order_Sender') ) :
 				
 				if ( trim($country_code) == '' ) {
 					$country_code = $wc_default_country;
-				}				
-			
-				$country_code 	= Options\WP_ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_country', false, false );
+				}
+
 				$post_index   	= Options\WP_ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_index', false, false );
 				$city 		  	= Options\WP_ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_city', false, false );
 				// $address_string = Options\WP_ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_address', false, false );				

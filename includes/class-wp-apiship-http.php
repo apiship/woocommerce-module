@@ -194,7 +194,10 @@ if ( ! class_exists('WP_ApiShip_HTTP', false) ) :
 		 * @since 1.0.0
 		 */		
 		public static function get_timeout() {
-			return self::$timeout;
+			/**
+			 * $timeout задан в миллисекундах, а wp_remote_* ожидает секунды.
+			 */
+			return max( 1, (int) round( self::$timeout / 1000 ) );
 		}
 		
 		/**

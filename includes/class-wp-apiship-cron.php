@@ -31,6 +31,18 @@ if (!class_exists('WP_ApiShip_Cron')) :
 		protected const LOG_ENABLED = false;
 
 		/**
+		 * Предел смещения пагинации на стороне API.
+		 */
+		protected const MAX_STATUS_OFFSET = 5000;
+
+		protected $db;
+		protected $db_prefix;
+		protected $integratorOrderKey;
+		protected $mapping_options;
+		protected $last_query;
+		protected $timezone;
+
+		/**
 		 * Constructor.
 		 */
 		public function __construct()
@@ -69,11 +81,21 @@ if (!class_exists('WP_ApiShip_Cron')) :
 
 			update_option('wp_apiship_status_api_query_date', $now);
 
-			$response = WP_ApiShip_HTTP::get("/orders/statuses/history/date/$query_date?offset=$offset");
+			/**
+			 * Дата кодируется: без этого '+' из смещения таймзоны на стороне API
+			 * превращается в пробел при urldecode() и смещение теряется.
+			 */
+			$date_param = rawurlencode($query_date);
 
-			if(wp_remote_retrieve_response_code($response) == WP_ApiShip_HTTP::OK) {
-				
-				$body = json_decode($response['body']);
+			do {
+				$response = WP_ApiShip_HTTP::get("/orders/statuses/history/date/$date_param?offset=$offset");
+
+				if (wp_remote_retrieve_response_code($response) != WP_ApiShip_HTTP::OK) {
+					$this->log("Неудачный запрос: " . print_r($response, true));
+					return;
+				}
+
+				$body = json_decode(wp_remote_retrieve_body($response));
 				$this->log($body);
 
 				if (empty($body->rows)) {
@@ -89,16 +111,25 @@ if (!class_exists('WP_ApiShip_Cron')) :
 					}
 				}
 
-				$ordersLeft = $body->total - $body->offset;
+				/**
+				 * Пагинация приходит в объекте `meta`; у старых версий API поля
+				 * лежали на верхнем уровне ответа.
+				 */
+				$meta = isset($body->meta) ? $body->meta : $body;
 
-				if ($ordersLeft > $body->limit) {
-					$this->log("Остались необработанные заказы ($ordersLeft шт.), повторяем запрос.");
-					$this->callback($body->offset + $body->limit);
+				if (!isset($meta->total, $meta->offset, $meta->limit) || $meta->limit < 1) {
+					return;
 				}
-			} else {
-				$this->log("Неудачный запрос: " . print_r($response, true));
-			}
-		} 
+
+				$offset = $meta->offset + $meta->limit;
+				$ordersLeft = $meta->total - $offset;
+
+				if ($ordersLeft > 0) {
+					$this->log("Остались необработанные заказы ($ordersLeft шт.), повторяем запрос.");
+				}
+
+			} while ($ordersLeft > 0 && $offset < self::MAX_STATUS_OFFSET);
+		}
 
 		protected function wp_actions()
 		{
@@ -199,10 +230,30 @@ if (!class_exists('WP_ApiShip_Cron')) :
 				$woocommerce_order_itemmeta = $this->db_prefix . 'woocommerce_order_itemmeta';
 				$woocommerce_order_items = $this->db_prefix . 'woocommerce_order_items';
 
-				$orderItemMeta = $this->db->get_row("SELECT $woocommerce_order_itemmeta.order_item_id FROM $woocommerce_order_itemmeta LEFT JOIN $woocommerce_order_items ON $woocommerce_order_itemmeta.order_item_id = $woocommerce_order_items.order_item_id WHERE meta_key = '$this->integratorOrderKey' AND meta_value = $orderId", OBJECT, 0);
-				
+				$orderItemMeta = $this->db->get_row(
+					$this->db->prepare(
+						"SELECT im.order_item_id FROM {$woocommerce_order_itemmeta} im"
+						. " LEFT JOIN {$woocommerce_order_items} i ON im.order_item_id = i.order_item_id"
+						. " WHERE im.meta_key = %s AND im.meta_value = %d",
+						$this->integratorOrderKey,
+						(int) $orderId
+					),
+					OBJECT,
+					0
+				);
+
+				if (empty($orderItemMeta->order_item_id)) {
+					$this->log("Заказ интегратора $orderId не найден в этом магазине");
+					return;
+				}
+
 				$orderId = wc_get_order_id_by_order_item_id($orderItemMeta->order_item_id);
-				$order = new WC_Order($orderId);
+				$order = wc_get_order($orderId);
+
+				if (!$order) {
+					$this->log("Заказ WooCommerce $orderId не найден");
+					return;
+				}
 
 				if ($order->has_status($wp_status) === false) {
 					Options\WP_ApiShip_Options::update_order_meta($order->get_id(), WP_ApiShip_Options::PROVIDER_NUMBER_KEY, $providerNumber);
@@ -224,7 +275,16 @@ if (!class_exists('WP_ApiShip_Cron')) :
 			if (!is_scalar($row)) {
 				$row = print_r($row, true);
 			}
-			file_put_contents(__DIR__ . '/.log', $row . PHP_EOL, FILE_APPEND);
+			/**
+			 * Логи пишутся через WC_Logger (wp-content/uploads/wc-logs, закрыт
+			 * от прямого доступа), а не в каталог плагина внутри веб-корня.
+			 */
+			if (function_exists('wc_get_logger')) {
+				wc_get_logger()->debug($row, array('source' => 'wp-apiship-cron'));
+				return;
+			}
+
+			error_log('[wp-apiship] ' . $row);
 		}
 	}
 	

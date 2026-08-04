@@ -199,8 +199,13 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 				}
 			
 			} else {
-				
-				$response_body = $this->body_decode( wp_remote_retrieve_body($response) );
+
+				try {
+					$response_body = $this->body_decode( wp_remote_retrieve_body($response) );
+				} catch ( Exception $e ) {
+					WP_ApiShip\WP_ApiShip_Core::__log( $e->getMessage(), __CLASS__ .'::'. __FUNCTION__ );
+					return;
+				}
 			}
 			
 			/**
@@ -237,9 +242,18 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 					$is_delivery_to_point = true;
 				}
 
+				if ( empty($response_body->$delivery_type) ) {
+					continue;
+				}
+
 				foreach($response_body->$delivery_type as $tariffGroupKey => $tariff_group) {
-					
+
 					$pickup_types = [];
+
+					if ( empty($providers_data[$tariff_group->providerKey]) ) {
+						continue;
+					}
+
 					$providerData = $providers_data[$tariff_group->providerKey]->data;
 
 					if (!empty($providerData['pickup_types'])) {
@@ -497,12 +511,16 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 			  $isCached = $tariff->isCached;
 			}
 
+			/**
+			 * Название и адрес ПВЗ приходят из cookie покупателя, а санитизация
+			 * лейблов доставки отключена в init() — экранируем вручную.
+			 */
 			$variables = [
-				'type' => $type,
-				'company' => $name,
-				'tariff' => $tariffName,
-				'name' => "<span class='pointName'>$pointName</span>",
-				'address' => "<span class='pointAddress'>$pointAddress</span>",
+				'type' => esc_html($type),
+				'company' => esc_html($name),
+				'tariff' => esc_html($tariffName),
+				'name' => "<span class='pointName'>" . esc_html($pointName) . "</span>",
+				'address' => "<span class='pointAddress'>" . esc_html($pointAddress) . "</span>",
 				'time' => $this->get_label_suffix($tariff, $is_delivery_to_point, $point_display_mode)
 			];
 
@@ -557,6 +575,7 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 				switch($tariff->daysMax) {
 					case 1 :
 						$label_suffix = 'срок от '.$tariff->daysMin.' дня';
+						break;
 					default:
 						$label_suffix = 'срок от '.$tariff->daysMin.' дней';
 						break;

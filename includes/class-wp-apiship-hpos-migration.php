@@ -55,8 +55,60 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Migration' ) ) :
 				return;
 			}
 
+			/**
+			 * На сайте без legacy-заказов мигрировать нечего — отмечаем миграцию
+			 * выполненной, чтобы не показывать уведомление на пустом месте.
+			 */
+			if ( ! self::has_legacy_data() ) {
+				update_option( self::MIGRATION_OPTION_KEY, time() );
+				return;
+			}
+
 			// Add admin notice for migration
 			add_action( 'admin_notices', array( __CLASS__, 'migration_notice' ) );
+		}
+
+		/**
+		 * Есть ли данные ApiShip в legacy-хранилище.
+		 *
+		 * @since 1.7.1
+		 *
+		 * @return bool
+		 */
+		public static function has_legacy_data() {
+
+			global $wpdb;
+
+			$meta_keys = self::get_meta_keys();
+
+			$placeholders = implode( ', ', array_fill( 0, count( $meta_keys ), '%s' ) );
+
+			$found = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key IN ($placeholders) LIMIT 1",
+					$meta_keys
+				)
+			);
+
+			return ! empty( $found );
+		}
+
+		/**
+		 * Мета-ключи заказа, которые переносит миграция.
+		 *
+		 * @since 1.7.1
+		 *
+		 * @return array
+		 */
+		protected static function get_meta_keys() {
+			return array(
+				Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
+				Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
+				Options\WP_ApiShip_Options::ORDER_PLACES_META,
+				Options\WP_ApiShip_Options::INTEGRATOR_ORDER_KEY,
+				Options\WP_ApiShip_Options::PROVIDER_NUMBER_KEY,
+				Options\WP_ApiShip_Options::TARIFF_DATA_KEY,
+			);
 		}
 
 		/**
@@ -189,10 +241,16 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Migration' ) ) :
 				);
 			}
 
+			/**
+			 * Заказы в корзине тоже мигрируем: после восстановления данные
+			 * ApiShip должны остаться на месте.
+			 */
+			$post_statuses = array_merge( array_keys( wc_get_order_statuses() ), array( 'trash' ) );
+
 			// Use WP_Query to find orders (this works with legacy system during migration)
 			$query_args = array(
 				'post_type' => 'shop_order',
-				'post_status' => array_keys( wc_get_order_statuses() ),
+				'post_status' => $post_statuses,
 				'meta_query' => $meta_query,
 				'fields' => 'ids',
 				'posts_per_page' => self::BATCH_SIZE,
