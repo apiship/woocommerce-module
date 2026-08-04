@@ -7,22 +7,22 @@
  *
  * @since 1.0.0
  */
-namespace WP_ApiShip\Admin;
+namespace ApiShip\Admin;
 
-use WP_ApiShip\HTTP\WP_ApiShip_HTTP;
-use WP_ApiShip\Options,
-	WP_ApiShip;
-use WP_ApiShip\WP_ApiShip_Core;
-use WP_ApiShip_Shipping_Method;
+use ApiShip\HTTP\ApiShip_HTTP;
+use ApiShip\Options,
+	ApiShip;
+use ApiShip\ApiShip_Core;
+use ApiShip_Shipping_Method;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
+if ( ! class_exists('ApiShip_Meta_Boxes') ) :
 
-	class WP_ApiShip_Meta_Boxes {
+	class ApiShip_Meta_Boxes {
 
 		/**
 		 * Metabox nonce key.
@@ -99,7 +99,7 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 		 */
 		public function __construct( $path_to_loader ) {
 			
-			$this->shipment_places = Options\WP_ApiShip_Options::get_owner_point_types();
+			$this->shipment_places = Options\ApiShip_Options::get_owner_point_types();
 			
 			/**
 			 * The `Custom selected` place may be set in each order.
@@ -156,13 +156,13 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 			/**
 			 * Get correct screen ID for HPOS compatibility.
 			 */
-			$order_screen = \WP_ApiShip\WP_ApiShip_HPOS_Compatibility::get_order_screen_id();
+			$order_screen = \ApiShip\ApiShip_HPOS_Compatibility::get_order_screen_id();
 			
 			/**
 			 * Limit meta box to certain post types.
 			 */
 			$post_types = array( 
-				Options\WP_ApiShip_Options::WC_ORDER_POST_TYPE,
+				Options\ApiShip_Options::WC_ORDER_POST_TYPE,
 				$order_screen
 			);
 	 
@@ -176,7 +176,7 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 				return;
 			}
 
-			if ( ! WP_ApiShip\WP_ApiShip_Core::is_shipping_integrator( $this->order ) ) {
+			if ( ! ApiShip\ApiShip_Core::is_shipping_integrator( $this->order ) ) {
 				return;
 			}
 
@@ -200,7 +200,7 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 			 */
 			$id = wc_get_order_item_meta( 
 				$shipping_order_item_id, 
-				Options\WP_ApiShip_Options::INTEGRATOR_ORDER_KEY
+				Options\ApiShip_Options::INTEGRATOR_ORDER_KEY
 			);
 
 			$this->integrator_order_id = false;
@@ -225,7 +225,7 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 
 			add_meta_box(
                 'wpapiship-order-metabox',
-                esc_html__( 'ApiShip', 'wp-apiship' ),
+                esc_html__( 'ApiShip', 'apiship' ),
                 array( $this, 'render_content' ),
                 $order_screen,
                 'advanced',
@@ -246,7 +246,7 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 
 			global $wpdb;
 
-			$method_key = Options\WP_ApiShip_Options::SHIPPING_METHOD_ID;
+			$method_key = Options\ApiShip_Options::SHIPPING_METHOD_ID;
 
 			$instance_id = $wpdb->get_var( $wpdb->prepare( "SELECT instance_id FROM {$wpdb->prefix}woocommerce_shipping_zone_methods WHERE method_id = %s", $method_key ) );
 
@@ -254,7 +254,7 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 
 			$order = $this->order;
 
-			$shipping_method = new WP_ApiShip_Shipping_Method($instance_id, true);
+			$shipping_method = new ApiShip_Shipping_Method($instance_id, true);
 
 			$items = $order->get_items();
 
@@ -332,7 +332,7 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 			
 			ob_start();
 			require_once( 'templates/order-metabox-content.php' );
-			echo ob_get_clean();
+			echo ob_get_clean(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- буфер содержит шаблон, экранирующий вывод.
 		}
 
 	    /**
@@ -370,7 +370,7 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 				return false;
 			}
 			
-			$places = Options\WP_ApiShip_Options::get_places( $this->order->get_id() );
+			$places = Options\ApiShip_Options::get_places( $this->order->get_id() );
 			
 			if ( empty( $places[$order] ) ) {
 				return '';
@@ -390,7 +390,7 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 		 */		
 		public function get_sender_title() {
 			
-			$title = esc_html__('Отправитель','wp-apiship');
+			$title = esc_html__('Отправитель','apiship');
 	
 			if ( $this->integrator_order_exists() ) {
 				
@@ -400,16 +400,16 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 			
 			} else {
 	
-				$warehouse_address_use = Options\WP_ApiShip_Options::get_wc_option( 
+				$warehouse_address_use = Options\ApiShip_Options::get_wc_option( 
 					'wp_apiship_warehouse_address_use', 
 					'no', 
 					false 
 				);
 
 				if ( $warehouse_address_use === 'no' ) {
-					$title .= ' (' . esc_html__('магазин','wp-apiship') . ')';
+					$title .= ' (' . esc_html__('магазин','apiship') . ')';
 				} else {
-					$title .= ' (' . esc_html__('склад','wp-apiship') . ')';
+					$title .= ' (' . esc_html__('склад','apiship') . ')';
 				}
 			}				
 			
@@ -422,7 +422,7 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 		 * @since 1.0.0
 		 */	
 		public function the_sender_title() {
-			echo $this->get_sender_title();
+			echo esc_html( $this->get_sender_title() );
 		}	
 	
 	    /**
@@ -434,7 +434,7 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 		 */
 		public function get_sender_address() {
 			
-			$warehouse_address_use = Options\WP_ApiShip_Options::get_wc_option( 
+			$warehouse_address_use = Options\ApiShip_Options::get_wc_option( 
 				'wp_apiship_warehouse_address_use', 
 				'no', 
 				false 
@@ -448,17 +448,17 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 				 * Store address.
 				 */
 				$address['strongOpen'] = '<strong>'; 				
-				$address['post_index'] = Options\WP_ApiShip_Options::get_wc_option( 'woocommerce_store_postcode', '', false );
-				$address['city'] = Options\WP_ApiShip_Options::get_wc_option( 'woocommerce_store_city', '', false );
+				$address['post_index'] = Options\ApiShip_Options::get_wc_option( 'woocommerce_store_postcode', '', false );
+				$address['city'] = Options\ApiShip_Options::get_wc_option( 'woocommerce_store_city', '', false );
 		
-				$address['address'] = Options\WP_ApiShip_Options::get_wc_option( 
+				$address['address'] = Options\ApiShip_Options::get_wc_option( 
 					'woocommerce_store_address', 
 					'', 
 					false 
 				);	
 				// $address['address'] = get_option( 'woocommerce_store_address' );
 		
-				$address['address_2'] = Options\WP_ApiShip_Options::get_wc_option( 
+				$address['address_2'] = Options\ApiShip_Options::get_wc_option( 
 					'woocommerce_store_address_2', 
 					'', 
 					false 
@@ -471,16 +471,16 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 				 * Warehouse address.
 				 */			
 				$address['strongOpen'] = '<strong>'; 
-				$address['post_index'] = Options\WP_ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_index', '', false );
-				$address['city'] = Options\WP_ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_city', '', false );	
+				$address['post_index'] = Options\ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_index', '', false );
+				$address['city'] = Options\ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_city', '', false );	
 
-				$address['address'] = Options\WP_ApiShip_Options::get_wc_option( 
+				$address['address'] = Options\ApiShip_Options::get_wc_option( 
 					'wp_apiship_warehouse_address', 
 					'', 
 					false 
 				);	
 		
-				$address['address_2'] = Options\WP_ApiShip_Options::get_wc_option( 
+				$address['address_2'] = Options\ApiShip_Options::get_wc_option( 
 					'wp_apiship_warehouse_address_2', 
 					'', 
 					false 
@@ -497,19 +497,20 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 		 * @since 1.0.0
 		 */
 		public function the_sender_address() {
-			echo $this->get_sender_address();
+			// Адрес собирается с тегами <strong> — они разрешены при выводе явно.
+			echo wp_kses( $this->get_sender_address(), array( 'strong' => array() ) );
 		}
 
 		/**
 		 * Get provider icon url.
 		 *
 		 * @test with no image provider.
-		 * $icon_url = WP_ApiShip\WP_ApiShip_Core::get_provider_icon_url('zabberi');
+		 * $icon_url = ApiShip\ApiShip_Core::get_provider_icon_url('zabberi');
 		 *
 		 * @since 1.0.0
 		 */	
 		public function get_provider_icon_url($provider_key) {
-			return WP_ApiShip\WP_ApiShip_Core::get_provider_icon_url($provider_key);
+			return ApiShip\ApiShip_Core::get_provider_icon_url($provider_key);
 		}
 
 		/**
@@ -518,7 +519,7 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 		 * @since 1.0.0
 		 */		
 		public function get_store_city() {
-			return Options\WP_ApiShip_Options::get_wc_option( 'woocommerce_store_city', false, false );
+			return Options\ApiShip_Options::get_wc_option( 'woocommerce_store_city', false, false );
 		}
 	
 		/**
@@ -527,7 +528,7 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 		 * @since 1.0.0
 		 */		
 		public function get_warehouse_city() {
-			return Options\WP_ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_city', false, false );
+			return Options\ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_city', false, false );
 		}
 
 		/**
@@ -536,9 +537,9 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 		 * @since 1.0.0
 		 */		
 		public function get_contact_name() {
-			return Options\WP_ApiShip_Options::get_order_meta(
+			return Options\ApiShip_Options::get_order_meta(
 				$this->order->get_id(),
-				Options\WP_ApiShip_Options::POST_ORDER_CONTACT_NAME_META, 
+				Options\ApiShip_Options::POST_ORDER_CONTACT_NAME_META, 
 				''
 			);
 		}
@@ -549,9 +550,9 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 		 * @since 1.0.0 
 		 */		
 		public function get_phone() {
-			return Options\WP_ApiShip_Options::get_order_meta(
+			return Options\ApiShip_Options::get_order_meta(
 				$this->order->get_id(),
-				Options\WP_ApiShip_Options::POST_ORDER_PHONE_META, 
+				Options\ApiShip_Options::POST_ORDER_PHONE_META, 
 				''
 			);
 		}
@@ -562,7 +563,7 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 		 * @since 1.4.0
 		 */	
 		public function get_provider_name($provider_key) {
-			return Options\WP_ApiShip_Options::get_provider_name($provider_key);
+			return Options\ApiShip_Options::get_provider_name($provider_key);
 		}
 
 		/**
@@ -571,7 +572,7 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 		 * @since 1.4.0
 		 */	
 		public function get_order_statuses() {
-			return WP_ApiShip_Core::get_order_statuses($this->integrator_order_id);
+			return ApiShip_Core::get_order_statuses($this->integrator_order_id);
 		}
 
 		/**
@@ -589,7 +590,7 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 			/**
 			 * Providers.
 			 */
-			$providers = Options\WP_ApiShip_Options::get_option( 
+			$providers = Options\ApiShip_Options::get_option( 
 				'providers', 
 				false, 
 				false 
@@ -601,9 +602,9 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 				}
 			}
 			
-			$custom_selected = Options\WP_ApiShip_Options::get_order_meta( 
+			$custom_selected = Options\ApiShip_Options::get_order_meta( 
 				$this->order->get_id(),
-				Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
+				Options\ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
 				false
 			);
 			
@@ -691,9 +692,9 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 				return '';
 			}
 
-			$custom_selected = Options\WP_ApiShip_Options::get_order_meta( 
+			$custom_selected = Options\ApiShip_Options::get_order_meta( 
 				$this->order->get_id(),
-				Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
+				Options\ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
 				false
 			);
 			
@@ -726,9 +727,9 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 				return '';
 			}
 
-			$custom_selected = Options\WP_ApiShip_Options::get_order_meta( 
+			$custom_selected = Options\ApiShip_Options::get_order_meta( 
 				$this->order->get_id(),
-				Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
+				Options\ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
 				false
 			);
 			
@@ -809,9 +810,9 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 		 * @since 1.0.0
 		 */		
 		protected function set_point_out() {
-			$this->point_out = Options\WP_ApiShip_Options::get_order_meta( 
+			$this->point_out = Options\ApiShip_Options::get_order_meta( 
 				$this->order->get_id(),
-				Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
+				Options\ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
 				false
 			);
 		}			
@@ -832,7 +833,7 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 		 */		
 		protected function is_use_warehouse_address() {
 			
-			$warehouse_address_use = Options\WP_ApiShip_Options::get_wc_option( 
+			$warehouse_address_use = Options\ApiShip_Options::get_wc_option( 
 				'wp_apiship_warehouse_address_use', 
 				'no', 
 				false 
@@ -886,7 +887,7 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 		 * @since 1.0.0
 		 */
 		public function get_templates_path() {
-			return WP_ApiShip\WP_ApiShip_Core::get_templates_path();
+			return ApiShip\ApiShip_Core::get_templates_path();
 		}
 		
 		/**
@@ -918,7 +919,7 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 		 * @since 1.0.0
 		 */
 		public function get_order_label_image() {
-			return WP_ApiShip\WP_ApiShip_Core::get_plugin_dir_image_url() . Options\WP_ApiShip_Options::LABEL_PLACEHOLDER;
+			return ApiShip\ApiShip_Core::get_plugin_dir_image_url() . Options\ApiShip_Options::LABEL_PLACEHOLDER;
 		}
 
 		/**
@@ -927,7 +928,7 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 		 * @since 1.0.0
 		 */	
 		public function the_order_label_image() {
-			echo $this->get_order_label_image();
+			echo esc_url( $this->get_order_label_image() );
 		}
 
 		/**
@@ -936,8 +937,8 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 		 * @since 1.0.0
 		 */
 		protected function set_tariff() {
-			if ( isset( $this->meta_data[ Options\WP_ApiShip_Options::TARIFF_DATA_KEY ] ) && ! empty( $this->meta_data[ Options\WP_ApiShip_Options::TARIFF_DATA_KEY ] ) ) {
-				$this->tariff = json_decode($this->meta_data[ Options\WP_ApiShip_Options::TARIFF_DATA_KEY ]->value);
+			if ( isset( $this->meta_data[ Options\ApiShip_Options::TARIFF_DATA_KEY ] ) && ! empty( $this->meta_data[ Options\ApiShip_Options::TARIFF_DATA_KEY ] ) ) {
+				$this->tariff = json_decode($this->meta_data[ Options\ApiShip_Options::TARIFF_DATA_KEY ]->value);
 			}
 		}
 		
@@ -981,9 +982,9 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 			$delivery_type = '1';
 			
 			if ( is_array( $this->get_delivery_type() ) ) {
-				echo implode( ',', $this->get_delivery_type() );
+				echo esc_attr( implode( ',', $this->get_delivery_type() ) );
 			} else {
-				echo $delivery_type;
+				echo esc_attr( $delivery_type );
 			}
 		}
 		
@@ -999,10 +1000,10 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 			$text = array();
 			
 			foreach( $this->get_delivery_type() as $type ) {
-				$text[] = Options\WP_ApiShip_Options::get_delivery_type_text($type);
+				$text[] = Options\ApiShip_Options::get_delivery_type_text($type);
 			}
 
-			echo implode( '; ', $text );
+			echo esc_html( implode( '; ', $text ) );
 		}
 		
 		/**
@@ -1035,9 +1036,9 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 			$pickup_type = '1';
 			
 			if ( is_array( $this->get_pickup_type() ) ) {
-				echo implode( ',', $this->get_pickup_type() );
+				echo esc_attr( implode( ',', $this->get_pickup_type() ) );
 			} else {
-				echo $pickup_type;
+				echo esc_attr( $pickup_type );
 			}
 		}
 		
@@ -1054,10 +1055,10 @@ if ( ! class_exists('WP_ApiShip_Meta_Boxes') ) :
 			
 			foreach( $this->get_pickup_type() as $type ) {
 			// foreach( array(0=>1,1=>2) as $type ) { // @debug
-				$text[] = Options\WP_ApiShip_Options::get_pickup_type_text($type);
+				$text[] = Options\ApiShip_Options::get_pickup_type_text($type);
 			}
 
-			echo implode( '; ', $text );
+			echo esc_html( implode( '; ', $text ) );
 		}		
 		
 	}

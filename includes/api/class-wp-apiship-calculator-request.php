@@ -7,21 +7,21 @@
  * @since 1.0.0
  */
 
-use WP_ApiShip\Options;
-use WP_ApiShip\Options\WP_ApiShip_Options;
+use ApiShip\Options;
+use ApiShip\Options\ApiShip_Options;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists('WP_ApiShip_Calculator_Request') ) :
+if ( ! class_exists('ApiShip_Calculator_Request') ) :
 
 	/**
 	 * @see https://api.apiship.ru/doc/#/calculator/getCalculator
 	 * @see https://docs.apiship.ru/docs/api/calculator/
 	 */
-	class WP_ApiShip_Calculator_Request {
+	class ApiShip_Calculator_Request {
 
 		/**
 		 * @see CalculatorRequest -> CalculatorPlace https://api.apiship.ru/doc/#/calculator/getCalculator
@@ -39,7 +39,7 @@ if ( ! class_exists('WP_ApiShip_Calculator_Request') ) :
 		 *
 		 * @since 1.0.0
 		 *
-		 * @var WP_ApiShip_Calculator_Direction
+		 * @var ApiShip_Calculator_Direction
 		 */		
 		protected $to;
 
@@ -48,7 +48,7 @@ if ( ! class_exists('WP_ApiShip_Calculator_Request') ) :
 		 *
 		 * @since 1.0.0
 		 *
-		 * @var WP_ApiShip_Calculator_Direction
+		 * @var ApiShip_Calculator_Direction
 		 */		
 		protected $from;
 		
@@ -187,19 +187,19 @@ if ( ! class_exists('WP_ApiShip_Calculator_Request') ) :
 		 */		
 		public function __construct( $package = array(), $post_data = [] ) {
 			
-			if ( ! class_exists( 'WP_ApiShip_Calculator_Direction', false  ) ) {
+			if ( ! class_exists( 'ApiShip_Calculator_Direction', false  ) ) {
 				require_once( 'class-wp-apiship-calculator-direction.php' );
 			}
 			
 			$destination = $package['destination'];
 			
-			$wc_default_country = Options\WP_ApiShip_Options::get_wc_option( 
+			$wc_default_country = Options\ApiShip_Options::get_wc_option( 
 				'woocommerce_default_country', 
-				Options\WP_ApiShip_Options::WС_DEFAULT_COUNTRY, 
+				Options\ApiShip_Options::WС_DEFAULT_COUNTRY, 
 				false 
 			);
 
-			$this->warehouse_address_use = Options\WP_ApiShip_Options::get_wc_option( 
+			$this->warehouse_address_use = Options\ApiShip_Options::get_wc_option( 
 				'wp_apiship_warehouse_address_use', 
 				'no', 
 				false 
@@ -208,7 +208,7 @@ if ( ! class_exists('WP_ApiShip_Calculator_Request') ) :
 			/**
 			 * Address to.
 			 */			
-			$to = new \WP_ApiShip_Calculator_Direction( 
+			$to = new \ApiShip_Calculator_Direction( 
 				array(
 					'countryCode'	=> ! empty( $destination['country'] )  ? $destination['country']  : $wc_default_country,
 					'index' 		=> ! empty( $destination['postcode'] ) ? $destination['postcode'] : '',
@@ -226,13 +226,13 @@ if ( ! class_exists('WP_ApiShip_Calculator_Request') ) :
 			 */
 			if ( $this->warehouse_address_use == 'no' ) {			 
 			 
-				$from = new \WP_ApiShip_Calculator_Direction(
+				$from = new \ApiShip_Calculator_Direction(
 					array(
 						'countryCode'	=> $wc_default_country,
-						'index'			=> Options\WP_ApiShip_Options::get_wc_option( 'woocommerce_store_postcode', false, false ),
-						'addressString' => Options\WP_ApiShip_Options::get_wc_option( 'woocommerce_store_address', false, false ),	
-						'region' 		=> Options\WP_ApiShip_Options::get_wc_option( 'woocommerce_store_city', false, false ),
-						'city' 			=> Options\WP_ApiShip_Options::get_wc_option( 'woocommerce_store_city', false, false ),
+						'index'			=> Options\ApiShip_Options::get_wc_option( 'woocommerce_store_postcode', false, false ),
+						'addressString' => Options\ApiShip_Options::get_wc_option( 'woocommerce_store_address', false, false ),	
+						'region' 		=> Options\ApiShip_Options::get_wc_option( 'woocommerce_store_city', false, false ),
+						'city' 			=> Options\ApiShip_Options::get_wc_option( 'woocommerce_store_city', false, false ),
 						'lat' 			=> 0.0000,
 						'lng' 			=> 0.0000,
 					)			
@@ -240,7 +240,7 @@ if ( ! class_exists('WP_ApiShip_Calculator_Request') ) :
 				
 			} else {
 
-				$country_code = Options\WP_ApiShip_Options::get_wc_option( 
+				$country_code = Options\ApiShip_Options::get_wc_option( 
 					'wp_apiship_warehouse_country', 
 					$wc_default_country, 
 					false 
@@ -250,10 +250,10 @@ if ( ! class_exists('WP_ApiShip_Calculator_Request') ) :
 					$country_code = $wc_default_country;
 				}
 				
-				$post_index   = Options\WP_ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_index', false, false );
-				$city 		  = Options\WP_ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_city', false, false );
+				$post_index   = Options\ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_index', false, false );
+				$city 		  = Options\ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_city', false, false );
 				
-				$from = new \WP_ApiShip_Calculator_Direction(
+				$from = new \ApiShip_Calculator_Direction(
 					array(
 						'countryCode'	=> $country_code,
 						'index'			=> $post_index,
@@ -292,7 +292,7 @@ if ( ! class_exists('WP_ApiShip_Calculator_Request') ) :
 			$this->assessedCost	 = $this->get_assessed_cost($package);
 			$this->includeFees 	 = $this->get_include_fees();
 			$this->extraParams 	 = array();
-			$this->customCode 	 = Options\WP_ApiShip_Options::get_siteurl();
+			$this->customCode 	 = Options\ApiShip_Options::get_siteurl();
 			
 			$payment_method = isset( $post_data['payment_method'] ) ? $post_data['payment_method'] : '';
 			$this->codCost	= $this->get_codcost($payment_method);
@@ -333,8 +333,8 @@ if ( ! class_exists('WP_ApiShip_Calculator_Request') ) :
 		 */	
 		protected function get_provider_keys() {
 			
-			if ( Options\WP_ApiShip_Options::is_use_selected_providers() ) {
-				$selected_providers = Options\WP_ApiShip_Options::get_selected_providers();
+			if ( Options\ApiShip_Options::is_use_selected_providers() ) {
+				$selected_providers = Options\ApiShip_Options::get_selected_providers();
 				if ( is_array($selected_providers) && ! empty($selected_providers) ) {
 					return $selected_providers;
 					
@@ -369,9 +369,9 @@ if ( ! class_exists('WP_ApiShip_Calculator_Request') ) :
 			// */
 			
 			if ( $this->warehouse_address_use == 'no' ) {
-				// $address_string[] = Options\WP_ApiShip_Options::get_wc_option( 'woocommerce_store_address', false, false );
+				// $address_string[] = Options\ApiShip_Options::get_wc_option( 'woocommerce_store_address', false, false );
 			} else {
-				$address_string[] = Options\WP_ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_address', false, false );
+				$address_string[] = Options\ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_address', false, false );
 			}
 			
 			if ( count($address_string) > 1 ) {
@@ -399,7 +399,7 @@ if ( ! class_exists('WP_ApiShip_Calculator_Request') ) :
 				in_array(
 					$payment_method, 
 					array(
-						Options\WP_ApiShip_Options::WC_PAYMENT_DIRECT_BANK_TRANSFER
+						Options\ApiShip_Options::WC_PAYMENT_DIRECT_BANK_TRANSFER
 					) 
 				)
 			) {
@@ -432,7 +432,7 @@ if ( ! class_exists('WP_ApiShip_Calculator_Request') ) :
 		 */
 		protected function get_include_fees() {
 			
-			$include_fees = Options\WP_ApiShip_Options::get_wc_option( 'wp_apiship_include_fees', 'no', false );
+			$include_fees = Options\ApiShip_Options::get_wc_option( 'wp_apiship_include_fees', 'no', false );
 
 			if ( $include_fees === 'no' ) {
 				return false;
@@ -476,12 +476,12 @@ if ( ! class_exists('WP_ApiShip_Calculator_Request') ) :
 		 */
 		protected function get_default_places()
 		{
-			$length = WP_ApiShip_Options::get_wc_option('wp_apiship_place_length', '', false);	
-			$height = WP_ApiShip_Options::get_wc_option('wp_apiship_place_height', '', false);
-			$width = WP_ApiShip_Options::get_wc_option('wp_apiship_place_width', '', false);
+			$length = ApiShip_Options::get_wc_option('wp_apiship_place_length', '', false);	
+			$height = ApiShip_Options::get_wc_option('wp_apiship_place_height', '', false);
+			$width = ApiShip_Options::get_wc_option('wp_apiship_place_width', '', false);
 			
-			$placeWeight = WP_ApiShip_Options::get_wc_option('wp_apiship_place_weight', '', false);
-			$packWeight = WP_ApiShip_Options::get_wc_option('wp_apiship_place_package_weight', '', false);
+			$placeWeight = ApiShip_Options::get_wc_option('wp_apiship_place_weight', '', false);
+			$packWeight = ApiShip_Options::get_wc_option('wp_apiship_place_package_weight', '', false);
 
 			$length = intval($length);
 			$height = intval($height);
@@ -578,23 +578,23 @@ if ( ! class_exists('WP_ApiShip_Calculator_Request') ) :
 				case 'height' :
 					$option = 'wp_apiship_height';
 					$value 	= $product->get_height();
-					$default_value = Options\WP_ApiShip_Options::ITEM_HEIGHT;
+					$default_value = Options\ApiShip_Options::ITEM_HEIGHT;
 					break;
 				case 'width' :
 					$option = 'wp_apiship_width';
 					$value 	= $product->get_width();
-					$default_value = Options\WP_ApiShip_Options::ITEM_WIDTH;
+					$default_value = Options\ApiShip_Options::ITEM_WIDTH;
 					break;
 				case 'length' :
 					$option = 'wp_apiship_length';
 					$value 	= $product->get_length();
-					$default_value = Options\WP_ApiShip_Options::ITEM_LENGTH;				
+					$default_value = Options\ApiShip_Options::ITEM_LENGTH;				
 					break;
 			endswitch;				
 			
 			if ( empty($value) ) {
 
-				$value = Options\WP_ApiShip_Options::get_wc_option(
+				$value = Options\ApiShip_Options::get_wc_option(
 					$option, 
 					$default_value,
 					false
@@ -649,14 +649,14 @@ if ( ! class_exists('WP_ApiShip_Calculator_Request') ) :
 
 			if ( empty($weight) ) {
 				
-				$weight = Options\WP_ApiShip_Options::get_wc_option(
+				$weight = Options\ApiShip_Options::get_wc_option(
 					'wp_apiship_weight', 
-					Options\WP_ApiShip_Options::ITEM_WEIGHT,
+					Options\ApiShip_Options::ITEM_WEIGHT,
 					false
 				);
 				
 				if ( empty($weight) ) {
-					$weight = Options\WP_ApiShip_Options::ITEM_WEIGHT;
+					$weight = Options\ApiShip_Options::ITEM_WEIGHT;
 				}
 				
 			} else {

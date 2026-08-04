@@ -7,7 +7,7 @@
  *
  * @since 1.5.0
  */
-namespace WP_ApiShip;
+namespace ApiShip;
 
 use Throwable;
 
@@ -16,16 +16,16 @@ if (!defined('ABSPATH')) {
 	exit;
 }
 
-if (!class_exists('WP_ApiShip\\WP_ApiShip_Activator')) :
+if (!class_exists('ApiShip\\ApiShip_Activator')) :
 
 	/**
 	 * Plugin activator.
      * 
      * @since 1.5.0
 	 */
-	class WP_ApiShip_Activator
+	class ApiShip_Activator
 	{
-        public const LIMIT = \WP_APISHIP_ACTIVATOR_LIMIT;
+        public const LIMIT = \APISHIP_ACTIVATOR_LIMIT;
 
         public const ACTIVATION_HOOK_NAME = 'wp_apiship_activator';
         public const DEACTIVATION_HOOK_NAME = 'wp_apiship_deactivator';
@@ -42,7 +42,7 @@ if (!class_exists('WP_ApiShip\\WP_ApiShip_Activator')) :
         public const ACTIVATE_INSTANT_MODE = false;
         public const DEACTIVATE_INSTANT_MODE = false;
 
-        public const WRITE_LOG = \WP_APISHIP_ACTIVATOR_WRITE_LOG;
+        public const WRITE_LOG = \APISHIP_ACTIVATOR_WRITE_LOG;
         public const LOG_PATH = __DIR__ . '/../.activator.log';
 
         public static bool $is_done = true;
@@ -62,7 +62,7 @@ if (!class_exists('WP_ApiShip\\WP_ApiShip_Activator')) :
                 add_action('admin_init', function(){
                     self::write_log("Deactivate plugin" . PHP_EOL);
                     
-                    deactivate_plugins(\WP_APISHIP_PLUGIN_BASE, true);
+                    deactivate_plugins(\APISHIP_PLUGIN_BASE, true);
 
                     update_option(self::IS_WAIT_ACTION_OPTION, 0);
 
@@ -89,7 +89,7 @@ if (!class_exists('WP_ApiShip\\WP_ApiShip_Activator')) :
                     add_action('admin_notices', function(){
                         $offset = self::$offset;
 
-                        echo '<div class="notice notice-info"><p>Статус деактивации плагина WP ApiShip for WooCommerce: в процессе.</p><p>Offset: ' . $offset . '</p><p><a href="/wp-admin/plugins.php?apiship_deactivation">Обновить</a></p></div>';
+                        echo '<div class="notice notice-info"><p>Статус деактивации плагина WP ApiShip for WooCommerce: в процессе.</p><p>Offset: ' . absint( $offset ) . '</p><p><a href="' . esc_url( admin_url( 'plugins.php?apiship_deactivation' ) ) . '">Обновить</a></p></div>';
                     });
                 }
 
@@ -217,6 +217,7 @@ if (!class_exists('WP_ApiShip\\WP_ApiShip_Activator')) :
                     $meta_key = 'integrator';
                     $meta_value = 'WPApiShip';
 
+                    // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- имена таблиц берутся из $wpdb->prefix, значения передаются через prepare.
                     $order_item_ids = $wpdb->get_col(
                         $wpdb->prepare(
                             "SELECT DISTINCT oi.order_item_id
@@ -232,6 +233,7 @@ if (!class_exists('WP_ApiShip\\WP_ApiShip_Activator')) :
                             $offset
                         )
                     );
+                    // phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
                     if (boolval($is_done) === true or empty($order_item_ids) or $order_item_ids === null) {
                         self::write_log("[FINISH] All data has been processed" . PHP_EOL);

@@ -7,16 +7,16 @@
  * @since 1.0.0
  */
 
-use WP_ApiShip\Options;
+use ApiShip\Options;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists('WP_ApiShip_Order_ReturnAddress') ) :
+if ( ! class_exists('ApiShip_Order_ReturnAddress') ) :
 
-	class WP_ApiShip_Order_ReturnAddress {
+	class ApiShip_Order_ReturnAddress {
 
 		/**
 		 * If use warehouse address then set value to `yes`.
@@ -25,7 +25,7 @@ if ( ! class_exists('WP_ApiShip_Order_ReturnAddress') ) :
 		 */
 		protected $warehouse_address_use = null;
 
-		protected $countryCode = Options\WP_ApiShip_Options::WС_DEFAULT_COUNTRY;
+		protected $countryCode = Options\ApiShip_Options::WС_DEFAULT_COUNTRY;
 		protected $postIndex = ''; #'105062';
 		protected $region = ''; #'Москва';
 		protected $area = '';
@@ -51,21 +51,21 @@ if ( ! class_exists('WP_ApiShip_Order_ReturnAddress') ) :
 		public function __construct($request, WC_Order $wc_order) {
 
 			$this->warehouse_address_use = 
-				Options\WP_ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_address_use', 'no', false );
+				Options\ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_address_use', 'no', false );
 			
 			if ( $this->warehouse_address_use == 'no' ) {
 				
-				$country_code 	= Options\WP_ApiShip_Options::get_wc_option( 'woocommerce_default_country', false, false );
-				$post_index   	= Options\WP_ApiShip_Options::get_wc_option( 'woocommerce_store_postcode', false, false );
-				$city 		  	= Options\WP_ApiShip_Options::get_wc_option( 'woocommerce_store_city', false, false );
-				$address_string = Options\WP_ApiShip_Options::get_wc_option( 'woocommerce_store_address', false, false );
+				$country_code 	= Options\ApiShip_Options::get_wc_option( 'woocommerce_default_country', false, false );
+				$post_index   	= Options\ApiShip_Options::get_wc_option( 'woocommerce_store_postcode', false, false );
+				$city 		  	= Options\ApiShip_Options::get_wc_option( 'woocommerce_store_city', false, false );
+				$address_string = Options\ApiShip_Options::get_wc_option( 'woocommerce_store_address', false, false );
 			
 			} else {
 			
-				$country_code 	= Options\WP_ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_country', false, false );
-				$post_index   	= Options\WP_ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_index', false, false );
-				$city 		  	= Options\WP_ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_city', false, false );
-				$address_string = Options\WP_ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_address', false, false );				
+				$country_code 	= Options\ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_country', false, false );
+				$post_index   	= Options\ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_index', false, false );
+				$city 		  	= Options\ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_city', false, false );
+				$address_string = Options\ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_address', false, false );				
 			
 			}
 			

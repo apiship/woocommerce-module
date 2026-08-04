@@ -8,7 +8,7 @@
  * @since 1.0.0
  */
 
-use WP_ApiShip\Options;
+use ApiShip\Options;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -28,14 +28,14 @@ foreach ( $line_items_shipping as $item_id=>$item ) {
  */
 $id = wc_get_order_item_meta( 
 	$shipping_order_item_id, #$item->get_id(), 
-	Options\WP_ApiShip_Options::INTEGRATOR_ORDER_KEY
+	Options\ApiShip_Options::INTEGRATOR_ORDER_KEY
 );
 
 $formatted_meta_data = $item->get_formatted_meta_data( '' );
 
 $tools_class = 'hidden';
 // $tools_class = '';
-if ( WP_ApiShip\WP_ApiShip_Core::is_godmode() ) {
+if ( ApiShip\ApiShip_Core::is_godmode() ) {
 	$tools_class = '';
 }
 
@@ -51,7 +51,7 @@ unset( $formatted_meta_data );
 /**
  * Icon URL.
  * @test for no image provider.
- * $icon_url = WP_ApiShip\WP_ApiShip_Core::get_provider_icon_url('zabberi');
+ * $icon_url = ApiShip\ApiShip_Core::get_provider_icon_url('zabberi');
  */
 $icon_url = $this->get_provider_icon_url($meta_data['tariffProviderKey']->value);
 
@@ -59,10 +59,10 @@ $icon_url = $this->get_provider_icon_url($meta_data['tariffProviderKey']->value)
  * Enabled keys.
  */
 $enabled_meta_keys = array(
-	// 'tariffId' 	 => esc_html__('ID тарифа','wp-apiship'),
-	'tariffName' => esc_html__('Название тарифа','wp-apiship'),
-	'daysMin' 	 => esc_html__('Минимальный срок доставки, дней','wp-apiship'),
-	'daysMax' 	 => esc_html__('Максимальный срок доставки, дней','wp-apiship'),
+	// 'tariffId' 	 => esc_html__('ID тарифа','apiship'),
+	'tariffName' => esc_html__('Название тарифа','apiship'),
+	'daysMin' 	 => esc_html__('Минимальный срок доставки, дней','apiship'),
+	'daysMax' 	 => esc_html__('Максимальный срок доставки, дней','apiship'),
 	'places'	 => '',
 );
 
@@ -144,38 +144,38 @@ if (isset($tariff->isDeliveryToPoint)) {
 </div>
 <div class="order-shipping-wrapper order-hidden" data-order_item_id="<?php echo esc_attr($shipping_order_item_id); ?>">
 	<div class="shipping--box left-sidebar">
-		<div class="card provider-card provider-<?php echo $meta_data['tariffProviderKey']->value; ?>" data-provider-key="<?php echo $meta_data['tariffProviderKey']->value; ?>">
+		<div class="card provider-card provider-<?php echo esc_attr( $meta_data['tariffProviderKey']->value ); ?>" data-provider-key="<?php echo esc_attr( $meta_data['tariffProviderKey']->value ); ?>">
 			<div class="card--item card--logo">
-				<img class="logo" src="<?php echo $icon_url; ?>" />
+				<img class="logo" src="<?php echo esc_url( $icon_url ); ?>" />
 			</div>
-			<div class="card--item card--name"><?= $this->get_provider_name($meta_data['tariffProviderKey']->value) ?></div>
+			<div class="card--item card--name"><?php echo esc_html( $this->get_provider_name($meta_data['tariffProviderKey']->value) ); ?></div>
 			<div class="card--item card--description"></div>
 			<?php if ( $store_city && $point_in_store_city_address ) { ?>
 				<div class="card--item card--point-in-id store">
 					<hr />
 					<div class="caption">
-						<?php esc_html_e('Пункт приёма заказов','wp-apiship'); ?>
-						<?php esc_html_e('из магазина','wp-apiship'); ?>
+						<?php esc_html_e('Пункт приёма заказов','apiship'); ?>
+						<?php esc_html_e('из магазина','apiship'); ?>
 						<br />
-						<?php esc_html_e('г.','wp-apiship'); ?>
-						<?php echo $store_city; ?>
+						<?php esc_html_e('г.','apiship'); ?>
+						<?php echo esc_html( $store_city ); ?>
 					</div>
 					<div class="address">
-						<?php echo $point_in_store_city_address; ?>
+						<?php echo esc_html( $point_in_store_city_address ); ?>
 					</div>					
 				</div>
 			<?php } else { ?>
 				<div class="card--item card--point-in-id store">
 					<hr />
 					<div class="caption">
-						<?php esc_html_e('Пункт приёма заказов','wp-apiship'); ?>
-						<?php esc_html_e('из магазина','wp-apiship'); ?>
+						<?php esc_html_e('Пункт приёма заказов','apiship'); ?>
+						<?php esc_html_e('из магазина','apiship'); ?>
 						<br />
-						<?php esc_html_e('г.','wp-apiship'); ?>
-						<?php echo $store_city; ?>
+						<?php esc_html_e('г.','apiship'); ?>
+						<?php echo esc_html( $store_city ); ?>
 					</div>
 					<div class="address">
-						---&nbsp;<?php esc_html_e('не установлен по умолчанию','wp-apiship'); ?>&nbsp;---
+						---&nbsp;<?php esc_html_e('не установлен по умолчанию','apiship'); ?>&nbsp;---
 					</div>					
 				</div>			
 			<?php } ?>
@@ -183,14 +183,14 @@ if (isset($tariff->isDeliveryToPoint)) {
 				<div class="card--item card--point-in-id warehouse">
 					<hr />
 					<div class="caption">
-						<?php esc_html_e('Пункт приёма заказов','wp-apiship'); ?>
-						<?php esc_html_e('со склада','wp-apiship'); ?>
+						<?php esc_html_e('Пункт приёма заказов','apiship'); ?>
+						<?php esc_html_e('со склада','apiship'); ?>
 						<br />						
-						<?php esc_html_e('г.','wp-apiship'); ?>
-						<?php echo $warehouse_city; ?>
+						<?php esc_html_e('г.','apiship'); ?>
+						<?php echo esc_html( $warehouse_city ); ?>
 					</div>
 					<div class="address">
-						<?php echo $point_in_warehouse_city_address; ?>
+						<?php echo esc_html( $point_in_warehouse_city_address ); ?>
 					</div>					
 				</div>
 			<?php } ?>				
@@ -198,24 +198,24 @@ if (isset($tariff->isDeliveryToPoint)) {
 		if ( $this->integrator_order_exists() ) { ?>
 			<div class="card integrator-order-label-card">
 				<div class="card--item card--label">
-					<span class="card-caption"><?php esc_html_e('Наклейка','wp-apiship'); ?></span>
+					<span class="card-caption"><?php esc_html_e('Наклейка','apiship'); ?></span>
 				</div>			
 				<div class="card--item label-exists hidden">
 					<img class="" src="<?php $this->the_order_label_image(); ?>" />
 					<button class="button button-secondary label-download" onclick="return false;" data-url="">
-						<?php esc_html_e('Открыть','wp-apiship'); ?>
-						<?php // esc_html_e('Скачать','wp-apiship'); ?>
+						<?php esc_html_e('Открыть','apiship'); ?>
+						<?php // esc_html_e('Скачать','apiship'); ?>
 					</button>
 					<!-- <iframe id="iframe-label-download" name="iframe-label-download" frameborder="1" width="1" height="1"></iframe>-->
 
 				</div>	
 				<div class="card--item label-not-exists hidden">
-					<div class="label-caption"><?php esc_html_e('Наклейка не доступна для скачивания','wp-apiship'); ?></div>
+					<div class="label-caption"><?php esc_html_e('Наклейка не доступна для скачивания','apiship'); ?></div>
 					<div class="label-message"></div>
 				</div>
 				
 				<button style="margin-top: 10px;" class="button button-secondary" id="order_label_request" onclick="return false;" data-url="">
-					<?php esc_html_e('Запросить наклейку','wp-apiship'); ?>
+					<?php esc_html_e('Запросить наклейку','apiship'); ?>
 				</button>
 			</div><!-- .integrator-order-label-card --><?php
 		} ?>	
@@ -224,7 +224,7 @@ if (isset($tariff->isDeliveryToPoint)) {
 		<!-- Tariff Section -->
 		<div class="meta--item meta-key">&nbsp;</div>
 		<div class="meta--item meta-title">
-			<h3><?php esc_html_e('Тариф','wp-apiship'); 
+			<h3><?php esc_html_e('Тариф','apiship'); 
 			if (!$this->integrator_order_exists()) { ?>
 				<a href="#" onclick="return false;" class="edit-data edit-tariff" data-open="0"></a>
 			<?php } ?></h3>
@@ -234,12 +234,12 @@ if (isset($tariff->isDeliveryToPoint)) {
 		<div class="meta-value edit-tariff-section hidden meta--item meta-value" style="max-width: 90%;">
 			
 			<button id="save_admin_method" class="button button-secondary" onclick="return false;">
-				<?php esc_html_e('Сохранить', 'wp-apiship'); ?>
+				<?php esc_html_e('Сохранить', 'apiship'); ?>
 			</button>
 
-			<div class="meta--item meta-key hidden point-out-save-message" id="updateAdminTariffMessage">Данные успешно сохранены</div>
+			<div class="meta--item meta-key hidden point-out-save-message" id="updateAdminTariffMessage"><?php esc_html_e('Данные успешно сохранены', 'apiship'); ?></div>
 
-			<p style="padding-bottom: 20px;"><b><?php esc_html_e('Выберите новый тариф. Выбор ПВЗ и тарифа для способов доставки до ПВЗ будет доступен после сохранения в разделе "Пункт выдачи заказа".', 'wp-apiship'); ?></b></p>
+			<p style="padding-bottom: 20px;"><b><?php esc_html_e('Выберите новый тариф. Выбор ПВЗ и тарифа для способов доставки до ПВЗ будет доступен после сохранения в разделе "Пункт выдачи заказа".', 'apiship'); ?></b></p>
 
 			<?php 
 
@@ -264,12 +264,12 @@ if (isset($tariff->isDeliveryToPoint)) {
 				// }
 
 				echo ' data-order-id="' . esc_attr( $this->order->get_id() ) . '"';
-				echo ' data-cost="' . $price . '"';
-				echo ' data-meta-data="' . htmlspecialchars(wp_json_encode($method['meta_data'])) . '"';
-				echo ' data-method-title="' . $method_title . '"';
+				echo ' data-cost="' . esc_attr( $price ) . '"';
+				echo ' data-meta-data="' . esc_attr( wp_json_encode($method['meta_data']) ) . '"';
+				echo ' data-method-title="' . esc_attr( $method_title ) . '"';
 
 				echo '>';
-				echo $method_title . $price_text . wc_price($price);
+				echo esc_html( $method_title . $price_text ) . wp_kses_post( wc_price($price) );
 				echo '</label></div>';
 			}
 
@@ -279,15 +279,15 @@ if (isset($tariff->isDeliveryToPoint)) {
 		</div>
 
 		<div class="meta--item meta-key">
-			<?php esc_html_e('Полное название',''); ?>:
+			<?php esc_html_e('Полное название', 'apiship'); ?>:
 		</div>
 		<div class="meta--item meta-value">
-			<?php echo esc_html( $item->get_name() ? $item->get_name() : __( 'Shipping', 'woocommerce' ) ) . $_price; ?>
+			<?php echo esc_html( $item->get_name() ? $item->get_name() : __( 'Shipping', 'apiship' ) ) . wp_kses_post( $_price ); ?>
 			<a href="#" onclick="return false;" class="edit-data edit-price"></a>
 		</div>
 		<!-- Pickup type -->
 		<div class="meta--item meta-key">
-			<?php esc_html_e('Тип забора груза','wp-apiship'); ?>:
+			<?php esc_html_e('Тип забора груза','apiship'); ?>:
 		</div>
 		<div class="meta--item meta-value">
 			<span class="pickup-type"><?php $this->the_pickup_type_text(); ?></span>
@@ -295,11 +295,11 @@ if (isset($tariff->isDeliveryToPoint)) {
 				name="pickup-type" 
 				class="wpapiship-transmitting-field field-to-control hidden" 
 				data-request-id="pickupType" 
-				value="<?php echo $this->the_pickup_type(); ?>" />
+				value="<?php $this->the_pickup_type(); ?>" />
 		</div>
 		<!-- Delivery type -->
 		<div class="meta--item meta-key">
-			<?php esc_html_e('Тип доставки','wp-apiship'); ?>:
+			<?php esc_html_e('Тип доставки','apiship'); ?>:
 		</div>
 		<div class="meta--item meta-value">
 			<span class="delivery-type"><?php $this->the_delivery_type_text(); ?></span>
@@ -307,7 +307,7 @@ if (isset($tariff->isDeliveryToPoint)) {
 				name="delivery-type" 
 				class="wpapiship-transmitting-field field-to-control hidden" 
 				data-request-id="deliveryType" 
-				value="<?php echo $this->the_delivery_type(); ?>" />
+				value="<?php $this->the_delivery_type(); ?>" />
 		</div>
 
 		<div class="meta-key edit-price-section hidden"></div>
@@ -319,11 +319,11 @@ if (isset($tariff->isDeliveryToPoint)) {
 				</div>
 
 				<button id="save_price" class="button button-secondary" onclick="return false;">
-					<?php esc_html_e('Сохранить', 'wp-apiship'); ?>
+					<?php esc_html_e('Сохранить', 'apiship'); ?>
 				</button>
 			</div>
 
-			<div class="meta--item meta-key hidden point-out-save-message" id="updatePriceMessage">Данные успешно сохранены</div>
+			<div class="meta--item meta-key hidden point-out-save-message" id="updatePriceMessage"><?php esc_html_e('Данные успешно сохранены', 'apiship'); ?></div>
 		</div>
 
 		<?php
@@ -332,19 +332,19 @@ if (isset($tariff->isDeliveryToPoint)) {
 				switch($_key) :
 					case 'daysMin' :
 						if ( $_item->value == $meta_data['daysMax']->value ) {	?>
-							<div class="meta--item meta-key"><?php esc_html_e('Cрок доставки, дней','wp-apiship'); ?>:</div>
-							<div class="meta--item meta-value"><?php echo $_item->value; ?></div><?php 										
+							<div class="meta--item meta-key"><?php esc_html_e('Cрок доставки, дней','apiship'); ?>:</div>
+							<div class="meta--item meta-value"><?php echo esc_html( $_item->value ); ?></div><?php 										
 						} else {	?>
-							<div class="meta--item meta-key"><?php echo $enabled_meta_keys[$_key]; ?>:</div>
-							<div class="meta--item meta-value"><?php echo $_item->value; ?></div><?php 								
+							<div class="meta--item meta-key"><?php echo esc_html( $enabled_meta_keys[$_key] ); ?>:</div>
+							<div class="meta--item meta-value"><?php echo esc_html( $_item->value ); ?></div><?php 								
 						}
 						break;
 					case 'daysMax' :
 						if ( $_item->value == $meta_data['daysMin']->value ) {
 							// Do nothing.
 						} else {	?>
-							<div class="meta--item meta-key"><?php echo $enabled_meta_keys[$_key]; ?>:</div>
-							<div class="meta--item meta-value"><?php echo $_item->value; ?></div><?php 								
+							<div class="meta--item meta-key"><?php echo esc_html( $enabled_meta_keys[$_key] ); ?>:</div>
+							<div class="meta--item meta-value"><?php echo esc_html( $_item->value ); ?></div><?php 								
 						}					
 						break;
 					case 'places' : 
@@ -353,174 +353,174 @@ if (isset($tariff->isDeliveryToPoint)) {
 							<!-- Dimensions and Weight unit section -->
 							<div class="meta--item meta-key">&nbsp;</div>
 							<div class="meta--item meta-title">
-								<h3><?php esc_html_e('Размеры и вес места','wp-apiship'); 
+								<h3><?php esc_html_e('Размеры и вес места','apiship'); 
 									if ( ! $this->integrator_order_exists() ) { ?>
 										<a href="#" onclick="return false;" class="edit-data edit-dimensions"></a><?php
 									} ?>	
 								</h3>
 							</div>
 							<!-- length -->
-							<div class="meta--item meta-key meta-length"><?php esc_html_e('Длина','wp-apiship'); ?>:</div>
+							<div class="meta--item meta-key meta-length"><?php esc_html_e('Длина','apiship'); ?>:</div>
 							<div class="meta--item meta-value">
 								<input type="text" 
 									name="wpapiship-places_0_length" 
 									id="wpapiship-places_0_length" 
 									size="5" 
-									value="<?php echo $this->get_place_dimension('length', 0); ?>" 
-									placeholder="<?php echo $places[0]->length; ?>" 
-									data-init-value="<?php echo $places[0]->length; ?>" 
+									value="<?php echo esc_attr( $this->get_place_dimension('length', 0) ); ?>" 
+									placeholder="<?php echo esc_attr( $places[0]->length ); ?>" 
+									data-init-value="<?php echo esc_attr( $places[0]->length ); ?>" 
 									disabled="disabled" 
 									class="wpapiship-transmitting-field wpapiship-editable-field disabled" 
 									data-request-id="custom-length"
 									data-place-order="0" 
 									data-dimension="length" />
-								<?php echo Options\WP_ApiShip_Options::DIMENSIONS_UNIT; ?>.
+								<?php echo esc_html( Options\ApiShip_Options::DIMENSIONS_UNIT ); ?>.
 							</div>
 							<!-- width -->
-							<div class="meta--item meta-key meta-width"><?php esc_html_e('Ширина','wp-apiship'); ?>:</div>
+							<div class="meta--item meta-key meta-width"><?php esc_html_e('Ширина','apiship'); ?>:</div>
 							<div class="meta--item meta-value">
 								<input type="text" 
 									name="wpapiship-places_0_width" 
 									id="wpapiship-places_0_width" 
 									size="5" 
-									value="<?php echo $this->get_place_dimension('width', 0); ?>" 
-									placeholder="<?php echo $places[0]->width; ?>" 
-									data-init-value="<?php echo $places[0]->width; ?>" 
+									value="<?php echo esc_attr( $this->get_place_dimension('width', 0) ); ?>" 
+									placeholder="<?php echo esc_attr( $places[0]->width ); ?>" 
+									data-init-value="<?php echo esc_attr( $places[0]->width ); ?>" 
 									disabled="disabled" 
 									class="wpapiship-transmitting-field wpapiship-editable-field disabled" 
 									data-request-id="custom-width" 
 									data-place-order="0"									
 									data-dimension="width" />
-								<?php echo Options\WP_ApiShip_Options::DIMENSIONS_UNIT; ?>.
+								<?php echo esc_html( Options\ApiShip_Options::DIMENSIONS_UNIT ); ?>.
 							</div>
 							<!-- height -->
-							<div class="meta--item meta-key meta-height"><?php esc_html_e('Высота','wp-apiship'); ?>:</div>
+							<div class="meta--item meta-key meta-height"><?php esc_html_e('Высота','apiship'); ?>:</div>
 							<div class="meta--item meta-value">
 								<input type="text" 
 									name="wpapiship-places_0_height" 
 									id="wpapiship-places_0_height" 
 									size="5" 
-									value="<?php echo $this->get_place_dimension('height', 0); ?>" 
-									placeholder="<?php echo $places[0]->height; ?>" 
-									data-init-value="<?php echo $places[0]->height; ?>" 
+									value="<?php echo esc_attr( $this->get_place_dimension('height', 0) ); ?>" 
+									placeholder="<?php echo esc_attr( $places[0]->height ); ?>" 
+									data-init-value="<?php echo esc_attr( $places[0]->height ); ?>" 
 									disabled="disabled" 
 									class="wpapiship-transmitting-field wpapiship-editable-field disabled" 
 									data-request-id="custom-height" 
 									data-place-order="0" 
 									data-dimension="height" />		
-								<?php echo Options\WP_ApiShip_Options::DIMENSIONS_UNIT; ?>.
+								<?php echo esc_html( Options\ApiShip_Options::DIMENSIONS_UNIT ); ?>.
 							</div>
 							<!-- weight -->
-							<div class="meta--item meta-key"><?php esc_html_e('Вес','wp-apiship'); ?>:</div>
+							<div class="meta--item meta-key"><?php esc_html_e('Вес','apiship'); ?>:</div>
 							<div class="meta--item meta-value">
 								<input type="text" 
 									name="wpapiship-places_0_weight" 
 									id="wpapiship-places_0_weight" 
 									size="5" 
-									value="<?php echo $places[0]->weight; ?>" 
-									placeholder="<?php echo $places[0]->weight; ?>" 
-									data-init-value="<?php echo $places[0]->weight; ?>" 
+									value="<?php echo esc_attr( $places[0]->weight ); ?>" 
+									placeholder="<?php echo esc_attr( $places[0]->weight ); ?>" 
+									data-init-value="<?php echo esc_attr( $places[0]->weight ); ?>" 
 									disabled="disabled" 
 									class="wpapiship-transmitting-field wpapiship-editable-field disabled" 
 									data-request-id="custom-weight" 
 									data-place-order="0" 
 									data-dimension="weight" />		
-								<?php echo Options\WP_ApiShip_Options::WEIGHT_UNIT; ?>.
+								<?php echo esc_html( Options\ApiShip_Options::WEIGHT_UNIT ); ?>.
 							</div>								
 							<?php 	
 						}
 						break;
 					default: ?>
-						<div class="meta--item meta-key"><?php echo $enabled_meta_keys[$_key]; ?>:</div>
-						<div class="meta--item meta-value"><?php echo $_item->value; ?></div><?php 					
+						<div class="meta--item meta-key"><?php echo esc_html( $enabled_meta_keys[$_key] ); ?>:</div>
+						<div class="meta--item meta-value"><?php echo esc_html( $_item->value ); ?></div><?php 					
 				endswitch;
 			}
 		endforeach; ?>
 		<!-- Order title -->
 		<div class="meta--item meta-key">&nbsp;</div>
-		<div class="meta--item meta-title"><h3><?php esc_html_e('Заказ ApiShip','wp-apiship'); ?></h3></div>			
+		<div class="meta--item meta-title"><h3><?php esc_html_e('Заказ ApiShip','apiship'); ?></h3></div>			
 		<!-- Order ID-->
-		<div class="meta--item meta-key meta-order-id meta-caption"><?php esc_html_e('Номер заказа','wp-apiship'); ?>:</div>
+		<div class="meta--item meta-key meta-order-id meta-caption"><?php esc_html_e('Номер заказа','apiship'); ?>:</div>
 		<?php
 		if ( $this->integrator_order_exists() ) { ?>
 			<div class="meta--item meta-value">
 				<input type="text" 
 					class="integrator-order-id" 
 					disabled="disabled" 
-					value="<?php echo $this->get_integrator_order_id(); ?>" />
+					value="<?php echo esc_attr( $this->get_integrator_order_id() ); ?>" />
 			</div><?php
 		} else {	?>		
 			<div class="meta--item meta-value">
 				<input type="text"
 					class="integrator-order-id" 
 					disabled="disabled" 
-					value="<?php esc_html_e('не создан','wp-apiship'); ?>" />
+					value="<?php esc_html_e('не создан','apiship'); ?>" />
 				<span class="integrator-order-warning dashicons dashicons-warning hidden" title=""></span>	
 			</div><?php
 		} 	?>	
 		<!-- Provider number (tracking-number) -->
-		<div class="meta--item meta-key meta-order-id meta-caption"><?php esc_html_e('Трек-номер','wp-apiship'); ?>:</div>
+		<div class="meta--item meta-key meta-order-id meta-caption"><?php esc_html_e('Трек-номер','apiship'); ?>:</div>
 		<?php
 		if ( $this->integrator_order_exists() ) { ?>
 			<div class="meta--item meta-value">
 				<input type="text" 
 					class="integrator-order-id" 
 					disabled="disabled" 
-					value="<?php echo $meta_data['providerNumber']->value; ?>" />
+					value="<?php echo esc_attr( $meta_data['providerNumber']->value ); ?>" />
 			</div><?php
 		} else {	?>		
 			<div class="meta--item meta-value">
 				<input type="text"
 					class="integrator-order-id" 
 					disabled="disabled" 
-					value="<?php esc_html_e('не создан','wp-apiship'); ?>" />
+					value="<?php esc_html_e('не создан','apiship'); ?>" />
 				<span class="integrator-order-warning dashicons dashicons-warning hidden" title=""></span>	
 			</div><?php
 		} 	?>	
 		<!-- Pickup date -->
-		<?php $field = Options\WP_ApiShip_Options::get_metabox_field('pickupDate'); ?>
-		<div class="meta--item meta-key meta-pickup-date meta-caption"><?php echo $field['caption']; ?>:</div>
+		<?php $field = Options\ApiShip_Options::get_metabox_field('pickupDate'); ?>
+		<div class="meta--item meta-key meta-pickup-date meta-caption"><?php echo esc_html( $field['caption'] ); ?>:</div>
 		<div class="meta--item meta-value">
-			<input type="<?php echo $field['type']; ?>" 
-				value="<?php echo $pickup_date; ?>" 
-				name="<?php echo $field['name']; ?>" 
-				id="<?php echo $field['id']; ?>" 
+			<input type="<?php echo esc_attr( $field['type'] ); ?>" 
+				value="<?php echo esc_attr( $pickup_date ); ?>" 
+				name="<?php echo esc_attr( $field['name'] ); ?>" 
+				id="<?php echo esc_attr( $field['id'] ); ?>" 
 				class="wpapiship-transmitting-field" 
-				data-request-id="<?php echo $field['requestID']; ?>" />
+				data-request-id="<?php echo esc_attr( $field['requestID'] ); ?>" />
 		</div>
 		<!-- Sender Title -->
 		<div class="meta--item meta-key">&nbsp;</div>
 		<div class="meta--item meta-title"><?php $this->the_sender_title(); ?></div>					
 		<!-- Sender: contact name -->
-		<?php $field = Options\WP_ApiShip_Options::get_metabox_field('contactName'); ?>
-		<div class="meta--item meta-key meta-contact-name meta-caption"><?php echo $field['caption']; ?>:</div>
+		<?php $field = Options\ApiShip_Options::get_metabox_field('contactName'); ?>
+		<div class="meta--item meta-key meta-contact-name meta-caption"><?php echo esc_html( $field['caption'] ); ?>:</div>
 		<div class="meta--item meta-value">
-			<input type="<?php echo $field['type']; ?>" 
-				value="<?php echo $this->get_contact_name(); ?>" 
-				name="<?php echo $field['name']; ?>" 
-				id="<?php echo $field['id']; ?>" 
-				placeholder="<?php echo $field['placeholder']; ?>" 
-				data-init-value="<?php echo $field['placeholder']; ?>" 
-				size="<?php echo $field['size']; ?>" 
+			<input type="<?php echo esc_attr( $field['type'] ); ?>" 
+				value="<?php echo esc_attr( $this->get_contact_name() ); ?>" 
+				name="<?php echo esc_attr( $field['name'] ); ?>" 
+				id="<?php echo esc_attr( $field['id'] ); ?>" 
+				placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" 
+				data-init-value="<?php echo esc_attr( $field['placeholder'] ); ?>" 
+				size="<?php echo esc_attr( $field['size'] ); ?>" 
 				class="wpapiship-transmitting-field" 
-				data-request-id="<?php echo $field['requestID']; ?>" />
+				data-request-id="<?php echo esc_attr( $field['requestID'] ); ?>" />
 		</div>
 		<!-- Sender: contact phone -->
-		<?php $field = Options\WP_ApiShip_Options::get_metabox_field('phone'); ?>
-		<div class="meta--item meta-key meta-contact-name meta-caption"><?php echo $field['caption']; ?>:</div>
+		<?php $field = Options\ApiShip_Options::get_metabox_field('phone'); ?>
+		<div class="meta--item meta-key meta-contact-name meta-caption"><?php echo esc_html( $field['caption'] ); ?>:</div>
 		<div class="meta--item meta-value">
-			<input type="<?php echo $field['type']; ?>" 
-				value="<?php echo $this->get_phone(); ?>" 
-				name="<?php echo $field['name']; ?>" 
-				id="<?php echo $field['id']; ?>" 
-				placeholder="<?php echo $field['placeholder']; ?>" 
-				data-init-value="<?php echo $field['placeholder']; ?>" 
-				size="<?php echo $field['size']; ?>" 
+			<input type="<?php echo esc_attr( $field['type'] ); ?>" 
+				value="<?php echo esc_attr( $this->get_phone() ); ?>" 
+				name="<?php echo esc_attr( $field['name'] ); ?>" 
+				id="<?php echo esc_attr( $field['id'] ); ?>" 
+				placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" 
+				data-init-value="<?php echo esc_attr( $field['placeholder'] ); ?>" 
+				size="<?php echo esc_attr( $field['size'] ); ?>" 
 				class="wpapiship-transmitting-field" 
-				data-request-id="<?php echo $field['requestID']; ?>" />
+				data-request-id="<?php echo esc_attr( $field['requestID'] ); ?>" />
 		</div>		
 		<!-- Sender: address -->
-		<div class="meta--item meta-key meta-caption"><?php esc_html_e('Адрес','wp-apiship'); ?>:</div>
+		<div class="meta--item meta-key meta-caption"><?php esc_html_e('Адрес','apiship'); ?>:</div>
 		<div class="meta--item meta-value meta-value-sender-address">
 			<span><?php $this->the_sender_address(); ?></span>
 		</div>
@@ -530,40 +530,40 @@ if (isset($tariff->isDeliveryToPoint)) {
 		<!-- Shipping point in: Title -->
 		<div class="meta--item meta-key">&nbsp;</div>
 		<div class="meta--item meta-title">
-			<?php esc_html_e('Пункт приёма заказа','wp-apiship'); ?><?php
+			<?php esc_html_e('Пункт приёма заказа','apiship'); ?><?php
 			if ( ! $this->integrator_order_exists() ) { ?>
 				<a href="#" onclick="return false;" class="edit-data edit-point-in"></a>
 				<a href="#" onclick="return false;" class="delete-data delete-point-in"></a><?php
 			} ?>	
 		</div>
 		<!-- Shipping point in: ID -->
-		<?php $field = Options\WP_ApiShip_Options::get_metabox_field('pointInId'); ?>		
-		<div class="meta--item meta-key meta-caption"><?php echo $field['caption']; ?>:</div>
+		<?php $field = Options\ApiShip_Options::get_metabox_field('pointInId'); ?>		
+		<div class="meta--item meta-key meta-caption"><?php echo esc_html( $field['caption'] ); ?>:</div>
 		<div class="meta--item meta-value">
-			<input type="<?php echo $field['type']; ?>" 
-				value="<?php echo $this->get_order_point_in_id(); ?>" 
-				name="<?php echo $field['name']; ?>" 
-				id="<?php echo $field['id']; ?>" 
-				size="<?php echo $field['size']; ?>" 
+			<input type="<?php echo esc_attr( $field['type'] ); ?>" 
+				value="<?php echo esc_attr( $this->get_order_point_in_id() ); ?>" 
+				name="<?php echo esc_attr( $field['name'] ); ?>" 
+				id="<?php echo esc_attr( $field['id'] ); ?>" 
+				size="<?php echo esc_attr( $field['size'] ); ?>" 
 				class="meta-value-point-in-id wpapiship-transmitting-field" 
 				disabled="disabled" 
-				data-request-id="<?php echo $field['requestID']; ?>" />		
+				data-request-id="<?php echo esc_attr( $field['requestID'] ); ?>" />		
 		</div>		
 		<!-- Shipping point in: Address -->
-		<?php $field = Options\WP_ApiShip_Options::get_metabox_field('pointInAddress'); ?>			
-		<div class="meta--item meta-key meta-caption"><?php echo $field['caption']; ?>:</div>
+		<?php $field = Options\ApiShip_Options::get_metabox_field('pointInAddress'); ?>			
+		<div class="meta--item meta-key meta-caption"><?php echo esc_html( $field['caption'] ); ?>:</div>
 		<div class="meta--item meta-value">
-			<input type="<?php echo $field['type']; ?>" 
-				value="<?php echo $this->get_order_point_in_address(); ?>" 
-				name="<?php echo $field['name']; ?>" 
-				id="<?php echo $field['id']; ?>" 
+			<input type="<?php echo esc_attr( $field['type'] ); ?>" 
+				value="<?php echo esc_attr( $this->get_order_point_in_address() ); ?>" 
+				name="<?php echo esc_attr( $field['name'] ); ?>" 
+				id="<?php echo esc_attr( $field['id'] ); ?>" 
 				class="meta-value-point-in-address wpapiship-transmitting-field" 
 				disabled="disabled" 
-				data-request-id="<?php echo $field['requestID']; ?>" />		
+				data-request-id="<?php echo esc_attr( $field['requestID'] ); ?>" />		
 		</div><?php
 		if ( ! $this->integrator_order_exists() ) : ?>
 			<!-- Shipping point in: Change address -->
-			<div class="meta--item meta-key meta-caption meta-key-point-in-new-address hidden"><?php esc_html_e('Изменить пункт приёма','wp-apiship'); ?>:</div>
+			<div class="meta--item meta-key meta-caption meta-key-point-in-new-address hidden"><?php esc_html_e('Изменить пункт приёма','apiship'); ?>:</div>
 			<div class="meta--item meta-value meta-value-point-in-new-address hidden"><?php 
 				$point_in_select_template = $this->get_template('point-in-select.php');
 				$point_in_select_action = 'initial';
@@ -577,37 +577,37 @@ if (isset($tariff->isDeliveryToPoint)) {
 		<div class="meta--item meta-key">&nbsp;</div>
 		<div class="meta--item meta-title">
 			<?php 
-			esc_html_e('Пункт выдачи заказа','wp-apiship');
+			esc_html_e('Пункт выдачи заказа','apiship');
 			if (!$this->integrator_order_exists() and $isDeliveryToPoint === true) { ?>
 				<a href="#" onclick="return false;" class="edit-data edit-point-out"></a>
 				<a href="#" onclick="return false;" class="delete-data delete-point-out"></a><?php
 			} ?>			
 		</div>		
 		<!-- Shipping point out: ID -->
-		<?php $field = Options\WP_ApiShip_Options::get_metabox_field('pointOutId'); ?>		
-		<div class="meta--item meta-key meta-caption"><?php echo $field['caption']; ?>:</div>
+		<?php $field = Options\ApiShip_Options::get_metabox_field('pointOutId'); ?>		
+		<div class="meta--item meta-key meta-caption"><?php echo esc_html( $field['caption'] ); ?>:</div>
 		<div class="meta--item meta-value">
-			<input type="<?php echo $field['type']; ?>" 
+			<input type="<?php echo esc_attr( $field['type'] ); ?>" 
 				value="<?php echo esc_attr( $this->get_order_point_out_id() ); ?>" 
-				name="<?php echo $field['name']; ?>" 
-				id="<?php echo $field['id']; ?>" 
-				size="<?php echo $field['size']; ?>" 
+				name="<?php echo esc_attr( $field['name'] ); ?>" 
+				id="<?php echo esc_attr( $field['id'] ); ?>" 
+				size="<?php echo esc_attr( $field['size'] ); ?>" 
 				class="meta-value-point-out-id wpapiship-transmitting-field" 
 				disabled="disabled" 
-				data-request-id="<?php echo $field['requestID']; ?>" />		
+				data-request-id="<?php echo esc_attr( $field['requestID'] ); ?>" />		
 		</div>	
 		<!-- Shipping point out: Address -->
-		<?php $field = Options\WP_ApiShip_Options::get_metabox_field('pointOutAddress'); ?>			
-		<div class="meta--item meta-key meta-caption"><?php echo $field['caption']; ?>:</div>
+		<?php $field = Options\ApiShip_Options::get_metabox_field('pointOutAddress'); ?>			
+		<div class="meta--item meta-key meta-caption"><?php echo esc_html( $field['caption'] ); ?>:</div>
 		<div class="meta--item meta-value">
-			<input type="<?php echo $field['type']; ?>" 
+			<input type="<?php echo esc_attr( $field['type'] ); ?>" 
 				value="<?php echo esc_attr( $this->get_order_point_out_address() ); ?>" 
-				name="<?php echo $field['name']; ?>" 
-				id="<?php echo $field['id']; ?>" 
+				name="<?php echo esc_attr( $field['name'] ); ?>" 
+				id="<?php echo esc_attr( $field['id'] ); ?>" 
 				class="meta-value-point-out-address wpapiship-transmitting-field" 
 				disabled="disabled" 
-				data-request-id="<?php echo $field['requestID']; ?>" />	
-			<div class="meta--item meta-key hidden point-out-save-message" id="pointOutSaveMessage">Данные успешно сохранены</div>	
+				data-request-id="<?php echo esc_attr( $field['requestID'] ); ?>" />	
+			<div class="meta--item meta-key hidden point-out-save-message" id="pointOutSaveMessage"><?php esc_html_e('Данные успешно сохранены', 'apiship'); ?></div>	
 		</div>
 		<!-- Divider -->
 		<div class="meta--item meta-key">&nbsp;</div>
@@ -615,41 +615,41 @@ if (isset($tariff->isDeliveryToPoint)) {
 		<!-- Action buttons section -->
 		<!-- Action buttons: Title -->
 		<div class="meta--item meta-key">&nbsp;</div>
-		<div class="meta--item meta-title"><?php esc_html_e('Действия','wp-apiship'); ?></div>		
+		<div class="meta--item meta-title"><?php esc_html_e('Действия','apiship'); ?></div>		
 		<div class="meta--item meta-key">&nbsp;</div>		
 		<?php
 		if ( $this->integrator_order_exists() ) { ?>
 			<div class="meta--item meta-value action-buttons wpapiship-buttons">
-				<button class="button button-secondary tools-orders <?php echo $tools_class; ?>" onclick="return false;">
-					<?php esc_html_e('Инструменты','wp-apiship'); ?>
+				<button class="button button-secondary tools-orders <?php echo esc_attr( $tools_class ); ?>" onclick="return false;">
+					<?php esc_html_e('Инструменты','apiship'); ?>
 				</button>
 				
 				<div class="wpapiship-action-button-wrapper">
 					<button class="button button-secondary wpapiship-action-button wpapiship-cancel-order" onclick="return false;">
-						<?php esc_html_e('Отменить заказ','wp-apiship'); ?>
+						<?php esc_html_e('Отменить заказ','apiship'); ?>
 					</button>
 					<span class="wpapiship-confirmation-bar wpapiship-action-confirmation wpapiship-cancel-order-confirmation hidden">
-						<span class="message"><?php esc_html_e('Отменить?','wp-apiship'); ?></span> 
+						<span class="message"><?php esc_html_e('Отменить?','apiship'); ?></span> 
 						<button onclick="return false;" href="#" class="confirmation-button yes">
-							<?php esc_html_e('Да','wp-apiship'); ?>
+							<?php esc_html_e('Да','apiship'); ?>
 						</button>
 						<button onclick="return false;" href="#" class="confirmation-button no">
-							<?php esc_html_e('Нет','wp-apiship'); ?>
+							<?php esc_html_e('Нет','apiship'); ?>
 						</button>
 					</span>	
 				</div>
 				
 				<div class="wpapiship-action-button-wrapper">
 					<button class="button button-secondary wpapiship-action-button wpapiship-delete-order" onclick="return false;">
-						<?php esc_html_e('Удалить из ApiShip','wp-apiship'); ?>
+						<?php esc_html_e('Удалить из ApiShip','apiship'); ?>
 					</button>
 					<span class="wpapiship-confirmation-bar wpapiship-action-confirmation wpapiship-delete-order-confirmation hidden">
-						<span class="message"><?php esc_html_e('Удалить?','wp-apiship'); ?></span> 
+						<span class="message"><?php esc_html_e('Удалить?','apiship'); ?></span> 
 						<button onclick="return false;" href="#" class="confirmation-button yes">
-							<?php esc_html_e('Да','wp-apiship'); ?>
+							<?php esc_html_e('Да','apiship'); ?>
 						</button>
 						<button onclick="return false;" href="#" class="confirmation-button no">
-							<?php esc_html_e('Нет','wp-apiship'); ?>
+							<?php esc_html_e('Нет','apiship'); ?>
 						</button>
 					</span>	
 				</div>
@@ -657,13 +657,13 @@ if (isset($tariff->isDeliveryToPoint)) {
 		} else { ?>
 			<div class="meta--item meta-value action-buttons">
 				<button class="button button-secondary validate-orders" onclick="return false;">
-					<?php esc_html_e('Валидация','wp-apiship'); ?>
+					<?php esc_html_e('Валидация','apiship'); ?>
 				</button>
 				<button class="button button-secondary post-orders" onclick="return false;">
-					<?php esc_html_e('Создать заказ','wp-apiship'); ?>
+					<?php esc_html_e('Создать заказ','apiship'); ?>
 				</button>
-				<button class="button button-secondary tools-orders <?php echo $tools_class; ?>" onclick="return false;">
-					<?php esc_html_e('Инструменты','wp-apiship'); ?>
+				<button class="button button-secondary tools-orders <?php echo esc_attr( $tools_class ); ?>" onclick="return false;">
+					<?php esc_html_e('Инструменты','apiship'); ?>
 				</button>
 			</div><?php
 		} ?>		
@@ -675,9 +675,9 @@ if (isset($tariff->isDeliveryToPoint)) {
 	if (json_decode($json) === null) {
 		$json = stripslashes($json);
 	}
-	echo htmlspecialchars_decode($json);
+	echo esc_html( htmlspecialchars_decode($json) );
 ?></div>
-<div style="display: none;" id="adminTariff"><?= htmlspecialchars_decode($meta_data['tariff']->value) ?></div>
+<div style="display: none;" id="adminTariff"><?php echo esc_html( htmlspecialchars_decode($meta_data['tariff']->value) ); ?></div>
 
 <!-- Shipping point out: Map -->
 <div class="meta--item meta-key wpapiship-ymap-row">&nbsp;</div>
@@ -697,8 +697,8 @@ if (isset($tariff->isDeliveryToPoint)) {
 		<div class="extra-buttons">
 			<span class="close-viewer-button">
 				<button onclick="return false;" class="button button-primary wpapiship-close-viewer" 
-					data-order-id="<?php echo $this->order->get_id(); ?>">
-					<?php echo esc_html__('Закрыть', 'wp-apiship'); ?>
+					data-order-id="<?php echo absint( $this->order->get_id() ); ?>">
+					<?php echo esc_html__('Закрыть', 'apiship'); ?>
 				</button>
 			</span>
 		</div>	
@@ -709,14 +709,14 @@ if (isset($tariff->isDeliveryToPoint)) {
 </div><!-- .wpapiship-order-action-wrapper -->
 <?php if ( $this->integrator_order_exists() ) { ?>
 	<div class="wpapiship-order-status-history">
-		<div class="meta--item meta-title"><h3><?= esc_html__('История статусов', 'wp-apiship'); ?></h3></div>
+		<div class="meta--item meta-title"><h3><?php echo esc_html__('История статусов', 'apiship'); ?></h3></div>
 		<table class="wp-list-table widefat fixed striped table-view-list">
 			<thead>
 				<tr>
-					<th><?php echo esc_html__('Статус ApiShip', 'wp-apiship'); ?></th>
-					<th><?php echo esc_html__('Статус СД', 'wp-apiship'); ?></th>
-					<th><?php echo esc_html__('Описание', 'wp-apiship'); ?></th>
-					<th><?php echo esc_html__('Получен', 'wp-apiship'); ?></th>
+					<th><?php echo esc_html__('Статус ApiShip', 'apiship'); ?></th>
+					<th><?php echo esc_html__('Статус СД', 'apiship'); ?></th>
+					<th><?php echo esc_html__('Описание', 'apiship'); ?></th>
+					<th><?php echo esc_html__('Получен', 'apiship'); ?></th>
 				</tr>
 			</thead>
 			<tbody>

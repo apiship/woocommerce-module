@@ -7,7 +7,7 @@
  * @since 1.5.0
  */
 
-namespace WP_ApiShip;
+namespace ApiShip;
 
 use Automattic\WooCommerce\Utilities\OrderUtil;
 
@@ -16,14 +16,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Compatibility' ) ) :
+if ( ! class_exists( __NAMESPACE__ . '\ApiShip_HPOS_Compatibility' ) ) :
 
 	/**
 	 * Class for HPOS (High-Performance Order Storage) compatibility.
 	 *
 	 * @since 1.5.0
 	 */
-	class WP_ApiShip_HPOS_Compatibility {
+	class ApiShip_HPOS_Compatibility {
 
 		/**
 		 * Check if HPOS is enabled.

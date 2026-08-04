@@ -7,16 +7,16 @@
  *
  * @since 1.0.0
  */
-namespace WP_ApiShip\Options;
+namespace ApiShip\Options;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists('WP_ApiShip_Options') ) :
+if ( ! class_exists('ApiShip_Options') ) :
 
-	class WP_ApiShip_Options {
+	class ApiShip_Options {
 
 		/**
 		 * Plugin constants.
@@ -517,7 +517,7 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 		 *
 		 * @param string $path_to_loader
 		 *
-		 * @return WP_ApiShip_Options
+		 * @return ApiShip_Options
 		 */
 		public static function get_instance( $path_to_loader = '' ) {
 			
@@ -550,8 +550,8 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 		 */	
 		public static function get_delivery_types() {
 			return array(
-				self::DELIVERY_BY_COURIER 	=> esc_html__('Доставка курьером','wp-apiship'),
-				self::DELIVERY_TO_POINT_OUT => esc_html__('Доставка на ПВЗ','wp-apiship'),
+				self::DELIVERY_BY_COURIER 	=> esc_html__('Доставка курьером','apiship'),
+				self::DELIVERY_TO_POINT_OUT => esc_html__('Доставка на ПВЗ','apiship'),
 			);
 		}
 		
@@ -578,8 +578,8 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 		 */			
 		public static function get_pickup_types() {
 			return array(
-				1 => esc_html__('Отгрузка груза курьером','wp-apiship'),
-				2 => esc_html__('Отгрузка груза на ПВЗ','wp-apiship'),
+				1 => esc_html__('Отгрузка груза курьером','apiship'),
+				2 => esc_html__('Отгрузка груза на ПВЗ','apiship'),
 			);			
 		}
 		
@@ -741,49 +741,49 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 			self::$metabox_fields = array(
 				'pickupDate' => array( 
 					'requestID'	  => 'pickupDate',
-					'caption'     => esc_html__('Дата передачи груза в службу доставки','wp-apiship'),
+					'caption'     => esc_html__('Дата передачи груза в службу доставки','apiship'),
 					'type' 	      => 'date',
 					'name' 	      => 'wpapiship-pickup-date',
 					'id'   	   	  => 'wpapiship-pickup-date',
 					'selector' 	  => '#wpapiship-pickup-date',
-					'class'	   	  => 'WP_ApiShip_Order',
+					'class'	   	  => 'ApiShip_Order',
 					'placeholder' => '',
 				),
 				'contactName' => array( 
 					'requestID'	  => 'contactName',
-					'caption' 	  => esc_html__('ФИО контактного лица','wp-apiship'),
+					'caption' 	  => esc_html__('ФИО контактного лица','apiship'),
 					'type' 	   	  => 'text',
 					'name' 	   	  => 'wpapiship-contact-name',
 					'id'   	   	  => 'wpapiship-contact-name',
 					'selector' 	  => '#wpapiship-contact-name',
-					'class'		  => 'WP_ApiShip_Order_Sender',
+					'class'		  => 'ApiShip_Order_Sender',
 					'placeholder' => $contact_name,
 					'size'		  => 50
 				),
 				'phone' => array( 
 					'requestID'	  => 'phone',
-					'caption' 	  => esc_html__('Телефон','wp-apiship'),
+					'caption' 	  => esc_html__('Телефон','apiship'),
 					'type' 	   	  => 'text',
 					'name' 	   	  => 'wpapiship-phone',
 					'id'   	   	  => 'wpapiship-phone',
 					'selector' 	  => '#wpapiship-phone',
-					'class'		  => 'WP_ApiShip_Order_Sender',
+					'class'		  => 'ApiShip_Order_Sender',
 					'placeholder' => $phone,
 					'size'		  => 50
 				),				
 				'pointInId' => array( 
 					'requestID'	  => 'pointInId',
-					'caption' 	  => esc_html__('ID пункта приёма','wp-apiship'),
+					'caption' 	  => esc_html__('ID пункта приёма','apiship'),
 					'type' 	   	  => 'text',
 					'name' 	   	  => 'wpapiship-point-in-id',
 					'id'   	   	  => 'wpapiship-point-in-id',
 					'selector' 	  => '#wpapiship-point-in-id',
-					'class'		  => 'WP_ApiShip_Order',
+					'class'		  => 'ApiShip_Order',
 					'size'		  => 10
 				),
 				'pointInAddress' => array( 
 					'requestID'	  => 'pointInAddress',
-					'caption' 	  => esc_html__('Адрес','wp-apiship'),
+					'caption' 	  => esc_html__('Адрес','apiship'),
 					'type' 	   	  => 'text',
 					'name' 	   	  => 'wpapiship-point-in-address',
 					'id'   	   	  => 'wpapiship-point-in-address',
@@ -792,17 +792,17 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 				),
 				'pointOutId' => array( 
 					'requestID'	  => 'pointOutId',
-					'caption' 	  => esc_html__('ID пункта выдачи','wp-apiship'),
+					'caption' 	  => esc_html__('ID пункта выдачи','apiship'),
 					'type' 	   	  => 'text',
 					'name' 	   	  => 'wpapiship-point-out-id',
 					'id'   	   	  => 'wpapiship-point-out-id',
 					'selector' 	  => '#wpapiship-point-out-id',
-					'class'		  => 'WP_ApiShip_Order',
+					'class'		  => 'ApiShip_Order',
 					'size'		  => 10
 				),
 				'pointOutAddress' => array( 
 					'requestID'	  => 'pointOutAddress',
-					'caption' 	  => esc_html__('Адрес','wp-apiship'),
+					'caption' 	  => esc_html__('Адрес','apiship'),
 					'type' 	   	  => 'text',
 					'name' 	   	  => 'wpapiship-point-out-address',
 					'id'   	   	  => 'wpapiship-point-out-address',
@@ -910,7 +910,7 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 				return false;
 			}
 			
-			return \WP_ApiShip\WP_ApiShip_HPOS_Compatibility::update_order_meta( $order, $meta, $value );
+			return \ApiShip\ApiShip_HPOS_Compatibility::update_order_meta( $order, $meta, $value );
 		}			
 
 		/**
@@ -924,7 +924,7 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 				return null;
 			}
 			
-			return \WP_ApiShip\WP_ApiShip_HPOS_Compatibility::get_order_meta( $order, $meta, true, $default_value );
+			return \ApiShip\ApiShip_HPOS_Compatibility::get_order_meta( $order, $meta, true, $default_value );
 		}	
 	
 		/**
@@ -1160,7 +1160,7 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 		 * @since 1.7.0
 		 */
 		public static function get_bulk_actions_hook() {
-			return \WP_ApiShip\WP_ApiShip_HPOS_Compatibility::get_bulk_actions_hook();
+			return \ApiShip\ApiShip_HPOS_Compatibility::get_bulk_actions_hook();
 		}
 
 		/**
@@ -1169,7 +1169,7 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 		 * @since 1.7.0
 		 */
 		public static function get_handle_bulk_actions_hook() {
-			return \WP_ApiShip\WP_ApiShip_HPOS_Compatibility::get_handle_bulk_actions_hook();
+			return \ApiShip\ApiShip_HPOS_Compatibility::get_handle_bulk_actions_hook();
 		}
 
 		/**
@@ -1178,7 +1178,7 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 		 * @since 1.7.0
 		 */
 		public static function is_order_edit_screen() {
-			return \WP_ApiShip\WP_ApiShip_HPOS_Compatibility::is_order_edit_screen();
+			return \ApiShip\ApiShip_HPOS_Compatibility::is_order_edit_screen();
 		}
 
 		/**
@@ -1187,7 +1187,7 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 		 * @since 1.7.0
 		 */
 		public static function is_orders_list_screen() {
-			return \WP_ApiShip\WP_ApiShip_HPOS_Compatibility::is_orders_list_screen();
+			return \ApiShip\ApiShip_HPOS_Compatibility::is_orders_list_screen();
 		}
 	}
 	

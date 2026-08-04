@@ -42,7 +42,7 @@ if ( ! isset( $value['desc_tip'] ) ) {
 }
 				
 $tooltip_html 	= wc_help_tip( $value['desc_tip'] );
-$local_time_tip = esc_html__('Местное время', 'wp-apiship');
+$local_time_tip = esc_html__('Местное время', 'apiship');
 $description 	= '<p class="description">' . wp_kses_post( $value['desc'] ) . '</p>';
 
 $date = new DateTime('now', new DateTimeZone( wp_timezone_string() ) );
@@ -50,12 +50,12 @@ $date = new DateTime('now', new DateTimeZone( wp_timezone_string() ) );
 ?>
 <tr valign="top">
 	<th scope="row" class="titledesc">
-		<label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo esc_html( $value['title'] ); ?> <?php echo $tooltip_html; // WPCS: XSS ok. ?></label>
+		<label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo esc_html( $value['title'] ); ?> <?php echo wp_kses( $tooltip_html, array( 'span' => array( 'class' => true, 'tabindex' => true, 'aria-label' => true, 'data-tip' => true ) ) ); ?></label>
 	</th>
 	<td class="forminp forminp-timezone" id="timezone">
-		<input type="text" id="timezone" name="timezone" value="<?php echo $tzstring; ?>" disabled /> 
-		<span class="local-time-tip"><?php echo $local_time_tip . ': ' . $date->format('Y-m-d H:i'); // WPCS: XSS ok. ?></span>
-		<?php echo $description; ?>
+		<input type="text" id="timezone" name="timezone" value="<?php echo esc_attr( $tzstring ); ?>" disabled />
+		<span class="local-time-tip"><?php echo esc_html( $local_time_tip . ': ' . $date->format('Y-m-d H:i') ); ?></span>
+		<?php echo wp_kses_post( $description ); ?>
 	</td>
 </tr>
 <?php

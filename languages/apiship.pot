@@ -1,0 +1,915 @@
+# Copyright (C) 2026 
+# This file is distributed under the GPLv3.
+msgid ""
+msgstr ""
+"Project-Id-Version: WP ApiShip for WooCommerce 1.8.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/apiship\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-08-04T07:42:34+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: apiship\n"
+
+#. Plugin Name of the plugin
+#: wp-apiship.php
+msgid "WP ApiShip for WooCommerce"
+msgstr ""
+
+#. Description of the plugin
+#: wp-apiship.php
+msgid "The plugin allows you to automatically calculate the shipping cost from various providers."
+msgstr ""
+
+#. Author URI of the plugin
+#: wp-apiship.php
+msgid "https://apiship.ru/"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:152
+#: includes/admin/class-wp-apiship-meta-boxes.php:228
+#: includes/admin/templates/shipping-section.php:20
+#: includes/class-wp-apiship-shipping.php:150
+msgid "ApiShip"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:164
+msgid "General"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:165
+msgid "Providers"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:287
+msgid "Ошибка проверки токена, укажите корректный токен"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:300
+msgid "Список доступных Служб Доставки"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:334
+msgid "Наклейки заказов"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:370
+msgid "Настройки подключения к сервису ApiShip"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:385
+msgid "Token"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:388
+msgid "Скопируйте токен из личного кабинета ApiShip (Dashboard - Главная страница)"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:389
+msgid "You should get a token for authorization"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:401
+msgid "Store address"
+msgstr ""
+
+#. translators: %1$s: открывающий тег ссылки на вкладку General, %2$s: закрывающий тег ссылки
+#: includes/admin/class-wp-apiship-admin-tab.php:414
+#, php-format
+msgid "You can set the store address on the Woocommerce %1$sGeneral%2$s tab."
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:420
+#: includes/admin/class-wp-apiship-admin-tab.php:487
+msgid "Contact name"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:423
+#: includes/admin/class-wp-apiship-admin-tab.php:490
+msgid "The contact name will be indicated in the sender's address"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:426
+#: includes/admin/class-wp-apiship-admin-tab.php:493
+msgid "Phone"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:439
+#: includes/class-wp-apiship-core.php:689
+msgid "Warehouse address"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:445
+#: includes/class-wp-apiship-core.php:678
+msgid "Use of warehouse address instead of store address."
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:451
+msgid "Address line 1"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:454
+msgid "Место где расположен ваш склад. Расчёт стоимости доставки будет производиться учитывая данный адрес."
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:458
+msgid "Address line 2"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:463
+msgid "City"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:468
+msgid "Country / State"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:469
+msgid "Устанавливается на странице настроек Woocommerce, вкладка General"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:482
+msgid "Postcode / ZIP"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:506
+#: includes/admin/templates/shipping-section.php:75
+msgid "Dimensions of product by default"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:511
+#: includes/admin/templates/shipping-section.php:80
+msgid "Default item length (cm)"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:512
+#: includes/admin/templates/shipping-section.php:81
+msgid "Default item length if it not specified"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:523
+#: includes/admin/templates/shipping-section.php:92
+msgid "Default item width (cm)"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:524
+#: includes/admin/templates/shipping-section.php:93
+msgid "Default item width if it not specified"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:535
+#: includes/admin/templates/shipping-section.php:104
+msgid "Default item height (cm)"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:536
+#: includes/admin/templates/shipping-section.php:105
+msgid "Default item height if it not specified"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:548
+#: includes/admin/templates/shipping-section.php:127
+msgid "Default item weight (g)"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:549
+#: includes/admin/templates/shipping-section.php:128
+msgid "Default item weight if it not specified"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:567
+msgid "Параметры грузоместа (используются, если заполнено)"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:572
+#: includes/admin/class-wp-apiship-admin-tab.php:581
+msgid "Длина (см)"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:584
+#: includes/admin/class-wp-apiship-admin-tab.php:593
+msgid "Высота (см)"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:596
+#: includes/admin/class-wp-apiship-admin-tab.php:605
+msgid "Ширина (см)"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:608
+#: includes/admin/class-wp-apiship-admin-tab.php:617
+msgid "Вес места (гр)"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:620
+#: includes/admin/class-wp-apiship-admin-tab.php:629
+msgid "Вес упаковки (гр)"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:639
+#: includes/admin/class-wp-apiship-admin-tab.php:645
+msgid "Commission"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:651
+msgid "Include COD and insurance fees commission in shipping costs"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:653
+msgid "Do not include COD and insurance fees commission in shipping costs"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:667
+msgid "Настройки шаблона пунктов доставки"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:677
+msgid "тип доставки"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:678
+msgid "транспортная компания"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:679
+msgid "название ПВЗ"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:680
+msgid "адрес ПВЗ"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:681
+msgid "название тарифа"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:682
+msgid "сроки доставки"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:702
+msgid "Параметры сопоставления статусов"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:719
+msgid "Настройка вывода ПВЗ"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:725
+msgid "Выберите один из режимов"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:730
+msgid "Отдельный способ доставки до ПВЗ для каждого тарифа"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:731
+msgid "Отдельный способ доставки до ПВЗ для каждой СД"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:732
+msgid "Все ПВЗ на одной карте"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:744
+msgid "Others"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:750
+msgid "Using only selected providers"
+msgstr ""
+
+#. translators: %1$s: открывающий тег ссылки на секцию служб доставки, %2$s: закрывающий тег ссылки
+#: includes/admin/class-wp-apiship-admin-tab.php:756
+#, php-format
+msgid "You can set the list of providers on %1$sProviders%2$s section"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:768
+msgid "Timezone"
+msgstr ""
+
+#. translators: %1$s: открывающий тег ссылки на настройку часового пояса, %2$s: закрывающий тег ссылки
+#: includes/admin/class-wp-apiship-admin-tab.php:773
+#, php-format
+msgid "Order dispatch date (pickupDate) will be set according to %1$sTimezone%2$s"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:777
+msgid "You can set Timezone on General Settings page"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:783
+msgid "Yandex map API key"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:786
+msgid "For correct operation, you should set your own Yandex map key."
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin-tab.php:788
+msgid "We provide a default key, but no guarantee of correct operation"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin.php:137
+msgid "Запрос успешно обработан."
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin.php:141
+msgid "Скачать файл"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin.php:276
+msgid "Заказ #"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin.php:290
+msgid "Не удалось получить ответ от ApiShip"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin.php:293
+msgid "Ошибка валидации. Поле "
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin.php:315
+msgid "Печать наклеек"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin.php:316
+msgid "Печать акта приема-передачи"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-admin.php:329
+msgid "Settings"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-meta-boxes.php:393
+msgid "Отправитель"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-meta-boxes.php:410
+msgid "магазин"
+msgstr ""
+
+#: includes/admin/class-wp-apiship-meta-boxes.php:412
+msgid "склад"
+msgstr ""
+
+#: includes/admin/templates/docs-form.php:44
+msgid "Дата получения наклеек: "
+msgstr ""
+
+#: includes/admin/templates/docs-form.php:51
+msgid "Ссылка для скачивания наклеек: "
+msgstr ""
+
+#: includes/admin/templates/docs-form.php:57
+msgid "Заказы без наклеек"
+msgstr ""
+
+#: includes/admin/templates/docs-form.php:68
+msgid "Ошибка чтения файла"
+msgstr ""
+
+#: includes/admin/templates/docs-form.php:72
+msgid "Файл наклеек не найден:"
+msgstr ""
+
+#: includes/admin/templates/mapping.php:9
+msgid "Сопоставление статусов между ApiShip и WooCommerce."
+msgstr ""
+
+#: includes/admin/templates/mapping.php:22
+msgid "-- Выберите статус --"
+msgstr ""
+
+#: includes/admin/templates/mapping.php:32
+msgid "Слева находятся внутренние статусы ApiShip. Для активации статуса, нажмите на галочку, затем задайте соответствие из списка своих статусов."
+msgstr ""
+
+#: includes/admin/templates/mapping.php:33
+msgid "Соответствия статусов между СД и ApiShip можно увидеть на странице: "
+msgstr ""
+
+#: includes/admin/templates/mapping.php:33
+msgid "соответствие статусов"
+msgstr ""
+
+#: includes/admin/templates/order-action-buttons.php:25
+#: includes/admin/templates/order-action-view.php:22
+#: includes/admin/templates/order-metabox-content.php:701
+#: includes/class-wp-apiship-core.php:2569
+msgid "Закрыть"
+msgstr ""
+
+#: includes/admin/templates/order-integrator-line-items.php:41
+msgid "Заказ создан"
+msgstr ""
+
+#: includes/admin/templates/order-integrator-line-items.php:44
+msgid "Заказ не создан"
+msgstr ""
+
+#: includes/admin/templates/order-integrator-line-items.php:54
+msgid "Заказ в системе ApiShip"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:63
+msgid "Название тарифа"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:64
+msgid "Минимальный срок доставки, дней"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:65
+msgid "Максимальный срок доставки, дней"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:157
+#: includes/admin/templates/order-metabox-content.php:171
+#: includes/admin/templates/order-metabox-content.php:186
+msgid "Пункт приёма заказов"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:158
+#: includes/admin/templates/order-metabox-content.php:172
+msgid "из магазина"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:160
+#: includes/admin/templates/order-metabox-content.php:174
+#: includes/admin/templates/order-metabox-content.php:189
+msgid "г."
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:178
+msgid "не установлен по умолчанию"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:187
+msgid "со склада"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:201
+msgid "Наклейка"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:206
+msgid "Открыть"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:213
+msgid "Наклейка не доступна для скачивания"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:218
+msgid "Запросить наклейку"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:227
+msgid "Тариф"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:237
+#: includes/admin/templates/order-metabox-content.php:322
+msgid "Сохранить"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:240
+#: includes/admin/templates/order-metabox-content.php:326
+#: includes/admin/templates/order-metabox-content.php:610
+msgid "Данные успешно сохранены"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:242
+msgid "Выберите новый тариф. Выбор ПВЗ и тарифа для способов доставки до ПВЗ будет доступен после сохранения в разделе \"Пункт выдачи заказа\"."
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:282
+msgid "Полное название"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:285
+msgid "Shipping"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:290
+msgid "Тип забора груза"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:302
+msgid "Тип доставки"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:335
+msgid "Cрок доставки, дней"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:356
+msgid "Размеры и вес места"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:363
+msgid "Длина"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:380
+msgid "Ширина"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:397
+msgid "Высота"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:414
+msgid "Вес"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:441
+msgid "Заказ ApiShip"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:443
+msgid "Номер заказа"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:457
+#: includes/admin/templates/order-metabox-content.php:476
+msgid "не создан"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:462
+msgid "Трек-номер"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:523
+#: includes/admin/templates/shipping-section.php:45
+#: includes/class-wp-apiship-options.php:786
+#: includes/class-wp-apiship-options.php:805
+msgid "Адрес"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:533
+msgid "Пункт приёма заказа"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:566
+msgid "Изменить пункт приёма"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:580
+#: includes/class-wp-apiship-core.php:380
+msgid "Пункт выдачи заказа"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:618
+msgid "Действия"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:624
+#: includes/admin/templates/order-metabox-content.php:666
+msgid "Инструменты"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:629
+msgid "Отменить заказ"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:632
+msgid "Отменить?"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:634
+#: includes/admin/templates/order-metabox-content.php:649
+msgid "Да"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:637
+#: includes/admin/templates/order-metabox-content.php:652
+msgid "Нет"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:644
+msgid "Удалить из ApiShip"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:647
+msgid "Удалить?"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:660
+msgid "Валидация"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:663
+msgid "Создать заказ"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:712
+msgid "История статусов"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:716
+msgid "Статус ApiShip"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:717
+msgid "Статус СД"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:718
+msgid "Описание"
+msgstr ""
+
+#: includes/admin/templates/order-metabox-content.php:719
+msgid "Получен"
+msgstr ""
+
+#: includes/admin/templates/point-in-select.php:45
+#: includes/admin/templates/point-in-select.php:51
+msgid "-- не выбрано --"
+msgstr ""
+
+#: includes/admin/templates/point-in-select.php:46
+#: includes/admin/templates/point-in-select.php:52
+msgid "Загрузить список"
+msgstr ""
+
+#: includes/admin/templates/point-in-select.php:57
+msgid "-- не найдено --"
+msgstr ""
+
+#: includes/admin/templates/point-in-select.php:59
+msgid "-- выберите из списка --"
+msgstr ""
+
+#: includes/admin/templates/point-in-select.php:65
+#: includes/admin/templates/point-in-select.php:73
+msgid "Повторить загрузку списка"
+msgstr ""
+
+#: includes/admin/templates/point-in-select.php:71
+msgid "отменить выбор"
+msgstr ""
+
+#: includes/admin/templates/provider-card.php:33
+msgid "Способ отгрузки заказов"
+msgstr ""
+
+#: includes/admin/templates/provider-card.php:37
+msgid "Курьер службы доставки приезжает на мой склад за заказами"
+msgstr ""
+
+#: includes/admin/templates/provider-card.php:40
+msgid "Я сам привожу заказы в пункт приема службы доставки"
+msgstr ""
+
+#: includes/admin/templates/provider-card.php:45
+msgid "Пункт приёма заказов в СД"
+msgstr ""
+
+#: includes/admin/templates/providers-form.php:28
+msgid "Выбранные службы доставки"
+msgstr ""
+
+#: includes/admin/templates/shipping-section.php:30
+msgid "Адрес склада"
+msgstr ""
+
+#: includes/admin/templates/shipping-section.php:51
+msgid "Город"
+msgstr ""
+
+#: includes/admin/templates/shipping-section.php:57
+msgid "Страна/Регион"
+msgstr ""
+
+#: includes/admin/templates/shipping-section.php:64
+msgid "Почтовый индекс"
+msgstr ""
+
+#: includes/admin/templates/shipping-section.php:122
+msgid "Weight of product by default"
+msgstr ""
+
+#: includes/admin/templates/timezone-field.php:45
+msgid "Местное время"
+msgstr ""
+
+#: includes/api/class-wp-apiship-connection.php:77
+msgid "Новое соединение для"
+msgstr ""
+
+#: includes/class-wp-apiship-core.php:436
+msgid "Выбрать ПВЗ"
+msgstr ""
+
+#: includes/class-wp-apiship-core.php:444
+#: includes/class-wp-apiship-core.php:2570
+msgid "Сменить ПВЗ"
+msgstr ""
+
+#. translators: %1$s: открывающий тег ссылки на вкладку ApiShip, %2$s: закрывающий тег ссылки
+#: includes/class-wp-apiship-core.php:680
+#, php-format
+msgid "You can set it on %1$sApiShip%2$s tab."
+msgstr ""
+
+#: includes/class-wp-apiship-core.php:881
+#: includes/class-wp-apiship-core.php:891
+msgid "Некорректный запрос"
+msgstr ""
+
+#: includes/class-wp-apiship-core.php:895
+msgid "Security check failed"
+msgstr ""
+
+#: includes/class-wp-apiship-core.php:2314
+msgid "Получение статуса заказа по номеру заказа в системе клиента (GET)"
+msgstr ""
+
+#: includes/class-wp-apiship-core.php:2315
+msgid "Получение информации по заказу (GET)"
+msgstr ""
+
+#: includes/class-wp-apiship-core.php:2316
+msgid "Отмена заказа (GET)"
+msgstr ""
+
+#: includes/class-wp-apiship-core.php:2317
+msgid "Удаление заказа (DELETE)"
+msgstr ""
+
+#: includes/class-wp-apiship-core.php:2318
+#: includes/class-wp-apiship-core.php:2319
+#: includes/class-wp-apiship-core.php:2475
+#: includes/class-wp-apiship-core.php:2476
+msgid "Error"
+msgstr ""
+
+#: includes/class-wp-apiship-core.php:2320
+msgid "Parsing error."
+msgstr ""
+
+#: includes/class-wp-apiship-core.php:2321
+msgid "В системе ApiShip существует заказ для #{{id}}"
+msgstr ""
+
+#: includes/class-wp-apiship-core.php:2322
+msgid "Некорректный ключ безопасности"
+msgstr ""
+
+#: includes/class-wp-apiship-core.php:2323
+msgid "Ярлык не доступен для скачивания"
+msgstr ""
+
+#: includes/class-wp-apiship-core.php:2324
+msgid "Соединений"
+msgstr ""
+
+#: includes/class-wp-apiship-core.php:2325
+#: includes/class-wp-apiship-core.php:2567
+msgid "выбрать"
+msgstr ""
+
+#: includes/class-wp-apiship-core.php:2326
+#: includes/class-wp-apiship-core.php:2568
+msgid "Выбрать"
+msgstr ""
+
+#: includes/class-wp-apiship-core.php:2327
+#: includes/class-wp-apiship-core.php:2566
+msgid "постамат"
+msgstr ""
+
+#: includes/class-wp-apiship-core.php:2328
+msgid "Постамат"
+msgstr ""
+
+#: includes/class-wp-apiship-core.php:2329
+msgid "Яндекс карты не загружены"
+msgstr ""
+
+#: includes/class-wp-apiship-core.php:2473
+msgid "Connection successful."
+msgstr ""
+
+#: includes/class-wp-apiship-core.php:2474
+msgid "Connection failed."
+msgstr ""
+
+#: includes/class-wp-apiship-core.php:2528
+msgid "Наименование"
+msgstr ""
+
+#: includes/class-wp-apiship-core.php:3022
+msgid "ApiShip Order"
+msgstr ""
+
+#: includes/class-wp-apiship-hpos-migration.php:136
+msgid "WP ApiShip: Требуется миграция данных для поддержки высокопроизводительного хранилища заказов WooCommerce."
+msgstr ""
+
+#: includes/class-wp-apiship-hpos-migration.php:140
+msgid "Начать миграцию"
+msgstr ""
+
+#: includes/class-wp-apiship-hpos-migration.php:155
+msgid "Начинается миграция..."
+msgstr ""
+
+#: includes/class-wp-apiship-hpos-migration.php:172
+msgid "Миграция завершена успешно!"
+msgstr ""
+
+#: includes/class-wp-apiship-hpos-migration.php:178
+msgid "Обработано заказов:"
+msgstr ""
+
+#: includes/class-wp-apiship-hpos-migration.php:182
+msgid "Ошибка миграции:"
+msgstr ""
+
+#: includes/class-wp-apiship-hpos-migration.php:188
+msgid "Произошла ошибка при миграции"
+msgstr ""
+
+#: includes/class-wp-apiship-hpos-migration.php:204
+msgid "Неверный nonce"
+msgstr ""
+
+#: includes/class-wp-apiship-hpos-migration.php:208
+msgid "Недостаточно прав"
+msgstr ""
+
+#: includes/class-wp-apiship-hpos-test.php:296
+msgid "You do not have sufficient permissions to access this page."
+msgstr ""
+
+#: includes/class-wp-apiship-options.php:553
+msgid "Доставка курьером"
+msgstr ""
+
+#: includes/class-wp-apiship-options.php:554
+msgid "Доставка на ПВЗ"
+msgstr ""
+
+#: includes/class-wp-apiship-options.php:581
+msgid "Отгрузка груза курьером"
+msgstr ""
+
+#: includes/class-wp-apiship-options.php:582
+msgid "Отгрузка груза на ПВЗ"
+msgstr ""
+
+#: includes/class-wp-apiship-options.php:744
+msgid "Дата передачи груза в службу доставки"
+msgstr ""
+
+#: includes/class-wp-apiship-options.php:754
+msgid "ФИО контактного лица"
+msgstr ""
+
+#: includes/class-wp-apiship-options.php:765
+msgid "Телефон"
+msgstr ""
+
+#: includes/class-wp-apiship-options.php:776
+msgid "ID пункта приёма"
+msgstr ""
+
+#: includes/class-wp-apiship-options.php:795
+msgid "ID пункта выдачи"
+msgstr ""
+
+#: includes/class-wp-apiship-shipping-method.php:47
+msgid "ApiShip integrator"
+msgstr ""
+
+#: includes/class-wp-apiship-shipping-method.php:48
+msgid "Select tariffs from various providers."
+msgstr ""
+
+#: includes/class-wp-apiship-shipping.php:123
+msgid "Выберите метод доставки"
+msgstr ""
+
+#: includes/settings/settings-shipping-method.php:18
+msgid "Название метода"
+msgstr ""
+
+#: includes/settings/settings-shipping-method.php:20
+msgid "ApiShip интегратор"
+msgstr ""
+
+#: includes/templates/checkout-modal.php:12
+msgid "Все службы доставки"
+msgstr ""
+
+#: wp-apiship.php:101
+msgid "WP ApiShip needs WooCommerce to run. Please, install and active WooCommerce plugin."
+msgstr ""

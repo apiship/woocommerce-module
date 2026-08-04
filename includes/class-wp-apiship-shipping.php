@@ -7,16 +7,16 @@
  * @since 1.0.0
  */
 
-use WP_ApiShip\Options;
+use ApiShip\Options;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists('WP_ApiShip_Shipping') ) :
+if ( ! class_exists('ApiShip_Shipping') ) :
 
-	class WP_ApiShip_Shipping {
+	class ApiShip_Shipping {
 		
 		/**
 		 * Available rates.
@@ -70,7 +70,7 @@ if ( ! class_exists('WP_ApiShip_Shipping') ) :
 		 * Add shipping method.
 		 */
 		public function on__init_method() {
-			if ( ! class_exists( 'WP_ApiShip_Shipping_Method' ) ) {
+			if ( ! class_exists( 'ApiShip_Shipping_Method' ) ) {
 				include_once dirname( __FILE__ ) . '/class-wp-apiship-shipping-method.php';
 			}
 		}
@@ -83,7 +83,7 @@ if ( ! class_exists('WP_ApiShip_Shipping') ) :
 		 * @return array
 		 */
 		public function filter__register_method( $methods ) {
-			$methods[ Options\WP_ApiShip_Options::SHIPPING_METHOD_ID ] = 'WP_ApiShip_Shipping_Method'; 
+			$methods[ Options\ApiShip_Options::SHIPPING_METHOD_ID ] = 'ApiShip_Shipping_Method'; 
 			// @see class name in `on__init_method`.
 			return $methods;
 		}			
@@ -120,10 +120,16 @@ if ( ! class_exists('WP_ApiShip_Shipping') ) :
 				
 				if ( count( $this->rates ) == $this->get_rates_max() ) {	?>
 					<select size="1" name="wpapiship-shipping-methods" id="wpapiship-shipping-methods">
-						<option value="none"><?php esc_html_e('Выберите метод доставки', 'wp-apiship'); ?></option><?php
+						<option value="none"><?php esc_html_e('Выберите метод доставки', 'apiship'); ?></option><?php
 						foreach( $this->rates as $key=>$rate  ) {	?>
-							<option value="rate-<?php echo $key; ?>">
-								<?php echo $rate->meta_data['tariffProvider'] . ':' . wc_cart_totals_shipping_method_label( $rate ); ?>
+							<option value="rate-<?php echo esc_attr( $key ); ?>">
+								<?php
+								/**
+								 * Подпись содержит HTML от wc_price() (span/bdi) и &nbsp; —
+								 * внутри <option> допустим только текст, поэтому теги и
+								 * сущности снимаются до экранирования.
+								 */
+								echo esc_html( $rate->meta_data['tariffProvider'] . ':' . html_entity_decode( wp_strip_all_tags( wc_cart_totals_shipping_method_label( $rate ) ) ) ); ?>
 							</option><?php
 						} ?>
 				   </select><?php
@@ -141,7 +147,7 @@ if ( ! class_exists('WP_ApiShip_Shipping') ) :
 		 * @return array
 		 */		 
 		public function filter__settings_page( $sections ) {
-			$sections['apiship'] = esc_html__('ApiShip', 'wp-apiship');
+			$sections['apiship'] = esc_html__('ApiShip', 'apiship');
 			return $sections;
 		}
 		
@@ -163,8 +169,8 @@ if ( ! class_exists('WP_ApiShip_Shipping') ) :
 				 */
 				$url = add_query_arg( 
 					array(
-						'page' => Options\WP_ApiShip_Options::get_wc_settings_page(),
-						'tab'  => Options\WP_ApiShip_Options::get_wc_settings_plugin_tab(),
+						'page' => Options\ApiShip_Options::get_wc_settings_page(),
+						'tab'  => Options\ApiShip_Options::get_wc_settings_plugin_tab(),
 					),
 					admin_url( 'admin.php' ) 
 				);
@@ -181,7 +187,7 @@ if ( ! class_exists('WP_ApiShip_Shipping') ) :
 		 * @since 1.0.0
 		 */
 		public function get_rates_max() {
-			return Options\WP_ApiShip_Options::get_rates_max();
+			return Options\ApiShip_Options::get_rates_max();
 		}
 		
 		/**
@@ -190,7 +196,7 @@ if ( ! class_exists('WP_ApiShip_Shipping') ) :
 		 * @since 1.0.0
 		 */
 		public function is_dropdown_selector() {
-			return Options\WP_ApiShip_Options::is_dropdown_selector();
+			return Options\ApiShip_Options::is_dropdown_selector();
 		}		 
 	}
 	

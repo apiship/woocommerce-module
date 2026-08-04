@@ -221,8 +221,8 @@
 				ymaps.ready(mapApi.mapInit);
 			}
 			
-			mapApi.tariffList = JSON.parse($('#adminTariffList').html());
-			mapApi.tariffPointsList = JSON.parse($('#adminTariff').html()).pointIds;
+			mapApi.tariffList = JSON.parse($('#adminTariffList').text());
+			mapApi.tariffPointsList = JSON.parse($('#adminTariff').text()).pointIds;
 
 			var shipping = WPApiShipAdmin.getParam('wcShipping');
 			

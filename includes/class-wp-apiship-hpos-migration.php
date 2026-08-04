@@ -7,7 +7,7 @@
  * @since 1.5.0
  */
 
-namespace WP_ApiShip;
+namespace ApiShip;
 
 use Automattic\WooCommerce\Utilities\OrderUtil;
 
@@ -16,14 +16,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Migration' ) ) :
+if ( ! class_exists( __NAMESPACE__ . '\ApiShip_HPOS_Migration' ) ) :
 
 	/**
 	 * Class for HPOS migration tasks.
 	 *
 	 * @since 1.5.0
 	 */
-	class WP_ApiShip_HPOS_Migration {
+	class ApiShip_HPOS_Migration {
 
 		/**
 		 * Migration option key.
@@ -51,7 +51,7 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Migration' ) ) :
 				return;
 			}
 
-			if ( ! WP_ApiShip_HPOS_Compatibility::is_hpos_enabled() ) {
+			if ( ! ApiShip_HPOS_Compatibility::is_hpos_enabled() ) {
 				return;
 			}
 
@@ -83,12 +83,14 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Migration' ) ) :
 
 			$placeholders = implode( ', ', array_fill( 0, count( $meta_keys ), '%s' ) );
 
+			// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $placeholders содержит только плейсхолдеры %s для prepare.
 			$found = $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key IN ($placeholders) LIMIT 1",
 					$meta_keys
 				)
 			);
+			// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 			return ! empty( $found );
 		}
@@ -102,12 +104,12 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Migration' ) ) :
 		 */
 		protected static function get_meta_keys() {
 			return array(
-				Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
-				Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
-				Options\WP_ApiShip_Options::ORDER_PLACES_META,
-				Options\WP_ApiShip_Options::INTEGRATOR_ORDER_KEY,
-				Options\WP_ApiShip_Options::PROVIDER_NUMBER_KEY,
-				Options\WP_ApiShip_Options::TARIFF_DATA_KEY,
+				Options\ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
+				Options\ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
+				Options\ApiShip_Options::ORDER_PLACES_META,
+				Options\ApiShip_Options::INTEGRATOR_ORDER_KEY,
+				Options\ApiShip_Options::PROVIDER_NUMBER_KEY,
+				Options\ApiShip_Options::TARIFF_DATA_KEY,
 			);
 		}
 
@@ -131,11 +133,11 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Migration' ) ) :
 			?>
 			<div class="notice notice-info wp-apiship-migration-notice">
 				<p>
-					<?php esc_html_e( 'WP ApiShip: Требуется миграция данных для поддержки высокопроизводительного хранилища заказов WooCommerce.', 'wp-apiship' ); ?>
+					<?php esc_html_e( 'WP ApiShip: Требуется миграция данных для поддержки высокопроизводительного хранилища заказов WooCommerce.', 'apiship' ); ?>
 				</p>
 				<p>
 					<button type="button" class="button button-primary" id="wp-apiship-start-migration">
-						<?php esc_html_e( 'Начать миграцию', 'wp-apiship' ); ?>
+						<?php esc_html_e( 'Начать миграцию', 'apiship' ); ?>
 					</button>
 					<span class="spinner" style="float: none; margin: 0 10px;"></span>
 					<span class="wp-apiship-migration-status"></span>
@@ -150,7 +152,7 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Migration' ) ) :
 					
 					$button.prop('disabled', true);
 					$spinner.addClass('is-active');
-        $status.text('<?php echo esc_js( __( 'Начинается миграция...', 'wp-apiship' ) ); ?>');
+        $status.text('<?php echo esc_js( __( 'Начинается миграция...', 'apiship' ) ); ?>');
 					
 					wpApiShipRunMigration(0, $status, $spinner, $button);
 				});
@@ -162,28 +164,28 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Migration' ) ) :
 						data: {
 							action: 'wp_apiship_hpos_migration',
 							offset: offset,
-							nonce: '<?php echo wp_create_nonce( 'wp_apiship_hpos_migration' ); ?>'
+							nonce: '<?php echo esc_js( wp_create_nonce( 'wp_apiship_hpos_migration' ) ); ?>'
 						},
 						success: function(response) {
 							if (response.success) {
 								if (response.data.completed) {
-                            $status.text('<?php echo esc_js( __( 'Миграция завершена успешно!', 'wp-apiship' ) ); ?>');
+                            $status.text('<?php echo esc_js( __( 'Миграция завершена успешно!', 'apiship' ) ); ?>');
 									$spinner.removeClass('is-active');
 									setTimeout(function() {
 										$('.wp-apiship-migration-notice').fadeOut();
 									}, 2000);
 								} else {
-                                    $status.text('<?php echo esc_js( __( 'Обработано заказов:', 'wp-apiship' ) ); ?> ' + response.data.processed);
+                                    $status.text('<?php echo esc_js( __( 'Обработано заказов:', 'apiship' ) ); ?> ' + response.data.processed);
 									wpApiShipRunMigration(response.data.next_offset, $status, $spinner, $button);
 								}
 							} else {
-                                $status.text('<?php echo esc_js( __( 'Ошибка миграции:', 'wp-apiship' ) ); ?> ' + response.data);
+                                $status.text('<?php echo esc_js( __( 'Ошибка миграции:', 'apiship' ) ); ?> ' + response.data);
 								$spinner.removeClass('is-active');
 								$button.prop('disabled', false);
 							}
 						},
 						error: function() {
-                            $status.text('<?php echo esc_js( __( 'Произошла ошибка при миграции', 'wp-apiship' ) ); ?>');
+                            $status.text('<?php echo esc_js( __( 'Произошла ошибка при миграции', 'apiship' ) ); ?>');
 							$spinner.removeClass('is-active');
 							$button.prop('disabled', false);
 						}
@@ -199,14 +201,14 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Migration' ) ) :
 		 */
 		public static function ajax_migration() {
         if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'wp_apiship_hpos_migration' ) ) {
-            wp_send_json_error( __( 'Неверный nonce', 'wp-apiship' ) );
+            wp_send_json_error( __( 'Неверный nonce', 'apiship' ) );
         }
 
 			if ( ! current_user_can( 'manage_woocommerce' ) ) {
-				wp_send_json_error( __( 'Недостаточно прав', 'wp-apiship' ) );
+				wp_send_json_error( __( 'Недостаточно прав', 'apiship' ) );
 			}
 
-			$offset = intval( $_POST['offset'] );
+			$offset = isset( $_POST['offset'] ) ? absint( wp_unslash( $_POST['offset'] ) ) : 0;
 			$result = self::migrate_batch( $offset );
 
 			wp_send_json_success( $result );
@@ -221,12 +223,12 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Migration' ) ) :
 		public static function migrate_batch( $offset = 0 ) {
 			// Get orders with ApiShip meta data from legacy post meta
 			$meta_keys = array(
-				Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
-				Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
-				Options\WP_ApiShip_Options::ORDER_PLACES_META,
-				Options\WP_ApiShip_Options::INTEGRATOR_ORDER_KEY,
-				Options\WP_ApiShip_Options::PROVIDER_NUMBER_KEY,
-				Options\WP_ApiShip_Options::TARIFF_DATA_KEY,
+				Options\ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
+				Options\ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
+				Options\ApiShip_Options::ORDER_PLACES_META,
+				Options\ApiShip_Options::INTEGRATOR_ORDER_KEY,
+				Options\ApiShip_Options::PROVIDER_NUMBER_KEY,
+				Options\ApiShip_Options::TARIFF_DATA_KEY,
 			);
 
 			// Build meta query for WP_Query to find orders with ApiShip data
@@ -298,12 +300,12 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Migration' ) ) :
 			}
 
 			$meta_keys = array(
-				Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
-				Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
-				Options\WP_ApiShip_Options::ORDER_PLACES_META,
-				Options\WP_ApiShip_Options::INTEGRATOR_ORDER_KEY,
-				Options\WP_ApiShip_Options::PROVIDER_NUMBER_KEY,
-				Options\WP_ApiShip_Options::TARIFF_DATA_KEY,
+				Options\ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
+				Options\ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
+				Options\ApiShip_Options::ORDER_PLACES_META,
+				Options\ApiShip_Options::INTEGRATOR_ORDER_KEY,
+				Options\ApiShip_Options::PROVIDER_NUMBER_KEY,
+				Options\ApiShip_Options::TARIFF_DATA_KEY,
 			);
 
 			$migrated = false;
@@ -355,7 +357,7 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Migration' ) ) :
 			return array(
 				'completed' => (bool) $completed,
 				'completed_at' => $completed ? date( 'Y-m-d H:i:s', $completed ) : null,
-				'hpos_enabled' => WP_ApiShip_HPOS_Compatibility::is_hpos_enabled(),
+				'hpos_enabled' => ApiShip_HPOS_Compatibility::is_hpos_enabled(),
 			);
 		}
 	}

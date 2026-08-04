@@ -8,7 +8,7 @@
  * @since 1.0.0
  */
 
-use WP_ApiShip\Options;
+use ApiShip\Options;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 $id = wc_get_order_item_meta( 
 	$item->get_id(), 
-	Options\WP_ApiShip_Options::INTEGRATOR_ORDER_KEY
+	Options\ApiShip_Options::INTEGRATOR_ORDER_KEY
 );
 
 $integrator_order_id = false;
@@ -38,10 +38,10 @@ $order_message_html = '';
 if ( $integrator_order_id  ) {
 	$order_id_html = '<span class="wpapiship-integrator-order-id">'.$integrator_order_id.'</span>';
 	$response = self::get_orders_status($integrator_order_id);
-	$message = esc_html__('Заказ создан', 'wp-apiship');	
+	$message = esc_html__('Заказ создан', 'apiship');	
 } else {
-	$order_id_html = '<span class="wpapiship-integrator-order-id no-value">'.Options\WP_ApiShip_Options::INTEGRATOR_ORDER_INIT_VALUE.'</span>';;
-	$message = esc_html__('Заказ не создан', 'wp-apiship');	
+	$order_id_html = '<span class="wpapiship-integrator-order-id no-value">'.Options\ApiShip_Options::INTEGRATOR_ORDER_INIT_VALUE.'</span>';;
+	$message = esc_html__('Заказ не создан', 'apiship');	
 }
 $wpapiship_debug_class = '';
 if ( self::is_godmode(true) ) {
@@ -51,23 +51,23 @@ if ( self::is_godmode(true) ) {
 <div class="view">
 	<table cellspacing="0" class="display_meta">
 		<tr>
-			<th class="<?php echo $wpapiship_debug_class; ?>"><?php esc_html_e('Заказ в системе ApiShip', 'wp-apiship'); ?>:</th>
+			<th class="<?php echo esc_attr( $wpapiship_debug_class ); ?>"><?php esc_html_e('Заказ в системе ApiShip', 'apiship'); ?>:</th>
 			<td>
 				<div id="wpapiship-integrator-line-items"  
 					class="wpapiship-integrator-line-items" 
-					data-shipping-order-item-id="<?php echo self::$shipping_order_item_id; ?>">
+					data-shipping-order-item-id="<?php echo esc_attr( self::$shipping_order_item_id ); ?>">
 					<div class="integrator-line--item integrator-order-id">
-						<?php echo $integrator_order_id; ?>
+						<?php echo esc_html( $integrator_order_id ); ?>
 					</div>				
 					<div class="integrator-line--item integrator-order-status">
-						<?php echo $message; ?>
+						<?php echo esc_html( $message ); ?>
 					</div>
 					<div class="integrator-line--item">
 						<span title="Валидация данных перед созданием заказа" 
 							class="validate-orders dashicons dashicons-code-standards <?php if($integrator_order_id){ echo 'hidden';} else { echo '';} ?>">
 						</span>
 						<span 
-							title="Создать заказ в системе <?php echo Options\WP_ApiShip_Options::BRAND; ?>"  
+							title="Создать заказ в системе <?php echo esc_attr( Options\ApiShip_Options::BRAND ); ?>"  
 							class="post-orders dashicons dashicons-welcome-add-page <?php if($integrator_order_id){ echo 'hidden';} else { echo '';} ?>">
 						</span>
 						<span title="Получить информацию по заказу" 

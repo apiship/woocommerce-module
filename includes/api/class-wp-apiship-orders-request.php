@@ -7,19 +7,19 @@
  * @since 1.0.0
  */
 
-use WP_ApiShip\Options;
+use ApiShip\Options;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists('WP_ApiShip_Orders_Request') ) :
+if ( ! class_exists('ApiShip_Orders_Request') ) :
 
 	/**
 	 * @see https://api.apiship.ru/doc/#/orders/addOrder
 	 */
-	class WP_ApiShip_Orders_Request {
+	class ApiShip_Orders_Request {
 
 		protected $order;
 		protected $cost;
@@ -75,37 +75,37 @@ if ( ! class_exists('WP_ApiShip_Orders_Request') ) :
 			/**
 			 * places.
 			 */
-			if ( ! class_exists('WP_ApiShip_Order_Places') ) {
+			if ( ! class_exists('ApiShip_Order_Places') ) {
 				require_once('class-wp-apiship-order-places.php');
 			}
-			$_places = new WP_ApiShip_Order_Places($request, $wc_order);
+			$_places = new ApiShip_Order_Places($request, $wc_order);
 			$this->places[] = $_places->get_places();
 
 			/**
 			 * Main order.
 			 */	
-			if ( ! class_exists('WP_ApiShip_Order') ) {
+			if ( ! class_exists('ApiShip_Order') ) {
 				require_once('class-wp-apiship-order.php');
 			}	
-			$_order = new WP_ApiShip_Order($request, $this);	
+			$_order = new ApiShip_Order($request, $this);	
 			$this->order = $_order->get_order();
 			
 			/**
 			 * sender.
 			 */
-			if ( ! class_exists('WP_ApiShip_Order_Sender') ) {
+			if ( ! class_exists('ApiShip_Order_Sender') ) {
 				require_once('class-wp-apiship-order-sender.php');
 			}			
-			$_sender = new WP_ApiShip_Order_Sender($request, $wc_order);
+			$_sender = new ApiShip_Order_Sender($request, $wc_order);
 			$this->sender = $_sender->get_sender();
 			
 			/**
 			 * recipient.
 			 */
-			if ( ! class_exists('WP_ApiShip_Order_Recipient') ) {
+			if ( ! class_exists('ApiShip_Order_Recipient') ) {
 				require_once('class-wp-apiship-order-recipient.php');
 			}			 
-			$_recipient = new WP_ApiShip_Order_Recipient($request, $wc_order);
+			$_recipient = new ApiShip_Order_Recipient($request, $wc_order);
 			$this->recipient = $_recipient->get_recipient();
 	
 			/**
@@ -113,20 +113,20 @@ if ( ! class_exists('WP_ApiShip_Orders_Request') ) :
 			 * @todo
 			 */
 			/* 
-			if ( ! class_exists('WP_ApiShip_Order_ReturnAddress') ) {
+			if ( ! class_exists('ApiShip_Order_ReturnAddress') ) {
 				require_once('class-wp-apiship-order-returnaddress.php');
 			}			 
-			$_returnAddress = new WP_ApiShip_Order_ReturnAddress($request, $wc_order);
+			$_returnAddress = new ApiShip_Order_ReturnAddress($request, $wc_order);
 			$this->returnAddress = $_returnAddress->get_return_address();
 			*/
 			
 			/**
 			 * cost.
 			 */
-			if ( ! class_exists('WP_ApiShip_Order_Cost') ) {
+			if ( ! class_exists('ApiShip_Order_Cost') ) {
 				require_once('class-wp-apiship-order-cost.php');
 			}			 
-			$_cost = new WP_ApiShip_Order_Cost($request, $wc_order, $this->places);
+			$_cost = new ApiShip_Order_Cost($request, $wc_order, $this->places);
 			$this->cost = $_cost->get_cost();	
 	
 			/**

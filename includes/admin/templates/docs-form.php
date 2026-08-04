@@ -8,15 +8,15 @@
  * @since 1.0.0
  */
 
-use WP_ApiShip\Options,
-	WP_ApiShip\HTTP;
+use ApiShip\Options,
+	ApiShip\HTTP;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$labels_file = Options\WP_ApiShip_Options::get_labels_file();
+$labels_file = Options\ApiShip_Options::get_labels_file();
 
 $message = array();
 
@@ -38,40 +38,50 @@ if ( file_exists( $labels_file ) ) {
 
 	if ( isset($response->response->code) && isset($response->body) ) {
 
-		if ( $response->response->code == HTTP\WP_ApiShip_HTTP::OK ) {
+		if ( $response->response->code == HTTP\ApiShip_HTTP::OK ) {
 
 			if ( $timestamp ) {
-				$message[] = esc_html('Дата получения наклеек: ','wp-apiship') . date( 'd.m.Y', $timestamp );
+				$message[] = esc_html__('Дата получения наклеек: ', 'apiship') . esc_html( date( 'd.m.Y', $timestamp ) );
 				$message[] = '<br />';
 			}
 			
 			$body = json_decode( $response->body );
 			
 			if ( ! empty( $body->url ) ) {
-				$message[] = 'Ссылка для скачивания наклеек: <a href="'.$body->url.'" target="_blank">'.$body->url.'</a>';
+				$message[] = esc_html__('Ссылка для скачивания наклеек: ', 'apiship') . '<a href="'.esc_url($body->url).'" target="_blank">'.esc_html($body->url).'</a>';
 			}
 			
 			if ( ! empty( $body->failedOrders ) ) {
 				
 				$message[] = ''; 
-				$message[] = '<h3>'.esc_html__('Заказы без наклеек','wp-apiship').'</h3>'; 
+				$message[] = '<h3>'.esc_html__('Заказы без наклеек','apiship').'</h3>'; 
 				
 				$message[] = '<ul>'; 
 				foreach( $body->failedOrders as $order_data ) {
-					$message[] = '<li>'.$order_data->orderId . ': '.$order_data->message.'</li>';
+					$message[] = '<li>'.esc_html($order_data->orderId) . ': '.esc_html($order_data->message).'</li>';
 				}
 				$message[] = '</ul>'; 
 			}
 		}
 		
 	} else {
-		$message[] = 'Ошибка чтения файла <strong>'.$labels_file.'</strong>';
+		$message[] = esc_html__('Ошибка чтения файла', 'apiship').' <strong>'.esc_html($labels_file).'</strong>';
 	}
 	
 } else {
-	$message[] = 'Файл наклеек не найден:&nbsp;<strong>'.$labels_file.'</strong>';
+	$message[] = esc_html__('Файл наклеек не найден:', 'apiship').'&nbsp;<strong>'.esc_html($labels_file).'</strong>';
 }
 
-echo implode( "\n", $message );
+echo wp_kses(
+	implode( "\n", $message ),
+	array(
+		'a'      => array( 'href' => true, 'target' => true ),
+		'ul'     => array(),
+		'li'     => array(),
+		'h3'     => array(),
+		'br'     => array(),
+		'strong' => array(),
+	)
+);
 			
 # --- EOF

@@ -7,16 +7,16 @@
  * @since 1.0.0
  */
 
-use WP_ApiShip\Options;
+use ApiShip\Options;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists('WP_ApiShip_Connection') ) :
+if ( ! class_exists('ApiShip_Connection') ) :
 
-	class WP_ApiShip_Connection {
+	class ApiShip_Connection {
 
 		/**
 		 * Код службы доставки.
@@ -74,7 +74,7 @@ if ( ! class_exists('WP_ApiShip_Connection') ) :
 		 */		
 		public function __construct($request) {
 			$this->providerKey  = $request['providerKey'];
-			$this->name		 	= esc_html__('Новое соединение для', 'wp-apiship').' '.$request['providerKey'];
+			$this->name		 	= esc_html__('Новое соединение для', 'apiship').' '.$request['providerKey'];
 		}	
 
 		/**

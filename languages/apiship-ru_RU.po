@@ -44,9 +44,9 @@ msgstr "Получить тестовый токен"
 msgid "Timezone"
 msgstr "Часовой пояс"
 
-msgid "Order dispatch date (pickupDate) will be set according to %sTimezone%s"
+msgid "Order dispatch date (pickupDate) will be set according to %1$sTimezone%2$s"
 msgstr ""
-"Дата отправки заказа будет установлена в соответствии с %sЧасовым поясом%s"
+"Дата отправки заказа будет установлена в соответствии с %1$sЧасовым поясом%2$s"
 
 msgid "You can set Timezone on General Settings page"
 msgstr "Вы можете установить Часовой пояс на странице Общие настройки"
@@ -66,8 +66,8 @@ msgstr "Адрес склада"
 msgid "Use of warehouse address instead of store address."
 msgstr "Использовать адрес склада вместо адреса магазина."
 
-msgid "You can set it on %1sApiShip%2s tab."
-msgstr "Вы можете установить его на вкладке %1sApiShip%2s."
+msgid "You can set it on %1$sApiShip%2$s tab."
+msgstr "Вы можете установить его на вкладке %1$sApiShip%2$s."
 
 msgid "Address line 1"
 msgstr "Адрес"
@@ -151,9 +151,9 @@ msgstr "Адрес магазина"
 msgid "Contact name"
 msgstr "ФИО контактного лица"
 
-msgid "You can set the store address on the Woocommerce %sGeneral%s tab."
+msgid "You can set the store address on the Woocommerce %1$sGeneral%2$s tab."
 msgstr ""
-"Установка адреса магазина на вкладке %sОсновные%s страницы настроек "
+"Установка адреса магазина на вкладке %1$sОсновные%2$s страницы настроек "
 "Woocommerce"
 
 msgid "The contact name will be indicated in the sender's address"
@@ -182,11 +182,23 @@ msgstr "Настройки подключения к серверу ApiShip"
 msgid "Using only selected providers"
 msgstr "Использовать только избранные Службы доставки"
 
-msgid "You can set the list of providers on %sProviders%s section"
-msgstr "Вы можете установить список в секции %sСлужбы доставки%s"
+msgid "You can set the list of providers on %1$sProviders%2$s section"
+msgstr "Вы можете установить список в секции %1$sСлужбы доставки%2$s"
 
 msgid "You should get a token for authorization"
 msgstr "Вы должны получить токен для авторизации"
 
 #~ msgid "Guide"
 #~ msgstr "Руководство"
+
+msgid "Shipping"
+msgstr "Доставка"
+
+msgid "Settings"
+msgstr "Настройки"
+
+msgid "General"
+msgstr "Общие"
+
+msgid "You do not have sufficient permissions to access this page."
+msgstr "У вас недостаточно прав для доступа к этой странице."
