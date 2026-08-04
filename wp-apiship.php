@@ -9,8 +9,11 @@
  *  Text Domain: wp-apiship
  *  Domain Path: /languages
  *  License: GPLv3
+ *  Requires at least: 6.0
+ *  Requires PHP: 7.4
+ *  Requires Plugins: woocommerce
  *  WC requires at least: 8.0
- *  WC tested up to: 9.0
+ *  WC tested up to: 10.9
  */
 
 namespace WP_ApiShip;
@@ -34,14 +37,27 @@ define('WP_APISHIP_PLUGIN_BASE', plugin_basename(__FILE__));
 define('WP_APISHIP_ACTIVATOR_LIMIT', 25);
 define('WP_APISHIP_ACTIVATOR_WRITE_LOG', false);
 
-add_action('plugins_loaded', function() {
+/**
+ * С WordPress 6.7 переводы должны загружаться не раньше хука `init`,
+ * иначе ядро пишет notice `_load_textdomain_just_in_time`.
+ */
+add_action('init', function() {
 	load_plugin_textdomain( 'wp-apiship', false, dirname( plugin_basename(__FILE__) ) . '/languages' );
 });
 
-// Declare compatibility with WooCommerce High-Performance Order Storage (HPOS)
+// Declare compatibility with WooCommerce features.
 add_action('before_woocommerce_init', function() {
 	if (class_exists('\Automattic\WooCommerce\Utilities\FeaturesUtil')) {
+		// High-Performance Order Storage (HPOS).
 		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables', __FILE__, true);
+		/**
+		 * Блочные корзина и чекаут не поддерживаются: выбор ПВЗ и запись меты
+		 * заказа работают через хуки классического чекаута
+		 * (`woocommerce_after_shipping_rate`, `woocommerce_checkout_update_order_meta`).
+		 * Честно объявляем несовместимость, чтобы WooCommerce предупредил
+		 * владельца магазина — на странице чекаута нужен шорткод [woocommerce_checkout].
+		 */
+		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('cart_checkout_blocks', __FILE__, false);
 	}
 });
 

@@ -30,6 +30,12 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 		public $admin_rates = [];
 
 		/**
+		 * Флаг административного контекста, передаётся в конструктор.
+		 * Объявлено явно: динамические свойства объявлены устаревшими в PHP 8.2.
+		 */
+		public $is_admin = false;
+
+		/**
 		 * Constructor.
 		 *
 		 * @param int $instance_id id.

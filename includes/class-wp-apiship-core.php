@@ -2961,6 +2961,12 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 			$shipping_methods = $wc_order->get_shipping_methods();
 
+			/**
+			 * У заказа может не быть строк доставки (создан вручную, импортирован) —
+			 * без инициализации ниже возникал `Undefined variable $meta_data`.
+			 */
+			$meta_data = array();
+
 			foreach( $shipping_methods as $method ) {
 				/**
 				 * @see woocommerce\includes\class-wc-order-item.php

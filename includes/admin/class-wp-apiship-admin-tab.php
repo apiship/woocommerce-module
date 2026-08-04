@@ -41,7 +41,13 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 		public function __construct() {
 
 			$this->id = Options\WP_ApiShip_Options::get_wc_settings_plugin_tab();
-			$this->label = esc_html__('ApiShip', 'wp-apiship');
+			/**
+			 * Заголовок вкладки НЕ переводится здесь: конструктор выполняется на
+			 * `plugins_loaded`, а с WordPress 6.7 обращение к переводам до `init`
+			 * вызывает notice `_load_textdomain_just_in_time`. Перевод выполняется
+			 * лениво в `fiter__add_tab()`.
+			 */
+			$this->label = 'ApiShip';
 
 			add_filter( 'woocommerce_settings_tabs_array', array($this, 'fiter__add_tab'), 500);
 			add_action( 'woocommerce_sections_' . $this->id, array( $this, 'on__output_sections') );
@@ -143,7 +149,7 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 		 * @since 1.0.0
 		 */
 		public function fiter__add_tab($settings_tabs) {
-			$settings_tabs[$this->id] = $this->label;
+			$settings_tabs[$this->id] = esc_html__('ApiShip', 'wp-apiship');
 			return $settings_tabs;
 		}
 
