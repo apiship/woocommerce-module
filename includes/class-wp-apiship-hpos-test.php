@@ -7,21 +7,21 @@
  * @since 1.5.0
  */
 
-namespace WP_ApiShip;
+namespace ApiShip;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Test' ) ) :
+if ( ! class_exists( __NAMESPACE__ . '\ApiShip_HPOS_Test' ) ) :
 
 	/**
 	 * Class for testing HPOS compatibility.
 	 *
 	 * @since 1.5.0
 	 */
-	class WP_ApiShip_HPOS_Test {
+	class ApiShip_HPOS_Test {
 
 		/**
 		 * Run all HPOS compatibility tests.
@@ -54,7 +54,7 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Test' ) ) :
 			);
 
 			try {
-				$hpos_enabled = WP_ApiShip_HPOS_Compatibility::is_hpos_enabled();
+				$hpos_enabled = ApiShip_HPOS_Compatibility::is_hpos_enabled();
 				$wc_hpos_enabled = class_exists( '\Automattic\WooCommerce\Utilities\OrderUtil' ) && 
 								   \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled();
 				
@@ -103,13 +103,13 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Test' ) ) :
 				$test_meta_value = 'test_value_' . time();
 
 				// Test update meta
-				$update_result = WP_ApiShip_HPOS_Compatibility::update_order_meta( $order, $test_meta_key, $test_meta_value );
+				$update_result = ApiShip_HPOS_Compatibility::update_order_meta( $order, $test_meta_key, $test_meta_value );
 				
 				// Test get meta
-				$retrieved_value = WP_ApiShip_HPOS_Compatibility::get_order_meta( $order, $test_meta_key );
+				$retrieved_value = ApiShip_HPOS_Compatibility::get_order_meta( $order, $test_meta_key );
 				
 				// Test delete meta
-				$delete_result = WP_ApiShip_HPOS_Compatibility::delete_order_meta( $order, $test_meta_key );
+				$delete_result = ApiShip_HPOS_Compatibility::delete_order_meta( $order, $test_meta_key );
 				
 				$result['data']['order_id'] = $order->get_id();
 				$result['data']['update_result'] = $update_result;
@@ -145,12 +145,12 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Test' ) ) :
 			);
 
 			try {
-				$result['data']['order_screen_id'] = WP_ApiShip_HPOS_Compatibility::get_order_screen_id();
-				$result['data']['order_post_type'] = WP_ApiShip_HPOS_Compatibility::get_order_post_type();
-				$result['data']['bulk_actions_hook'] = WP_ApiShip_HPOS_Compatibility::get_bulk_actions_hook();
-				$result['data']['handle_bulk_actions_hook'] = WP_ApiShip_HPOS_Compatibility::get_handle_bulk_actions_hook();
-				$result['data']['is_order_edit_screen'] = WP_ApiShip_HPOS_Compatibility::is_order_edit_screen();
-				$result['data']['is_orders_list_screen'] = WP_ApiShip_HPOS_Compatibility::is_orders_list_screen();
+				$result['data']['order_screen_id'] = ApiShip_HPOS_Compatibility::get_order_screen_id();
+				$result['data']['order_post_type'] = ApiShip_HPOS_Compatibility::get_order_post_type();
+				$result['data']['bulk_actions_hook'] = ApiShip_HPOS_Compatibility::get_bulk_actions_hook();
+				$result['data']['handle_bulk_actions_hook'] = ApiShip_HPOS_Compatibility::get_handle_bulk_actions_hook();
+				$result['data']['is_order_edit_screen'] = ApiShip_HPOS_Compatibility::is_order_edit_screen();
+				$result['data']['is_orders_list_screen'] = ApiShip_HPOS_Compatibility::is_orders_list_screen();
 				
 			} catch ( \Throwable $e ) {
 				$result['passed'] = false;
@@ -175,11 +175,11 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Test' ) ) :
 
 			try {
 				$expected_hooks = array(
-					'bulk_actions' => Options\WP_ApiShip_Options::get_bulk_actions_hook(),
-					'handle_bulk_actions' => Options\WP_ApiShip_Options::get_handle_bulk_actions_hook(),
+					'bulk_actions' => Options\ApiShip_Options::get_bulk_actions_hook(),
+					'handle_bulk_actions' => Options\ApiShip_Options::get_handle_bulk_actions_hook(),
 				);
 
-				$hpos_enabled = WP_ApiShip_HPOS_Compatibility::is_hpos_enabled();
+				$hpos_enabled = ApiShip_HPOS_Compatibility::is_hpos_enabled();
 				
 				if ( $hpos_enabled ) {
 					$expected_bulk = 'bulk_actions-woocommerce_page_wc-orders';
@@ -224,7 +224,7 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Test' ) ) :
 			);
 
 			try {
-				$migration_status = WP_ApiShip_HPOS_Migration::get_migration_status();
+				$migration_status = ApiShip_HPOS_Migration::get_migration_status();
 				$result['data'] = $migration_status;
 				
 				if ( isset( $migration_status['completed'] ) && isset( $migration_status['hpos_enabled'] ) ) {

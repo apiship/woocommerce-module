@@ -8,15 +8,15 @@
  * @since 1.0.0
  */
 
-use WP_ApiShip\Options,
-	WP_ApiShip\HTTP;
+use ApiShip\Options,
+	ApiShip\HTTP;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$labels_file = Options\WP_ApiShip_Options::get_labels_file();
+$labels_file = Options\ApiShip_Options::get_labels_file();
 
 $message = array();
 
@@ -38,7 +38,7 @@ if ( file_exists( $labels_file ) ) {
 
 	if ( isset($response->response->code) && isset($response->body) ) {
 
-		if ( $response->response->code == HTTP\WP_ApiShip_HTTP::OK ) {
+		if ( $response->response->code == HTTP\ApiShip_HTTP::OK ) {
 
 			if ( $timestamp ) {
 				$message[] = esc_html('Дата получения наклеек: ','apiship') . date( 'd.m.Y', $timestamp );

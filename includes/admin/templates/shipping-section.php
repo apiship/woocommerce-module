@@ -7,7 +7,7 @@
  * @package WP ApiShip
  */
 
-use WP_ApiShip\Options;
+use ApiShip\Options;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -58,7 +58,7 @@ $settings = array(
 		#'desc'  	=> esc_html__('', 'apiship' ),
 		'type'  	=> 'text',
 		'id'    	=> 'wp_apiship_warehouse_country',
-		'placeholder' => Options\WP_ApiShip_Options::WС_DEFAULT_COUNTRY
+		'placeholder' => Options\ApiShip_Options::WС_DEFAULT_COUNTRY
 	),
 	array(
 		'title' 	=> esc_html__('Почтовый индекс', 'apiship'),
@@ -81,36 +81,36 @@ $settings = array(
 		'desc'  	=> esc_html__('Default item length if it not specified', 'apiship' ),
 		'type'  	=> 'number', #'text',
 		'id'    	=> 'wp_apiship_length',
-		'default'	=> Options\WP_ApiShip_Options::get_wc_option(
+		'default'	=> Options\ApiShip_Options::get_wc_option(
 			'wp_apiship_length', 
-			Options\WP_ApiShip_Options::ITEM_LENGTH,
+			Options\ApiShip_Options::ITEM_LENGTH,
 			false
 		),
-		'placeholder' => Options\WP_ApiShip_Options::ITEM_LENGTH
+		'placeholder' => Options\ApiShip_Options::ITEM_LENGTH
 	),
 	array(
 		'title' 	=> esc_html__('Default item width (cm)', 'apiship'),
 		'desc'  	=> esc_html__('Default item width if it not specified', 'apiship' ),
 		'type'  	=> 'number',
 		'id'    	=> 'wp_apiship_width',
-		'default'	=> Options\WP_ApiShip_Options::get_wc_option(
+		'default'	=> Options\ApiShip_Options::get_wc_option(
 			'wp_apiship_width', 
-			Options\WP_ApiShip_Options::ITEM_WIDTH,
+			Options\ApiShip_Options::ITEM_WIDTH,
 			false
 		),
-		'placeholder' => Options\WP_ApiShip_Options::ITEM_WIDTH
+		'placeholder' => Options\ApiShip_Options::ITEM_WIDTH
 	),
 	array(
 		'title' 	=> esc_html__('Default item height (cm)', 'apiship'),
 		'desc'  	=> esc_html__('Default item height if it not specified', 'apiship' ),
 		'type'  	=> 'number',
 		'id'    	=> 'wp_apiship_height',
-		'default'   => Options\WP_ApiShip_Options::get_wc_option(
+		'default'   => Options\ApiShip_Options::get_wc_option(
 			'wp_apiship_height', 
-			Options\WP_ApiShip_Options::ITEM_HEIGHT,
+			Options\ApiShip_Options::ITEM_HEIGHT,
 			false
 		),
-		'placeholder' => Options\WP_ApiShip_Options::ITEM_HEIGHT,
+		'placeholder' => Options\ApiShip_Options::ITEM_HEIGHT,
 		'min' => 1
 	),
 	array(
@@ -128,12 +128,12 @@ $settings = array(
 		'desc'  	=> esc_html__('Default item weight if it not specified', 'apiship' ),
 		'type'  	=> 'number',
 		'id'    	=> 'wp_apiship_weight',
-		'default'   => Options\WP_ApiShip_Options::get_wc_option(
+		'default'   => Options\ApiShip_Options::get_wc_option(
 			'wp_apiship_weight', 
-			Options\WP_ApiShip_Options::ITEM_WEIGHT,
+			Options\ApiShip_Options::ITEM_WEIGHT,
 			false
 		),
-		'placeholder' => Options\WP_ApiShip_Options::ITEM_WEIGHT
+		'placeholder' => Options\ApiShip_Options::ITEM_WEIGHT
 	),	
 	array(
 		'type'  => 'sectionend',

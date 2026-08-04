@@ -12,11 +12,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use WP_ApiShip\Options;
+use ApiShip\Options;
 
-if ( ! class_exists('WP_ApiShip_Calculator_Direction') ) :
+if ( ! class_exists('ApiShip_Calculator_Direction') ) :
 
-	class WP_ApiShip_Calculator_Direction {
+	class ApiShip_Calculator_Direction {
 
 		/**
 		 * Код страны в соответствии с ISO 3166-1 alpha-2.
@@ -88,9 +88,9 @@ if ( ! class_exists('WP_ApiShip_Calculator_Direction') ) :
 		public function __construct( $args = array() ) {
 
 			$defaults = array(
-				'countryCode' => Options\WP_ApiShip_Options::get_wc_option( 
+				'countryCode' => Options\ApiShip_Options::get_wc_option( 
 					'woocommerce_default_country', 
-					Options\WP_ApiShip_Options::WС_DEFAULT_COUNTRY, 
+					Options\ApiShip_Options::WС_DEFAULT_COUNTRY, 
 					false 
 				),
 				'index' 		=> '',

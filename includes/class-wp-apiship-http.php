@@ -7,19 +7,19 @@
  *
  * @since 1.0.0
  */
-namespace WP_ApiShip\HTTP;
+namespace ApiShip\HTTP;
 
-use WP_ApiShip,
-	WP_ApiShip\Options;
+use ApiShip,
+	ApiShip\Options;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists('WP_ApiShip_HTTP', false) ) :
+if ( ! class_exists('ApiShip_HTTP', false) ) :
 
-	class WP_ApiShip_HTTP {
+	class ApiShip_HTTP {
 		
 		/**
 		 * Aliases for HTTP response codes.
@@ -70,7 +70,7 @@ if ( ! class_exists('WP_ApiShip_HTTP', false) ) :
 		/**
 		 * Get instance.
 		 *
-		 * @return WP_ApiShip_HTTP
+		 * @return ApiShip_HTTP
 		 */
 		public static function get_instance() {
 			
@@ -93,7 +93,7 @@ if ( ! class_exists('WP_ApiShip_HTTP', false) ) :
 		 */	
 		public static function get_api_url() {
 			
-			if ( WP_ApiShip\WP_ApiShip_Core::is_godmode(true) ) {
+			if ( ApiShip\ApiShip_Core::is_godmode(true) ) {
 				return self::$test_api_url;
 			}
 
@@ -210,7 +210,7 @@ if ( ! class_exists('WP_ApiShip_HTTP', false) ) :
 			$default = array(
 				'Accept' => 'application/json',
 				'Authorization' => self::get_token(),
-				'platform' => Options\WP_ApiShip_Options::PLATFORM
+				'platform' => Options\ApiShip_Options::PLATFORM
 			);
 			
 			if ( is_null($args) || empty( $args['headers'] ) ) {
@@ -233,7 +233,7 @@ if ( ! class_exists('WP_ApiShip_HTTP', false) ) :
 		 */
 		public static function get_token()
 		{
-			return Options\WP_ApiShip_Options::get_option('token');
+			return Options\ApiShip_Options::get_option('token');
 		}		
 	}
 	

@@ -8,7 +8,7 @@
  * @since 1.0.0
  */
 
-use WP_ApiShip\Options;
+use ApiShip\Options;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 $id = wc_get_order_item_meta( 
 	$item->get_id(), 
-	Options\WP_ApiShip_Options::INTEGRATOR_ORDER_KEY
+	Options\ApiShip_Options::INTEGRATOR_ORDER_KEY
 );
 
 $integrator_order_id = false;
@@ -40,7 +40,7 @@ if ( $integrator_order_id  ) {
 	$response = self::get_orders_status($integrator_order_id);
 	$message = esc_html__('Заказ создан', 'apiship');	
 } else {
-	$order_id_html = '<span class="wpapiship-integrator-order-id no-value">'.Options\WP_ApiShip_Options::INTEGRATOR_ORDER_INIT_VALUE.'</span>';;
+	$order_id_html = '<span class="wpapiship-integrator-order-id no-value">'.Options\ApiShip_Options::INTEGRATOR_ORDER_INIT_VALUE.'</span>';;
 	$message = esc_html__('Заказ не создан', 'apiship');	
 }
 $wpapiship_debug_class = '';
@@ -67,7 +67,7 @@ if ( self::is_godmode(true) ) {
 							class="validate-orders dashicons dashicons-code-standards <?php if($integrator_order_id){ echo 'hidden';} else { echo '';} ?>">
 						</span>
 						<span 
-							title="Создать заказ в системе <?php echo Options\WP_ApiShip_Options::BRAND; ?>"  
+							title="Создать заказ в системе <?php echo Options\ApiShip_Options::BRAND; ?>"  
 							class="post-orders dashicons dashicons-welcome-add-page <?php if($integrator_order_id){ echo 'hidden';} else { echo '';} ?>">
 						</span>
 						<span title="Получить информацию по заказу" 

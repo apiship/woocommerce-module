@@ -7,10 +7,10 @@
  * @since 1.0.0
  */
 
-use	WP_ApiShip\Options,
-	WP_ApiShip\HTTP,
-	WP_ApiShip\Options\WP_ApiShip_Options,
-	WP_ApiShip\WP_ApiShip_Core;
+use	ApiShip\Options,
+	ApiShip\HTTP,
+	ApiShip\Options\ApiShip_Options,
+	ApiShip\ApiShip_Core;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -18,14 +18,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WP_ApiShip_Shipping_Method.
+ * ApiShip_Shipping_Method.
  */
-if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
+if ( ! class_exists('ApiShip_Shipping_Method') ) :
 
 	/**
 	 * @see parent class in woocommerce\includes\abstracts\abstract-wc-shipping-method.php
 	 */
-	class WP_ApiShip_Shipping_Method extends WC_Shipping_Method {
+	class ApiShip_Shipping_Method extends WC_Shipping_Method {
 		
 		public $admin_rates = [];
 
@@ -42,7 +42,7 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 		 */
 		public function __construct($instance_id = 0, $is_admin = false) {
 			
-			$this->id                 = Options\WP_ApiShip_Options::SHIPPING_METHOD_ID;
+			$this->id                 = Options\ApiShip_Options::SHIPPING_METHOD_ID;
 			$this->instance_id        = absint( $instance_id );
 			$this->method_title       = esc_html__('ApiShip integrator', 'apiship');
 			$this->method_description = esc_html__('Select tariffs from various providers.', 'apiship');
@@ -115,11 +115,11 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 
 			$is_admin = $this->is_admin;
 			
-			if ( ! class_exists( 'WP_ApiShip_Calculator_Request' ) ) {
+			if ( ! class_exists( 'ApiShip_Calculator_Request' ) ) {
 				include_once dirname( __FILE__ ) . '/api/class-wp-apiship-calculator-request.php';
 			}
 
-			$calc = new \WP_ApiShip_Calculator_Request( $package, $_POST );
+			$calc = new \ApiShip_Calculator_Request( $package, $_POST );
 
 			$request = $calc->get_request();
 			
@@ -148,7 +148,7 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 			 */
 			$response_body = false;
 			
-			if ( WP_ApiShip\WP_ApiShip_Core::is_bypass_shipping_cache() ) {
+			if ( ApiShip\ApiShip_Core::is_bypass_shipping_cache() ) {
 				/**
 				 * Not response from cache in this case.
 				 */
@@ -161,7 +161,7 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 				/**
 				 * @see https://api.apiship.ru/doc/#/calculator/getCalculator
 				 */				
-				$response = HTTP\WP_ApiShip_HTTP::post(
+				$response = HTTP\ApiShip_HTTP::post(
 					'calculator',
 					array(
 						'headers' => array(
@@ -173,7 +173,7 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 				);
 		
 				if ( is_wp_error( $response ) ) {
-					WP_ApiShip\WP_ApiShip_Core::__log( $response, __CLASS__ .'::'. __FUNCTION__ );
+					ApiShip\ApiShip_Core::__log( $response, __CLASS__ .'::'. __FUNCTION__ );
 					return;
 				}		
 
@@ -181,12 +181,12 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 					return;
 				}
 	
-				if ( wp_remote_retrieve_response_code($response) == HTTP\WP_ApiShip_HTTP::OK ) {
+				if ( wp_remote_retrieve_response_code($response) == HTTP\ApiShip_HTTP::OK ) {
 					
 					try {
 						$response_body = $this->body_decode( wp_remote_retrieve_body($response) );
 					} catch ( Exception $e ) {
-						WP_ApiShip\WP_ApiShip_Core::__log( $e->getMessage(), __CLASS__ .'::'. __FUNCTION__ );
+						ApiShip\ApiShip_Core::__log( $e->getMessage(), __CLASS__ .'::'. __FUNCTION__ );
 						return;
 					}
 				
@@ -195,7 +195,7 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 					 * 
 					 * Revising @since 1.1.0
 					 */
-					if ( WP_ApiShip\WP_ApiShip_Core::is_bypass_shipping_cache() ) {
+					if ( ApiShip\ApiShip_Core::is_bypass_shipping_cache() ) {
 						/**
 						 * Not caching.
 						 */
@@ -209,7 +209,7 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 				try {
 					$response_body = $this->body_decode( wp_remote_retrieve_body($response) );
 				} catch ( Exception $e ) {
-					WP_ApiShip\WP_ApiShip_Core::__log( $e->getMessage(), __CLASS__ .'::'. __FUNCTION__ );
+					ApiShip\ApiShip_Core::__log( $e->getMessage(), __CLASS__ .'::'. __FUNCTION__ );
 					return;
 				}
 			}
@@ -220,22 +220,22 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 			 * @since 1.3.0
 			 */
 			if ( ! $response_body ) {
-				WP_ApiShip\WP_ApiShip_Core::__log( 'Not response body.', __CLASS__ .'::'. __FUNCTION__ );
+				ApiShip\ApiShip_Core::__log( 'Not response body.', __CLASS__ .'::'. __FUNCTION__ );
 				return;
 			}
 			
 			$delivery_types = array(
-				Options\WP_ApiShip_Options::DELIVERY_TO_DOOR,  //  'deliveryToDoor', 
-				Options\WP_ApiShip_Options::DELIVERY_TO_POINT, //  'deliveryToPoint'
+				Options\ApiShip_Options::DELIVERY_TO_DOOR,  //  'deliveryToDoor', 
+				Options\ApiShip_Options::DELIVERY_TO_POINT, //  'deliveryToPoint'
 			);
 
 			if ($is_admin === false) {
-				$point_display_mode = intval(Options\WP_ApiShip_Options::get_option('point_out_display_mode', Options\WP_ApiShip_Options::DEFAULT_POINT_OUT_DISPLAY_MODE));
+				$point_display_mode = intval(Options\ApiShip_Options::get_option('point_out_display_mode', Options\ApiShip_Options::DEFAULT_POINT_OUT_DISPLAY_MODE));
 			} else {
 				$point_display_mode = 2;
 			}
 
-			$providers_data = WP_ApiShip_Core::get_providers_data(true, false, false, true);
+			$providers_data = ApiShip_Core::get_providers_data(true, false, false, true);
 
 			$tariffsToRates = [];
 			$selectedExists = false;
@@ -244,7 +244,7 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 
 			foreach( $delivery_types as $delivery_type ) {
 				$is_delivery_to_point = false;
-				if ($delivery_type === Options\WP_ApiShip_Options::DELIVERY_TO_POINT) {
+				if ($delivery_type === Options\ApiShip_Options::DELIVERY_TO_POINT) {
 					$is_delivery_to_point = true;
 				}
 
@@ -270,7 +270,7 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 						$tariff->methodId = $this->get_rate_id($tariff_group->providerKey . ':' . $tariff->tariffId);
 						$tariff->isDeliveryToPoint = $is_delivery_to_point;
 						$tariff->providerKey = $tariff_group->providerKey;
-						$tariff->providerName = WP_ApiShip_Options::get_provider_name($tariff_group->providerKey);
+						$tariff->providerName = ApiShip_Options::get_provider_name($tariff_group->providerKey);
 						$tariff->deliveryType = $delivery_type;
 						$tariff->tariffGroupKey = $tariffGroupKey;
 						$tariff->isSelected = false;
@@ -299,7 +299,7 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 							 *
 							 * @since 1.5.0
 							 */		
-							$selectedData = WP_ApiShip_Core::getSelectedPointData($tariff->tariffId, $tariff->methodId);
+							$selectedData = ApiShip_Core::getSelectedPointData($tariff->tariffId, $tariff->methodId);
 							if (is_object($selectedData)) {
 								$tariff->isCached = true;
 								$tariff->cachedData = $selectedData;
@@ -386,14 +386,14 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 					'tariffProviderKey' => $tariff->providerKey,
 					'daysMin' 			=> $tariff->daysMin,
 					'daysMax' 			=> $tariff->daysMax,
-					'integrator' 		=> Options\WP_ApiShip_Options::INTEGRATOR,
-					'integratorOrder'	=> Options\WP_ApiShip_Options::INTEGRATOR_ORDER_INIT_VALUE,
+					'integrator' 		=> Options\ApiShip_Options::INTEGRATOR,
+					'integratorOrder'	=> Options\ApiShip_Options::INTEGRATOR_ORDER_INIT_VALUE,
 					'tariffList'		=> wp_json_encode($tariffList),
 					'tariff' 			=> $this->get_tariff_data($tariff),
 					'methodId' 			=> $tariff->methodId,
 					'places'			=> wp_json_encode($request['places']),
 					'pointInId'			=> $tariff->pointInId,
-					#'radioHidden' 	 	=> false, // @see Options\WP_ApiShip_Options::is_dropdown_selector()
+					#'radioHidden' 	 	=> false, // @see Options\ApiShip_Options::is_dropdown_selector()
 				);
 
 				$rate_args = array(
@@ -436,7 +436,7 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 					$c_rate_id = $this->get_rate_id($tariff_group->providerKey . ':' . $tariff_to_list->tariffId);
 					$tariff_to_list->methodId = $c_rate_id;
 					$tariff_to_list->providerKey = $tariff_group->providerKey;
-					$tariff_to_list->providerName = WP_ApiShip_Options::get_provider_name($tariff_group->providerKey);
+					$tariff_to_list->providerName = ApiShip_Options::get_provider_name($tariff_group->providerKey);
 
 					if (!empty($pickup_types) and count($pickup_types) === 1) {
 						$pickupTypeKey = $pickup_types[0];
@@ -462,7 +462,7 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 						$c_rate_id = $this->get_rate_id($tariff_to_list_group->providerKey . ':' . $tariff_to_list->tariffId);
 						$tariff_to_list->methodId = $c_rate_id;
 						$tariff_to_list->providerKey = $tariff_to_list_group->providerKey;
-						$tariff_to_list->providerName = WP_ApiShip_Options::get_provider_name($tariff_to_list_group->providerKey);
+						$tariff_to_list->providerName = ApiShip_Options::get_provider_name($tariff_to_list_group->providerKey);
 						
 						if (!empty($pickup_types) and count($pickup_types) === 1) {
 							$pickupTypeKey = $pickup_types[0];
@@ -485,9 +485,9 @@ if ( ! class_exists('WP_ApiShip_Shipping_Method') ) :
 		 */
 		protected function get_label_data($tariff, $providers_data, $is_delivery_to_point = true, $point_display_mode = 1)
 		{
-			$template = Options\WP_ApiShip_Options::get_wc_option( 'points_template', Options\WP_ApiShip_Options::DEFAULT_POINTS_TEMPLATE, null); 
+			$template = Options\ApiShip_Options::get_wc_option( 'points_template', Options\ApiShip_Options::DEFAULT_POINTS_TEMPLATE, null); 
 			
-			$deliveryTypes = Options\WP_ApiShip_Options::get_delivery_types();
+			$deliveryTypes = Options\ApiShip_Options::get_delivery_types();
 			$deliveryTypeKey = $tariff->deliveryTypes[0];
 			$type = $deliveryTypes[$deliveryTypeKey];
 

@@ -7,23 +7,23 @@
  *
  * @since 1.0.0
  */
-namespace WP_ApiShip\Admin;
+namespace ApiShip\Admin;
 
 use stdClass;
-use WP_ApiShip,
+use ApiShip,
 	WC_Admin_Settings,
-	WP_ApiShip\Options;
-use WP_ApiShip\HTTP\WP_ApiShip_HTTP;
-use WP_ApiShip\WP_ApiShip_Core;
+	ApiShip\Options;
+use ApiShip\HTTP\ApiShip_HTTP;
+use ApiShip\ApiShip_Core;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
+if ( ! class_exists('ApiShip_Admin_Tab', false) ) :
 
-	class WP_ApiShip_Admin_Tab {
+	class ApiShip_Admin_Tab {
 
 		/**
 		 * Tab ID.
@@ -40,7 +40,7 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 		 */
 		public function __construct() {
 
-			$this->id = Options\WP_ApiShip_Options::get_wc_settings_plugin_tab();
+			$this->id = Options\ApiShip_Options::get_wc_settings_plugin_tab();
 			/**
 			 * Заголовок вкладки НЕ переводится здесь: конструктор выполняется на
 			 * `plugins_loaded`, а с WordPress 6.7 обращение к переводам до `init`
@@ -66,7 +66,7 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 			add_action( 'woocommerce_admin_field_timezone', array( $this, 'on__wc_field_timezone') );
 			add_action( 'woocommerce_admin_field_button', array( $this, 'on__wc_field_button') );
 			
-			if ( WP_ApiShip\WP_ApiShip_Core::is_godmode(false) ) {
+			if ( ApiShip\ApiShip_Core::is_godmode(false) ) {
 				add_action( 'woocommerce_admin_field_debug', array( $this, 'on__wc_field_debug') );
 				// add_action( 'woocommerce_admin_field_calculator', array( $this, 'on__wc_field_calculator') );
 			}
@@ -166,7 +166,7 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 				// 'docs' 		=> esc_html__('Docs', 'apiship'),
 			);
 
-			if ( WP_ApiShip\WP_ApiShip_Core::is_godmode(false) ) {
+			if ( ApiShip\ApiShip_Core::is_godmode(false) ) {
 				$sections['debug'] = 'Debug';
 			}
 
@@ -267,7 +267,7 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 		 */		
 		protected static function check_api_token(string $token)
 		{
-			$response = WP_ApiShip_HTTP::get(
+			$response = ApiShip_HTTP::get(
 				'lists/providers',
 				array(
 					'headers' => [
@@ -276,7 +276,7 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 					'timeout' => 20
 				)
 			);
-			if ( wp_remote_retrieve_response_code($response) !== WP_ApiShip_HTTP::OK ) {
+			if ( wp_remote_retrieve_response_code($response) !== ApiShip_HTTP::OK ) {
 				WC_Admin_Settings::add_error( esc_html__( 'Ошибка проверки токена, укажите корректный токен', 'apiship' ) );
 			}
 		}
@@ -404,7 +404,7 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 					'type' 		=> 'checkbox',
 					'desc' 		=> sprintf(
 						esc_html__('You can set the store address on the Woocommerce %sGeneral%s tab.', 'apiship'),
-						'<a href="'.WP_ApiShip\WP_ApiShip_Core::get_admin_url(array('page'=>'wc-settings','tab'=>'general')).'">',
+						'<a href="'.ApiShip\ApiShip_Core::get_admin_url(array('page'=>'wc-settings','tab'=>'general')).'">',
 						'</a>'
 					),
 				),
@@ -461,9 +461,9 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 					'desc'    => esc_html__('Устанавливается на странице настроек Woocommerce, вкладка General', 'apiship' ), # WC()->countries->countries['RU'];
 					'type'    => 'text',
 					'id'      => 'wp_apiship_warehouse_country',
-					'default' => Options\WP_ApiShip_Options::get_wc_option(
+					'default' => Options\ApiShip_Options::get_wc_option(
 						'woocommerce_default_country', 
-						Options\WP_ApiShip_Options::WС_DEFAULT_COUNTRY,
+						Options\ApiShip_Options::WС_DEFAULT_COUNTRY,
 						false
 					),
 					'custom_attributes' => array(
@@ -504,36 +504,36 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 					'desc'  	=> esc_html__('Default item length if it not specified', 'apiship' ),
 					'type'  	=> 'number', #'text',
 					'id'    	=> 'wp_apiship_length',
-					'default'	=> Options\WP_ApiShip_Options::get_wc_option(
+					'default'	=> Options\ApiShip_Options::get_wc_option(
 						'wp_apiship_length', 
-						Options\WP_ApiShip_Options::ITEM_LENGTH,
+						Options\ApiShip_Options::ITEM_LENGTH,
 						false
 					),
-					'placeholder' => Options\WP_ApiShip_Options::ITEM_LENGTH
+					'placeholder' => Options\ApiShip_Options::ITEM_LENGTH
 				),
 				array(
 					'title' 	=> esc_html__('Default item width (cm)', 'apiship'),
 					'desc'  	=> esc_html__('Default item width if it not specified', 'apiship' ),
 					'type'  	=> 'number',
 					'id'    	=> 'wp_apiship_width',
-					'default'	=> Options\WP_ApiShip_Options::get_wc_option(
+					'default'	=> Options\ApiShip_Options::get_wc_option(
 						'wp_apiship_width', 
-						Options\WP_ApiShip_Options::ITEM_WIDTH,
+						Options\ApiShip_Options::ITEM_WIDTH,
 						false
 					),
-					'placeholder' => Options\WP_ApiShip_Options::ITEM_WIDTH
+					'placeholder' => Options\ApiShip_Options::ITEM_WIDTH
 				),
 				array(
 					'title' 	=> esc_html__('Default item height (cm)', 'apiship'),
 					'desc'  	=> esc_html__('Default item height if it not specified', 'apiship' ),
 					'type'  	=> 'number',
 					'id'    	=> 'wp_apiship_height',
-					'default'   => Options\WP_ApiShip_Options::get_wc_option(
+					'default'   => Options\ApiShip_Options::get_wc_option(
 						'wp_apiship_height', 
-						Options\WP_ApiShip_Options::ITEM_HEIGHT,
+						Options\ApiShip_Options::ITEM_HEIGHT,
 						false
 					),
-					'placeholder' => Options\WP_ApiShip_Options::ITEM_HEIGHT,
+					'placeholder' => Options\ApiShip_Options::ITEM_HEIGHT,
 					'min' => 1
 				),
 				array(
@@ -541,12 +541,12 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 					'desc'  	=> esc_html__('Default item weight if it not specified', 'apiship' ),
 					'type'  	=> 'number',
 					'id'    	=> 'wp_apiship_weight',
-					'default'   => Options\WP_ApiShip_Options::get_wc_option(
+					'default'   => Options\ApiShip_Options::get_wc_option(
 						'wp_apiship_weight', 
-						Options\WP_ApiShip_Options::ITEM_WEIGHT,
+						Options\ApiShip_Options::ITEM_WEIGHT,
 						false
 					),
-					'placeholder' => Options\WP_ApiShip_Options::ITEM_WEIGHT
+					'placeholder' => Options\ApiShip_Options::ITEM_WEIGHT
 				),	
 				array(
 					'type'  => 'sectionend',
@@ -565,7 +565,7 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 					'desc'  	=> '',
 					'type'  	=> 'number',
 					'id'    	=> 'wp_apiship_place_length',
-					'default'	=> Options\WP_ApiShip_Options::get_wc_option(
+					'default'	=> Options\ApiShip_Options::get_wc_option(
 						'wp_apiship_place_length', 
 						'',
 						false
@@ -577,7 +577,7 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 					'desc'  	=> '',
 					'type'  	=> 'number',
 					'id'    	=> 'wp_apiship_place_height',
-					'default'	=> Options\WP_ApiShip_Options::get_wc_option(
+					'default'	=> Options\ApiShip_Options::get_wc_option(
 						'wp_apiship_place_height', 
 						'',
 						false
@@ -589,7 +589,7 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 					'desc'  	=> '',
 					'type'  	=> 'number', #'text',
 					'id'    	=> 'wp_apiship_place_width',
-					'default'	=> Options\WP_ApiShip_Options::get_wc_option(
+					'default'	=> Options\ApiShip_Options::get_wc_option(
 						'wp_apiship_place_width', 
 						'',
 						false
@@ -601,7 +601,7 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 					'desc'  	=> '',
 					'type'  	=> 'number',
 					'id'    	=> 'wp_apiship_place_weight',
-					'default'	=> Options\WP_ApiShip_Options::get_wc_option(
+					'default'	=> Options\ApiShip_Options::get_wc_option(
 						'wp_apiship_place_weight', 
 						'',
 						false
@@ -613,7 +613,7 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 					'desc'  	=> '',
 					'type'  	=> 'number',
 					'id'    	=> 'wp_apiship_place_package_weight',
-					'default'	=> Options\WP_ApiShip_Options::get_wc_option(
+					'default'	=> Options\ApiShip_Options::get_wc_option(
 						'wp_apiship_place_package_weight', 
 						'',
 						false
@@ -674,12 +674,12 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 						'<strong>%time</strong> - ' . esc_html__('сроки доставки', 'apiship'),
 						'<div style="height: 5px;"></div>'
 					]),
-					'default'	=> Options\WP_ApiShip_Options::get_wc_option(
+					'default'	=> Options\ApiShip_Options::get_wc_option(
 						'wp_apiship_points_template', 
-						Options\WP_ApiShip_Options::DEFAULT_POINTS_TEMPLATE,
+						Options\ApiShip_Options::DEFAULT_POINTS_TEMPLATE,
 						false
 					),
-					'placeholder' => Options\WP_ApiShip_Options::DEFAULT_POINTS_TEMPLATE,
+					'placeholder' => Options\ApiShip_Options::DEFAULT_POINTS_TEMPLATE,
 				),
 				array(
 					'type'  => 'sectionend',
@@ -745,11 +745,11 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 					'default' 	=> 'no',
 					'desc_tip' 	=> sprintf(
 						esc_html__('You can set the list of providers on %sProviders%s section', 'apiship'),
-						'<a href="'.WP_ApiShip\WP_ApiShip_Core::get_admin_url(
+						'<a href="'.ApiShip\ApiShip_Core::get_admin_url(
 							array(
-								'page'    => Options\WP_ApiShip_Options::get_wc_settings_page(),
-								'tab'	  => Options\WP_ApiShip_Options::get_wc_settings_plugin_tab(),
-								'section' => Options\WP_ApiShip_Options::get_plugin_providers_section()
+								'page'    => Options\ApiShip_Options::get_wc_settings_page(),
+								'tab'	  => Options\ApiShip_Options::get_wc_settings_plugin_tab(),
+								'section' => Options\ApiShip_Options::get_plugin_providers_section()
 							)
 						).'">',
 						'</a>'
@@ -761,7 +761,7 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 					'class' => 'wp-apiship-admin-tab-field options-field',
 					'desc' 	=>  sprintf(
 						esc_html__('Order dispatch date (pickupDate) will be set according to %sTimezone%s', 'apiship'),
-						'<a href="'.WP_ApiShip\WP_ApiShip_Core::get_admin_url('options-general.php').'" target="_blank">',
+						'<a href="'.ApiShip\ApiShip_Core::get_admin_url('options-general.php').'" target="_blank">',
 						'</a>'
 					),
 					'desc_tip' 	  => esc_html__('You can set Timezone on General Settings page', 'apiship'),
@@ -774,7 +774,7 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 					'type'  	  => 'text',
 					'id'    	  => 'wp_apiship_yandexmap_key',
 					'desc' 		  => esc_html__('For correct operation, you should set your own Yandex map key.','apiship'),
-					'placeholder' => Options\WP_ApiShip_Options::YANDEX_MAP_DEFAULT_KEY,
+					'placeholder' => Options\ApiShip_Options::YANDEX_MAP_DEFAULT_KEY,
 					'desc_tip' 	  => esc_html__('We provide a default key, but no guarantee of correct operation', 'apiship'),
 				),
 				array(
@@ -783,8 +783,8 @@ if ( ! class_exists('WP_ApiShip_Admin_Tab', false) ) :
 				),
 			);
 
-			// $god_mode = Options\WP_ApiShip_Options::get_wc_option('wp_apiship_god_mode', 'no', false);
-			if ( ! WP_ApiShip\WP_ApiShip_Core::is_godmode(false) ) {
+			// $god_mode = Options\ApiShip_Options::get_wc_option('wp_apiship_god_mode', 'no', false);
+			if ( ! ApiShip\ApiShip_Core::is_godmode(false) ) {
 				unset( $settings['god_mode'] );
 			}
 			

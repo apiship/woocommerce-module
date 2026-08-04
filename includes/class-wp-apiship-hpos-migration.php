@@ -7,7 +7,7 @@
  * @since 1.5.0
  */
 
-namespace WP_ApiShip;
+namespace ApiShip;
 
 use Automattic\WooCommerce\Utilities\OrderUtil;
 
@@ -16,14 +16,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Migration' ) ) :
+if ( ! class_exists( __NAMESPACE__ . '\ApiShip_HPOS_Migration' ) ) :
 
 	/**
 	 * Class for HPOS migration tasks.
 	 *
 	 * @since 1.5.0
 	 */
-	class WP_ApiShip_HPOS_Migration {
+	class ApiShip_HPOS_Migration {
 
 		/**
 		 * Migration option key.
@@ -51,7 +51,7 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Migration' ) ) :
 				return;
 			}
 
-			if ( ! WP_ApiShip_HPOS_Compatibility::is_hpos_enabled() ) {
+			if ( ! ApiShip_HPOS_Compatibility::is_hpos_enabled() ) {
 				return;
 			}
 
@@ -102,12 +102,12 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Migration' ) ) :
 		 */
 		protected static function get_meta_keys() {
 			return array(
-				Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
-				Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
-				Options\WP_ApiShip_Options::ORDER_PLACES_META,
-				Options\WP_ApiShip_Options::INTEGRATOR_ORDER_KEY,
-				Options\WP_ApiShip_Options::PROVIDER_NUMBER_KEY,
-				Options\WP_ApiShip_Options::TARIFF_DATA_KEY,
+				Options\ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
+				Options\ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
+				Options\ApiShip_Options::ORDER_PLACES_META,
+				Options\ApiShip_Options::INTEGRATOR_ORDER_KEY,
+				Options\ApiShip_Options::PROVIDER_NUMBER_KEY,
+				Options\ApiShip_Options::TARIFF_DATA_KEY,
 			);
 		}
 
@@ -221,12 +221,12 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Migration' ) ) :
 		public static function migrate_batch( $offset = 0 ) {
 			// Get orders with ApiShip meta data from legacy post meta
 			$meta_keys = array(
-				Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
-				Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
-				Options\WP_ApiShip_Options::ORDER_PLACES_META,
-				Options\WP_ApiShip_Options::INTEGRATOR_ORDER_KEY,
-				Options\WP_ApiShip_Options::PROVIDER_NUMBER_KEY,
-				Options\WP_ApiShip_Options::TARIFF_DATA_KEY,
+				Options\ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
+				Options\ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
+				Options\ApiShip_Options::ORDER_PLACES_META,
+				Options\ApiShip_Options::INTEGRATOR_ORDER_KEY,
+				Options\ApiShip_Options::PROVIDER_NUMBER_KEY,
+				Options\ApiShip_Options::TARIFF_DATA_KEY,
 			);
 
 			// Build meta query for WP_Query to find orders with ApiShip data
@@ -298,12 +298,12 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Migration' ) ) :
 			}
 
 			$meta_keys = array(
-				Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
-				Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
-				Options\WP_ApiShip_Options::ORDER_PLACES_META,
-				Options\WP_ApiShip_Options::INTEGRATOR_ORDER_KEY,
-				Options\WP_ApiShip_Options::PROVIDER_NUMBER_KEY,
-				Options\WP_ApiShip_Options::TARIFF_DATA_KEY,
+				Options\ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
+				Options\ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
+				Options\ApiShip_Options::ORDER_PLACES_META,
+				Options\ApiShip_Options::INTEGRATOR_ORDER_KEY,
+				Options\ApiShip_Options::PROVIDER_NUMBER_KEY,
+				Options\ApiShip_Options::TARIFF_DATA_KEY,
 			);
 
 			$migrated = false;
@@ -355,7 +355,7 @@ if ( ! class_exists( __NAMESPACE__ . '\WP_ApiShip_HPOS_Migration' ) ) :
 			return array(
 				'completed' => (bool) $completed,
 				'completed_at' => $completed ? date( 'Y-m-d H:i:s', $completed ) : null,
-				'hpos_enabled' => WP_ApiShip_HPOS_Compatibility::is_hpos_enabled(),
+				'hpos_enabled' => ApiShip_HPOS_Compatibility::is_hpos_enabled(),
 			);
 		}
 	}

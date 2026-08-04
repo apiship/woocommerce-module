@@ -7,22 +7,22 @@
  *
  * @since 1.4.0
  */
-namespace WP_ApiShip\Admin;
+namespace ApiShip\Admin;
 
 use WC_Admin_Settings;
-use WP_ApiShip\Options\WP_ApiShip_Options;
+use ApiShip\Options\ApiShip_Options;
 
 // Exit if accessed directly.
 if (!defined('ABSPATH')) {
 	exit;
 }
 
-if (!class_exists('WP_ApiShip_Mapping')) :
+if (!class_exists('ApiShip_Mapping')) :
 
 	/**
 	 * Status mapping.
 	 */
-	class WP_ApiShip_Mapping
+	class ApiShip_Mapping
 	{
 		/**
 		 * Constructor.
@@ -38,7 +38,7 @@ if (!class_exists('WP_ApiShip_Mapping')) :
 		 */
 		function output_option($value)
 		{
-			$defaults = WP_ApiShip_Options::APISHIP_MAPPING_SETTINGS;
+			$defaults = ApiShip_Options::APISHIP_MAPPING_SETTINGS;
 			$config = WC_Admin_Settings::get_option($value['id']);
 			$settings = $defaults;
 

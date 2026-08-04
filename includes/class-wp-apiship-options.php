@@ -7,16 +7,16 @@
  *
  * @since 1.0.0
  */
-namespace WP_ApiShip\Options;
+namespace ApiShip\Options;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists('WP_ApiShip_Options') ) :
+if ( ! class_exists('ApiShip_Options') ) :
 
-	class WP_ApiShip_Options {
+	class ApiShip_Options {
 
 		/**
 		 * Plugin constants.
@@ -517,7 +517,7 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 		 *
 		 * @param string $path_to_loader
 		 *
-		 * @return WP_ApiShip_Options
+		 * @return ApiShip_Options
 		 */
 		public static function get_instance( $path_to_loader = '' ) {
 			
@@ -746,7 +746,7 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 					'name' 	      => 'wpapiship-pickup-date',
 					'id'   	   	  => 'wpapiship-pickup-date',
 					'selector' 	  => '#wpapiship-pickup-date',
-					'class'	   	  => 'WP_ApiShip_Order',
+					'class'	   	  => 'ApiShip_Order',
 					'placeholder' => '',
 				),
 				'contactName' => array( 
@@ -756,7 +756,7 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 					'name' 	   	  => 'wpapiship-contact-name',
 					'id'   	   	  => 'wpapiship-contact-name',
 					'selector' 	  => '#wpapiship-contact-name',
-					'class'		  => 'WP_ApiShip_Order_Sender',
+					'class'		  => 'ApiShip_Order_Sender',
 					'placeholder' => $contact_name,
 					'size'		  => 50
 				),
@@ -767,7 +767,7 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 					'name' 	   	  => 'wpapiship-phone',
 					'id'   	   	  => 'wpapiship-phone',
 					'selector' 	  => '#wpapiship-phone',
-					'class'		  => 'WP_ApiShip_Order_Sender',
+					'class'		  => 'ApiShip_Order_Sender',
 					'placeholder' => $phone,
 					'size'		  => 50
 				),				
@@ -778,7 +778,7 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 					'name' 	   	  => 'wpapiship-point-in-id',
 					'id'   	   	  => 'wpapiship-point-in-id',
 					'selector' 	  => '#wpapiship-point-in-id',
-					'class'		  => 'WP_ApiShip_Order',
+					'class'		  => 'ApiShip_Order',
 					'size'		  => 10
 				),
 				'pointInAddress' => array( 
@@ -797,7 +797,7 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 					'name' 	   	  => 'wpapiship-point-out-id',
 					'id'   	   	  => 'wpapiship-point-out-id',
 					'selector' 	  => '#wpapiship-point-out-id',
-					'class'		  => 'WP_ApiShip_Order',
+					'class'		  => 'ApiShip_Order',
 					'size'		  => 10
 				),
 				'pointOutAddress' => array( 
@@ -910,7 +910,7 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 				return false;
 			}
 			
-			return \WP_ApiShip\WP_ApiShip_HPOS_Compatibility::update_order_meta( $order, $meta, $value );
+			return \ApiShip\ApiShip_HPOS_Compatibility::update_order_meta( $order, $meta, $value );
 		}			
 
 		/**
@@ -924,7 +924,7 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 				return null;
 			}
 			
-			return \WP_ApiShip\WP_ApiShip_HPOS_Compatibility::get_order_meta( $order, $meta, true, $default_value );
+			return \ApiShip\ApiShip_HPOS_Compatibility::get_order_meta( $order, $meta, true, $default_value );
 		}	
 	
 		/**
@@ -1160,7 +1160,7 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 		 * @since 1.7.0
 		 */
 		public static function get_bulk_actions_hook() {
-			return \WP_ApiShip\WP_ApiShip_HPOS_Compatibility::get_bulk_actions_hook();
+			return \ApiShip\ApiShip_HPOS_Compatibility::get_bulk_actions_hook();
 		}
 
 		/**
@@ -1169,7 +1169,7 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 		 * @since 1.7.0
 		 */
 		public static function get_handle_bulk_actions_hook() {
-			return \WP_ApiShip\WP_ApiShip_HPOS_Compatibility::get_handle_bulk_actions_hook();
+			return \ApiShip\ApiShip_HPOS_Compatibility::get_handle_bulk_actions_hook();
 		}
 
 		/**
@@ -1178,7 +1178,7 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 		 * @since 1.7.0
 		 */
 		public static function is_order_edit_screen() {
-			return \WP_ApiShip\WP_ApiShip_HPOS_Compatibility::is_order_edit_screen();
+			return \ApiShip\ApiShip_HPOS_Compatibility::is_order_edit_screen();
 		}
 
 		/**
@@ -1187,7 +1187,7 @@ if ( ! class_exists('WP_ApiShip_Options') ) :
 		 * @since 1.7.0
 		 */
 		public static function is_orders_list_screen() {
-			return \WP_ApiShip\WP_ApiShip_HPOS_Compatibility::is_orders_list_screen();
+			return \ApiShip\ApiShip_HPOS_Compatibility::is_orders_list_screen();
 		}
 	}
 	

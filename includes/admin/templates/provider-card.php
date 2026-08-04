@@ -8,14 +8,14 @@
  * @since 1.0.0
  */
 
-use WP_ApiShip\Options;
+use ApiShip\Options;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$opts = Options\WP_ApiShip_Options::get_options();
+$opts = Options\ApiShip_Options::get_options();
 
 ob_start();
 ?>

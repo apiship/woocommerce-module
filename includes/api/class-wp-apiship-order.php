@@ -7,16 +7,16 @@
  * @since 1.0.0
  */
 
-// use WP_ApiShip\Options;
+// use ApiShip\Options;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists('WP_ApiShip_Order') ) :
+if ( ! class_exists('ApiShip_Order') ) :
 
-	class WP_ApiShip_Order {
+	class ApiShip_Order {
 		
 		/**
 		 * Номер заказа в системе службы доставки. Если СД выдает диапазон номеров заказа.
@@ -210,7 +210,7 @@ if ( ! class_exists('WP_ApiShip_Order') ) :
 		/**
 		 * Constructor.
 		 */		
-		public function __construct($request, WP_ApiShip_Orders_Request $orders_request) {
+		public function __construct($request, ApiShip_Orders_Request $orders_request) {
 			
 			/**
 			 * Set shipping meta.

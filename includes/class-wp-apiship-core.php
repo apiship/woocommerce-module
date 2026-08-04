@@ -6,23 +6,23 @@
  *
  * @since 1.0.0
  */
-namespace WP_ApiShip;
+namespace ApiShip;
 
 use stdClass;
 use Throwable;
-use WP_ApiShip\HTTP\WP_ApiShip_HTTP;
-use WP_ApiShip\Options,
-	WP_ApiShip\HTTP;
-use WP_ApiShip\Options\WP_ApiShip_Options;
+use ApiShip\HTTP\ApiShip_HTTP;
+use ApiShip\Options,
+	ApiShip\HTTP;
+use ApiShip\Options\ApiShip_Options;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists('WP_ApiShip_Core') ) :
+if ( ! class_exists('ApiShip_Core') ) :
 
-	class WP_ApiShip_Core {
+	class ApiShip_Core {
 
 		/**
 		 * Instance.
@@ -120,7 +120,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		 *
 		 * @param string $path_to_loader
 		 *
-		 * @return WP_ApiShip
+		 * @return ApiShip
 		 */
 		public static function get_instance( $path_to_loader = '' ) {
 
@@ -238,7 +238,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				/**
 				 * Add plugin custom column.
 				 */
-				add_filter( 'manage_edit-' . Options\WP_ApiShip_Options::WC_ORDER_POST_TYPE . '_columns',
+				add_filter( 'manage_edit-' . Options\ApiShip_Options::WC_ORDER_POST_TYPE . '_columns',
 					array(
 						__CLASS__,
 						'filter__add_column'
@@ -249,7 +249,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				/**
 				 * Manage plugin custom column.
 				 */
-				add_filter( 'manage_' . Options\WP_ApiShip_Options::WC_ORDER_POST_TYPE . '_posts_custom_column',
+				add_filter( 'manage_' . Options\ApiShip_Options::WC_ORDER_POST_TYPE . '_posts_custom_column',
 					array(
 						__CLASS__,
 						'filter__manage_column'
@@ -369,13 +369,13 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 			$class = array('form-row-wide', 'wpapiship-checkout-row', 'wpapiship-checkout-row-hidden');
 
 			// // ? todo: Why god mode?
-			// if ( defined('WP_APISHIP_GODMODE') && WP_APISHIP_GODMODE ) {
+			// if ( defined('APISHIP_GODMODE') && APISHIP_GODMODE ) {
 			// 	// Do nothing;
 			// } else {
 			// 	$class[] = 'wpapiship-checkout-row-hidden';
 			// }
 
-			$fields['order'][ Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META ] = array(
+			$fields['order'][ Options\ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META ] = array(
 				'type'		=> 'text',
 				'label'     => esc_html__('Пункт выдачи заказа','apiship'),
 				'required'  => false,
@@ -391,9 +391,9 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 		public static function get_point_display_mode(): int
 		{
-			$default_point_display_mode = WP_ApiShip_Options::DEFAULT_POINT_OUT_DISPLAY_MODE;
+			$default_point_display_mode = ApiShip_Options::DEFAULT_POINT_OUT_DISPLAY_MODE;
 
-			$point_display_mode = WP_ApiShip_Options::get_option('point_out_display_mode', $default_point_display_mode);
+			$point_display_mode = ApiShip_Options::get_option('point_out_display_mode', $default_point_display_mode);
 			$point_display_mode = intval($point_display_mode);
 
 			return $point_display_mode;
@@ -417,11 +417,11 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 			/**
 			 * @see `add_rate` function in wp-apiship\includes\class-wp-apiship-shipping-method.php
 			 */
-			if ( empty( $meta[ Options\WP_ApiShip_Options::TARIFF_DATA_KEY ] ) ) {
+			if ( empty( $meta[ Options\ApiShip_Options::TARIFF_DATA_KEY ] ) ) {
 				return;
 			}
 
-			$tariff = json_decode($meta[ Options\WP_ApiShip_Options::TARIFF_DATA_KEY ]);
+			$tariff = json_decode($meta[ Options\ApiShip_Options::TARIFF_DATA_KEY ]);
 
 			if ( ! is_object( $tariff ) ) {
 				return;
@@ -471,7 +471,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 			$points = array_unique($points);
 
 			if ( ! empty($tariff->deliveryTypes)
-				and in_array( Options\WP_ApiShip_Options::DELIVERY_TO_POINT_OUT, (array) $tariff->deliveryTypes ) ) {
+				and in_array( Options\ApiShip_Options::DELIVERY_TO_POINT_OUT, (array) $tariff->deliveryTypes ) ) {
 
 				$tariff_list_attr = isset($meta['tariffList']) ? $meta['tariffList'] : '';
 
@@ -552,11 +552,11 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		 */
 		public static function on__wc_checkout_update_order_meta( $order_id, $data ) {
 
-			if ( ! isset( $data[ Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META ] ) ) {
+			if ( ! isset( $data[ Options\ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META ] ) ) {
 				return;
 			}
 
-			$obj = json_decode( $data[ Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META ] );
+			$obj = json_decode( $data[ Options\ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META ] );
 
 			if ( is_object( $obj ) ) {
 
@@ -569,9 +569,9 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 					'id' 	  => isset( $obj->id ) ? sanitize_text_field( $obj->id ) : '',
 				);
 
-				Options\WP_ApiShip_Options::update_order_meta(
+				Options\ApiShip_Options::update_order_meta(
 					$order_id,
-					Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
+					Options\ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
 					$point_out
 				);
 
@@ -659,8 +659,8 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 			$apiship_tab_url = add_query_arg(
 				array(
-					'page' => Options\WP_ApiShip_Options::get_wc_settings_page(),
-					'tab'  => Options\WP_ApiShip_Options::get_wc_settings_plugin_tab(),
+					'page' => Options\ApiShip_Options::get_wc_settings_page(),
+					'tab'  => Options\ApiShip_Options::get_wc_settings_plugin_tab(),
 				),
 				admin_url( 'admin.php' )
 			);
@@ -713,7 +713,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				/**
 				 * @see meta_data `calculate_shipping` function in wp-apiship\includes\class-wp-apiship-shipping-method.php
 				 */
-				// $meta[] = Options\WP_ApiShip_Options::INTEGRATOR_ORDER_KEY;
+				// $meta[] = Options\ApiShip_Options::INTEGRATOR_ORDER_KEY;
 				// $meta[] = 'places';
 			}
 
@@ -786,7 +786,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				return $methods;
 			}
 
-			if ( Options\WP_ApiShip_Options::get_wc_settings_checkout_tab() != self::safe_get('tab') ) {
+			if ( Options\ApiShip_Options::get_wc_settings_checkout_tab() != self::safe_get('tab') ) {
 				return $methods;
 			}
 
@@ -794,7 +794,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 			foreach( $methods as $key=>$method ) {
 
-				if ( $method->id === Options\WP_ApiShip_Options::SHIPPING_METHOD_ID ) {
+				if ( $method->id === Options\ApiShip_Options::SHIPPING_METHOD_ID ) {
 					$unneeded_key = $key;
 					break;
 				}
@@ -890,7 +890,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 			switch ( $request['action'] ) :
 				case 'saveSelectedPointIn':
 
-					$opts = Options\WP_ApiShip_Options::get_options();
+					$opts = Options\ApiShip_Options::get_options();
 
 					$providers = array();
 
@@ -925,7 +925,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						$providers[ $request['providerKey'] ]['pointInId'][$point_type]['timestamp'] 	= time();
 					}
 
-					Options\WP_ApiShip_Options::update_option('providers', $providers);
+					Options\ApiShip_Options::update_option('providers', $providers);
 
 					break;
 				case 'deleteSelectedPointIn':
@@ -935,7 +935,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						$provider_key = $request['providerKey'];
 					}
 
-					$opts = Options\WP_ApiShip_Options::get_options();
+					$opts = Options\ApiShip_Options::get_options();
 
 					if ( ! empty( $opts['providers'] ) ) {
 						$providers = $opts['providers'];
@@ -949,7 +949,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 					if ( $provider_key && ! empty( $providers[$provider_key]['pointInId'][$point_type] ) && $point_type ) {
 
 						unset( $providers[$provider_key]['pointInId'][$point_type] );
-						Options\WP_ApiShip_Options::update_option('providers', $providers);
+						Options\ApiShip_Options::update_option('providers', $providers);
 
 						$html = self::get_select_html(
 							'reset',
@@ -974,9 +974,9 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 					if ( ! empty($request['postOrderID']) && (int)  $request['postOrderID'] > 0 && is_array($request['data']) ) {
 
-						if ( Options\WP_ApiShip_Options::update_order_meta(
+						if ( Options\ApiShip_Options::update_order_meta(
 								$request['postOrderID'],
-								Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
+								Options\ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
 								$request['data']
 							)
 						) {
@@ -993,9 +993,9 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 					if ( ! empty($request['postOrderID']) && (int)  $request['postOrderID'] > 0 ) {
 
-						if ( Options\WP_ApiShip_Options::update_order_meta(
+						if ( Options\ApiShip_Options::update_order_meta(
 								$request['postOrderID'],
-								Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
+								Options\ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
 								''
 							)
 						) {
@@ -1012,9 +1012,9 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 					if ( ! empty($request['postOrderID']) && (int)  $request['postOrderID'] > 0 ) {
 
-						if ( Options\WP_ApiShip_Options::update_order_meta(
+						if ( Options\ApiShip_Options::update_order_meta(
 								$request['postOrderID'],
-								Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
+								Options\ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
 								''
 							)
 						) {
@@ -1093,9 +1093,9 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 						$order->save();
 
-						Options\WP_ApiShip_Options::update_order_meta(
+						Options\ApiShip_Options::update_order_meta(
 							$order_id,
-							Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
+							Options\ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
 							$pointData
 						);
 					} else {
@@ -1138,15 +1138,15 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 						$order->save();
 
-						Options\WP_ApiShip_Options::update_order_meta(
+						Options\ApiShip_Options::update_order_meta(
 							$order_id,
-							Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
+							Options\ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
 							''
 						);
 
-						Options\WP_ApiShip_Options::update_order_meta(
+						Options\ApiShip_Options::update_order_meta(
 							$order_id,
-							Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
+							Options\ApiShip_Options::POST_SHIPPING_TO_POINT_IN_META,
 							''
 						);
 					} else {
@@ -1162,7 +1162,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						$provider_key = $request['providerKey'];
 					}
 
-					$opts = Options\WP_ApiShip_Options::get_options();
+					$opts = Options\ApiShip_Options::get_options();
 
 					if ( $provider_key && ! empty( $opts['providers'][$provider_key] ) ) {
 
@@ -1170,7 +1170,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 							? $opts['providers'][$provider_key]['pointInId']
 							: array();
 
-						foreach( Options\WP_ApiShip_Options::get_owner_point_types() as $point_type ) {
+						foreach( Options\ApiShip_Options::get_owner_point_types() as $point_type ) {
 
 							if ( empty( $point_in_id[$point_type]) ) {
 								$response['response'][$point_type]['html'] = false;
@@ -1202,7 +1202,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 					 *
 					 * availableOperation - (integer) Тип операции (1 - прием, 2 - выдача, 3 - прием и выдача).
 					 *
-					 * $response['response'] = HTTP\WP_ApiShip_HTTP::get('lists/points?filter=city=Москва;providerKey=cdek;availableOperation=[2,3]');
+					 * $response['response'] = HTTP\ApiShip_HTTP::get('lists/points?filter=city=Москва;providerKey=cdek;availableOperation=[2,3]');
 					 *
 					 * To get more info @see
 					 * 	https://api.apiship.ru/doc/#/lists/getListPoints
@@ -1213,9 +1213,9 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						set_time_limit(0);
 
 						$pointsCallback = function($endpoint, $response) {
-							$response['response'] = HTTP\WP_ApiShip_HTTP::get($endpoint);
+							$response['response'] = HTTP\ApiShip_HTTP::get($endpoint);
 
-							if (wp_remote_retrieve_response_code($response['response']) != HTTP\WP_ApiShip_HTTP::OK) {
+							if (wp_remote_retrieve_response_code($response['response']) != HTTP\ApiShip_HTTP::OK) {
 								$response['success'] = 'error';
 							}
 
@@ -1276,7 +1276,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 							}
 
 							foreach($rows as $key => $row) {
-								$row->providerName = WP_ApiShip_Options::get_provider_name($row->providerKey);
+								$row->providerName = ApiShip_Options::get_provider_name($row->providerKey);
 								$rows[$key] = $row;
 							}
 
@@ -1297,7 +1297,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 							$body = json_decode($response['response']['body']);
 
 							foreach($body->rows as $key => $row) {
-								$row->providerName = WP_ApiShip_Options::get_provider_name($row->providerKey);
+								$row->providerName = ApiShip_Options::get_provider_name($row->providerKey);
 								$body->rows[$key] = $row;
 							}
 
@@ -1319,24 +1319,24 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						$type = $request['optionType'];
 					}
 
-					$use_warehouse_address = Options\WP_ApiShip_Options::is_warehouse_address_use();
+					$use_warehouse_address = Options\ApiShip_Options::is_warehouse_address_use();
 
 					if ($type === 'pickup') {
 						if ($use_warehouse_address === true) {
-							$city = Options\WP_ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_city', false, false );
+							$city = Options\ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_city', false, false );
 						} else {
-							$city = Options\WP_ApiShip_Options::get_wc_option( 'woocommerce_store_city', false, false );
+							$city = Options\ApiShip_Options::get_wc_option( 'woocommerce_store_city', false, false );
 						}
 					} else if ( $type === 'store' or $type === 'pickup' ) {
-						$city = Options\WP_ApiShip_Options::get_wc_option( 'woocommerce_store_city', false, false );
+						$city = Options\ApiShip_Options::get_wc_option( 'woocommerce_store_city', false, false );
 					} else {
-						$city = Options\WP_ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_city', false, false );
+						$city = Options\ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_city', false, false );
 					}
 
 					if ( $city ) {
 
 						/**
-						 * @todo To create and use class `WP_ApiShip_List_Points`.
+						 * @todo To create and use class `ApiShip_List_Points`.
 						 * @see https://api.apiship.ru/doc/#/lists/getListPoints
 						 */
 
@@ -1345,7 +1345,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						 *
 						 * availableOperation - (integer) Тип операции (1 - прием, 2 - выдача, 3 - прием и выдача).
 						 *
-						 * $response['response'] = HTTP\WP_ApiShip_HTTP::get('lists/points?filter=city=Москва;providerKey=cdek;availableOperation=[1,3]');
+						 * $response['response'] = HTTP\ApiShip_HTTP::get('lists/points?filter=city=Москва;providerKey=cdek;availableOperation=[1,3]');
 						 *
 						 * To get more info @see https://docs.apiship.ru/docs/api/query-filter/
 						 */
@@ -1362,9 +1362,9 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 							$endpoint = $endpoint . ';availableOperation=' . $request['availableOperation'];
 						}
 
-						$response['response'] = HTTP\WP_ApiShip_HTTP::get($endpoint);
+						$response['response'] = HTTP\ApiShip_HTTP::get($endpoint);
 
-						if ( wp_remote_retrieve_response_code($response['response']) == HTTP\WP_ApiShip_HTTP::OK ) {
+						if ( wp_remote_retrieve_response_code($response['response']) == HTTP\ApiShip_HTTP::OK ) {
 
 							$body = json_decode( wp_remote_retrieve_body($response['response']) );
 
@@ -1403,7 +1403,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						$new_list = $request['selectedTypes'];
 					}
 
-					$opts = Options\WP_ApiShip_Options::get_options();
+					$opts = Options\ApiShip_Options::get_options();
 
 					$providers = array();
 
@@ -1419,20 +1419,20 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 					$providers[$request['providerKey']]['pickup_types'] = $new_list;
 
-					Options\WP_ApiShip_Options::update_option('providers', $providers);
+					Options\ApiShip_Options::update_option('providers', $providers);
 					break;
 
 				case 'connectionCheck':
 
-					$response['response'] = HTTP\WP_ApiShip_HTTP::get('connections?offset=0&limit=1');
+					$response['response'] = HTTP\ApiShip_HTTP::get('connections?offset=0&limit=1');
 
-					if ( wp_remote_retrieve_response_code($response['response']) != HTTP\WP_ApiShip_HTTP::OK ) {
+					if ( wp_remote_retrieve_response_code($response['response']) != HTTP\ApiShip_HTTP::OK ) {
 						$response['success'] = 'error';
 					}
 
 					break;
 				case 'getProvider':
-					// $response['response'] = HTTP\WP_ApiShip_HTTP::get('connections/cdek');
+					// $response['response'] = HTTP\ApiShip_HTTP::get('connections/cdek');
 					break;
 				case 'getProviders':
 					$rows = self::get_providers_data(false, true, false);
@@ -1460,8 +1460,8 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 					/**
 					 * Examples:
 					 *
-					 * $response['response'] = HTTP\WP_ApiShip_HTTP::get('lists/tariffs?filter=providerKey%3Db2cpl&limit=100');
-					 * $response['response'] = HTTP\WP_ApiShip_HTTP::get('lists/tariffs?limit=9999');
+					 * $response['response'] = HTTP\ApiShip_HTTP::get('lists/tariffs?filter=providerKey%3Db2cpl&limit=100');
+					 * $response['response'] = HTTP\ApiShip_HTTP::get('lists/tariffs?limit=9999');
 					 */
 
 					$endpoint = 'lists/tariffs?limit=100';
@@ -1470,9 +1470,9 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						$endpoint = $endpoint . '&filter=providerKey%3D' . $request['providerKey'] . '';
 					}
 
-					$response['response'] = HTTP\WP_ApiShip_HTTP::get($endpoint);
+					$response['response'] = HTTP\ApiShip_HTTP::get($endpoint);
 
-					if ( wp_remote_retrieve_response_code($response['response']) != HTTP\WP_ApiShip_HTTP::OK ) {
+					if ( wp_remote_retrieve_response_code($response['response']) != HTTP\ApiShip_HTTP::OK ) {
 						$response['success'] = 'error';
 					}
 
@@ -1491,9 +1491,9 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						$endpoint = $endpoint . '?filter={"providerKey":"' . $request['providerKey'] . '"}&limit=100';
 					}
 
-					$response['response'] = HTTP\WP_ApiShip_HTTP::get($endpoint);
+					$response['response'] = HTTP\ApiShip_HTTP::get($endpoint);
 
-					if ( wp_remote_retrieve_response_code($response['response']) != HTTP\WP_ApiShip_HTTP::OK ) {
+					if ( wp_remote_retrieve_response_code($response['response']) != HTTP\ApiShip_HTTP::OK ) {
 						$response['success'] = 'error';
 					}
 
@@ -1514,9 +1514,9 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						$endpoint = $endpoint . '?filter={"providerKey":"' . $request['providerKey'] . '"}&limit=100';
 					}
 
-					$response['response'] = HTTP\WP_ApiShip_HTTP::get($endpoint);
+					$response['response'] = HTTP\ApiShip_HTTP::get($endpoint);
 
-					if ( wp_remote_retrieve_response_code($response['response']) == HTTP\WP_ApiShip_HTTP::OK ) {
+					if ( wp_remote_retrieve_response_code($response['response']) == HTTP\ApiShip_HTTP::OK ) {
 
 						$body = json_decode( wp_remote_retrieve_body($response['response']) );
 
@@ -1527,7 +1527,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 							 */
 							$new_connection = self::get_new_connection($request);
 
-							$response['response'] = HTTP\WP_ApiShip_HTTP::post(
+							$response['response'] = HTTP\ApiShip_HTTP::post(
 								'connections',
 								array(
 									'headers' 	=> array(
@@ -1538,7 +1538,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 								)
 							);
 
-							if ( wp_remote_retrieve_response_code($response['response']) == HTTP\WP_ApiShip_HTTP::OK ) {
+							if ( wp_remote_retrieve_response_code($response['response']) == HTTP\ApiShip_HTTP::OK ) {
 
 								$endpoint = 'connections';
 
@@ -1546,9 +1546,9 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 									$endpoint = $endpoint . '?filter={"providerKey":"' . $request['providerKey'] . '"}&limit=100';
 								}
 
-								$response['response'] = HTTP\WP_ApiShip_HTTP::get($endpoint);
+								$response['response'] = HTTP\ApiShip_HTTP::get($endpoint);
 
-								if ( wp_remote_retrieve_response_code($response['response'])!= HTTP\WP_ApiShip_HTTP::OK ) {
+								if ( wp_remote_retrieve_response_code($response['response'])!= HTTP\ApiShip_HTTP::OK ) {
 									$response['success'] = 'error';
 								}
 
@@ -1566,11 +1566,11 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 					if ( isset($request['integratorOrder']) && (int) $request['integratorOrder'] > 0 ) {
 
-						$response['response'] = HTTP\WP_ApiShip_HTTP::get(
+						$response['response'] = HTTP\ApiShip_HTTP::get(
 							'orders/' . $request['integratorOrder'] . '/cancel'
 						);
 
-						if ( wp_remote_retrieve_response_code($response['response']) !== HTTP\WP_ApiShip_HTTP::OK ) {
+						if ( wp_remote_retrieve_response_code($response['response']) !== HTTP\ApiShip_HTTP::OK ) {
 							$response['success'] = 'error';
 						}
 
@@ -1589,7 +1589,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						 * https://api.apiship.ru/doc/#/orders/deleteOrder
 						 */
 
-						$response['response'] = HTTP\WP_ApiShip_HTTP::delete(
+						$response['response'] = HTTP\ApiShip_HTTP::delete(
 							'orders/'.$request['integratorOrder'],
 							array(
 								'headers' 	=> array(
@@ -1598,15 +1598,15 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 							)
 						);
 
-						if ( wp_remote_retrieve_response_code($response['response']) == HTTP\WP_ApiShip_HTTP::OK ) {
+						if ( wp_remote_retrieve_response_code($response['response']) == HTTP\ApiShip_HTTP::OK ) {
 							if ( isset($request['shippingOrderItemId']) && (int) $request['shippingOrderItemId'] > 0 ) {
 								/**
 								 * @see woocommerce\includes\wc-order-item-functions.php
 								 */
 								wc_update_order_item_meta(
 									$request['shippingOrderItemId'],
-									Options\WP_ApiShip_Options::INTEGRATOR_ORDER_KEY,
-									Options\WP_ApiShip_Options::INTEGRATOR_ORDER_INIT_VALUE
+									Options\ApiShip_Options::INTEGRATOR_ORDER_KEY,
+									Options\ApiShip_Options::INTEGRATOR_ORDER_INIT_VALUE
 								);
 							}
 						} else {
@@ -1634,9 +1634,9 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 							$endpoint
 						);
 
-						$response['response'] = HTTP\WP_ApiShip_HTTP::get( $endpoint );
+						$response['response'] = HTTP\ApiShip_HTTP::get( $endpoint );
 
-						if ( wp_remote_retrieve_response_code($response['response']) != HTTP\WP_ApiShip_HTTP::OK ) {
+						if ( wp_remote_retrieve_response_code($response['response']) != HTTP\ApiShip_HTTP::OK ) {
 							$response['success'] = 'error';
 						}
 
@@ -1654,9 +1654,9 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						 * GET http://api.dev.apiship.ru/v1/orders/{{integratorOrder}}
 						 */
 
-						$response['response'] = HTTP\WP_ApiShip_HTTP::get( 'orders/'.$request['integratorOrder'] );
+						$response['response'] = HTTP\ApiShip_HTTP::get( 'orders/'.$request['integratorOrder'] );
 
-						if ( wp_remote_retrieve_response_code($response['response']) != HTTP\WP_ApiShip_HTTP::OK ) {
+						if ( wp_remote_retrieve_response_code($response['response']) != HTTP\ApiShip_HTTP::OK ) {
 							$response['success'] = 'error';
 						}
 
@@ -1675,11 +1675,11 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						 * @see https://api.apiship.ru/doc/#/statuses/getOrderStatusByClientNumber
 						 */
 
-						$response['response'] = HTTP\WP_ApiShip_HTTP::get(
+						$response['response'] = HTTP\ApiShip_HTTP::get(
 							'orders/status?clientNumber=' . $request['postOrderID']
 						);
 
-						if ( wp_remote_retrieve_response_code($response['response']) != HTTP\WP_ApiShip_HTTP::OK ) {
+						if ( wp_remote_retrieve_response_code($response['response']) != HTTP\ApiShip_HTTP::OK ) {
 							$response['success'] = 'error';
 						}
 
@@ -1698,11 +1698,11 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						 * @see https://api.apiship.ru/doc/#/statuses/getOrderStatus
 						 */
 
-						$response['response'] = HTTP\WP_ApiShip_HTTP::get(
+						$response['response'] = HTTP\ApiShip_HTTP::get(
 							'orders/'.$request['integratorOrder'].'/status'
 						);
 
-						if ( wp_remote_retrieve_response_code($response['response']) != HTTP\WP_ApiShip_HTTP::OK ) {
+						if ( wp_remote_retrieve_response_code($response['response']) != HTTP\ApiShip_HTTP::OK ) {
 							$response['success'] = 'error';
 						}
 
@@ -1726,7 +1726,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 							'format'   => 'pdf',
 						);
 
-						$response['response'] = HTTP\WP_ApiShip_HTTP::post(
+						$response['response'] = HTTP\ApiShip_HTTP::post(
 							'orders/labels',
 							array(
 								'headers' 	=> array(
@@ -1737,7 +1737,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 							)
 						);
 
-						if ( wp_remote_retrieve_response_code($response['response']) != HTTP\WP_ApiShip_HTTP::OK ) {
+						if ( wp_remote_retrieve_response_code($response['response']) != HTTP\ApiShip_HTTP::OK ) {
 							$response['success'] = 'error';
 						}
 
@@ -1753,7 +1753,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 					$body_request = self::get_calculator_request();
 
-					$response['response'] = HTTP\WP_ApiShip_HTTP::post(
+					$response['response'] = HTTP\ApiShip_HTTP::post(
 						'calculator',
 						array(
 							'headers' 	=> array(
@@ -1777,7 +1777,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						 * @see https://api.apiship.ru/doc/#/orders/addOrder
 						 */
 
-						$response['response'] = HTTP\WP_ApiShip_HTTP::post(
+						$response['response'] = HTTP\ApiShip_HTTP::post(
 							'orders/validate',
 							array(
 								'headers' 	=> array(
@@ -1787,7 +1787,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 							)
 						);
 
-						if ( wp_remote_retrieve_response_code($response['response']) == HTTP\WP_ApiShip_HTTP::OK ) {
+						if ( wp_remote_retrieve_response_code($response['response']) == HTTP\ApiShip_HTTP::OK ) {
 							// Do nothing.
 						} else {
 							$response['success'] = 'error';
@@ -1811,7 +1811,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						 * @see https://api.apiship.ru/doc/#/orders/addOrder
 						 */
 
-						$response['response'] = HTTP\WP_ApiShip_HTTP::post(
+						$response['response'] = HTTP\ApiShip_HTTP::post(
 							'orders/sync',
 							array(
 								'headers' 	=> array(
@@ -1821,7 +1821,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 							)
 						);
 
-						if ( wp_remote_retrieve_response_code($response['response']) == HTTP\WP_ApiShip_HTTP::OK ) {
+						if ( wp_remote_retrieve_response_code($response['response']) == HTTP\ApiShip_HTTP::OK ) {
 
 							$body = json_decode( wp_remote_retrieve_body($response['response']) );
 
@@ -1836,13 +1836,13 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 									 */
 									wc_update_order_item_meta(
 										$request['shippingOrderItemId'],
-										Options\WP_ApiShip_Options::INTEGRATOR_ORDER_KEY,
+										Options\ApiShip_Options::INTEGRATOR_ORDER_KEY,
 										$integrator_order_id
 									);
 
 									wc_update_order_item_meta(
 										$request['shippingOrderItemId'],
-										Options\WP_ApiShip_Options::PROVIDER_NUMBER_KEY,
+										Options\ApiShip_Options::PROVIDER_NUMBER_KEY,
 										$providerNumber
 									);
 								}
@@ -1863,9 +1863,9 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 							$response['success'] = 'error';
 						} else {
 
-							Options\WP_ApiShip_Options::update_order_meta(
+							Options\ApiShip_Options::update_order_meta(
 								$request['postOrderID'],
-								Options\WP_ApiShip_Options::POST_ORDER_CONTACT_NAME_META,
+								Options\ApiShip_Options::POST_ORDER_CONTACT_NAME_META,
 								$field['value']
 							);
 
@@ -1886,9 +1886,9 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 							$response['success'] = 'error';
 						} else {
 
-							Options\WP_ApiShip_Options::update_order_meta(
+							Options\ApiShip_Options::update_order_meta(
 								$request['postOrderID'],
-								Options\WP_ApiShip_Options::POST_ORDER_PHONE_META,
+								Options\ApiShip_Options::POST_ORDER_PHONE_META,
 								$field['value']
 							);
 
@@ -1905,7 +1905,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 						$field = $request['field'];
 
-						$places = Options\WP_ApiShip_Options::get_places( $request['postOrderID'] );
+						$places = Options\ApiShip_Options::get_places( $request['postOrderID'] );
 
 						if ( ! $places ) {
 							$places = array();
@@ -1917,7 +1917,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 						$places[ $field['placeOrder'] ][ $field['dimension'] ] = $field['value'];
 
-						Options\WP_ApiShip_Options::update_places(
+						Options\ApiShip_Options::update_places(
 							$request['postOrderID'],
 							$places
 						);
@@ -2040,11 +2040,11 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		 */
 		protected static function get_new_connection($request) {
 
-			if ( ! class_exists( 'WP_ApiShip_Connection' ) ) {
+			if ( ! class_exists( 'ApiShip_Connection' ) ) {
 				require_once( self::$PLUGIN_DIR_PATH_API . 'class-wp-apiship-connection.php' );
 			}
 
-			$connection = new \WP_ApiShip_Connection($request);
+			$connection = new \ApiShip_Connection($request);
 
 			return $connection->get();
 		}
@@ -2056,10 +2056,10 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		 */
 		protected static function get_calculator_request() {
 
-			if ( ! class_exists( 'WP_ApiShip_Calculator_Request' ) ) {
+			if ( ! class_exists( 'ApiShip_Calculator_Request' ) ) {
 				require_once( self::$PLUGIN_DIR_PATH . 'includes/api/class-wp-apiship-calculator-request.php' );
 			}
-			$request = new \WP_ApiShip_Calculator_Request();
+			$request = new \ApiShip_Calculator_Request();
 
 			return $request->get_request();
 		}
@@ -2071,11 +2071,11 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		 */
 		protected static function get_orders_request( $request ) {
 
-			if ( ! class_exists( 'WP_ApiShip_Orders_Request' ) ) {
+			if ( ! class_exists( 'ApiShip_Orders_Request' ) ) {
 				require_once( self::$PLUGIN_DIR_PATH . 'includes/api/class-wp-apiship-orders-request.php' );
 			}
 
-			$orders_request = new \WP_ApiShip_Orders_Request($request);
+			$orders_request = new \ApiShip_Orders_Request($request);
 
 			return $orders_request->get_request();
 		}
@@ -2094,7 +2094,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		protected static function get_orders_status( $integrator_order_id ) {
 
 			if ( (int) $integrator_order_id > 0 ) {
-				$response = HTTP\WP_ApiShip_HTTP::get( 'orders/'.$integrator_order_id.'/status' );
+				$response = HTTP\ApiShip_HTTP::get( 'orders/'.$integrator_order_id.'/status' );
 
 			}
 
@@ -2124,7 +2124,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				return;
 			}
 
-			$providers = WP_ApiShip_Options::PROVIDERS_LIST;
+			$providers = ApiShip_Options::PROVIDERS_LIST;
 
 			foreach ($providers as $key => $provider) {
 				if (!isset(self::$providersList[$provider['key']])) {
@@ -2180,11 +2180,11 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				 * Settings page.
 				 */
 
-				if (Options\WP_ApiShip_Options::get_wc_settings_page_hook() != $hook) {
+				if (Options\ApiShip_Options::get_wc_settings_page_hook() != $hook) {
 					return;
 				}
 
-				if (Options\WP_ApiShip_Options::get_wc_settings_plugin_tab() != self::safe_get('tab')) {
+				if (Options\ApiShip_Options::get_wc_settings_plugin_tab() != self::safe_get('tab')) {
 					return;
 				}
 
@@ -2194,7 +2194,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				'apiship',
 				self::$PLUGIN_DIR_URL . 'assets/css/wpapiship-admin' . self::SCRIPT_SUFFIX() . '.css',
 				array(),
-				WP_APISHIP_VERSION,
+				APISHIP_VERSION,
 				'all'
 			);
 			wp_enqueue_style('apiship');
@@ -2212,21 +2212,21 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 			if ($loadFromCache === true) {
 				$rows = get_option('wp_apiship_providers_list');
 			} else {
-				$response = HTTP\WP_ApiShip_HTTP::get('lists/providers?limit=999');
+				$response = HTTP\ApiShip_HTTP::get('lists/providers?limit=999');
 
-				if (wp_remote_retrieve_response_code($response) == HTTP\WP_ApiShip_HTTP::OK) {
+				if (wp_remote_retrieve_response_code($response) == HTTP\ApiShip_HTTP::OK) {
 					$body = json_decode( wp_remote_retrieve_body($response) );
 					$rows = $body->rows;
 				}
 			}
 
 			if (!empty($rows) and (is_array($rows) or is_object($rows))) {
-				$selected_providers = Options\WP_ApiShip_Options::get_selected_providers();
+				$selected_providers = Options\ApiShip_Options::get_selected_providers();
 
 				if ($update === true) {
 					$updated_selected_providers = [];
-					$connectionsResponse = HTTP\WP_ApiShip_HTTP::get('connections?limit=100');
-					if (wp_remote_retrieve_response_code($connectionsResponse) == HTTP\WP_ApiShip_HTTP::OK) {
+					$connectionsResponse = HTTP\ApiShip_HTTP::get('connections?limit=100');
+					if (wp_remote_retrieve_response_code($connectionsResponse) == HTTP\ApiShip_HTTP::OK) {
 						$conntectionsBody = json_decode(wp_remote_retrieve_body($connectionsResponse));
 						foreach($conntectionsBody->rows as $key => $connection) {
 							if (!in_array($connection->providerKey, $updated_selected_providers)) {
@@ -2234,7 +2234,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 							}
 						}
 						$selected_providers = $updated_selected_providers;
-						WP_ApiShip_Options::update_option('selected_providers', $updated_selected_providers);
+						ApiShip_Options::update_option('selected_providers', $updated_selected_providers);
 					}
 				}
 
@@ -2250,7 +2250,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						$provider->selected = true;
 					}
 					if ( in_array( $provider->key, $selected_providers ) or $getAll === true ) {
-						$providers = Options\WP_ApiShip_Options::get_option( 'providers', false, false);
+						$providers = Options\ApiShip_Options::get_option( 'providers', false, false);
 						if ( ! empty( $providers[ $provider->key ] )) {
 							$provider->data = $providers[ $provider->key ];
 						}
@@ -2311,9 +2311,9 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 				$providersSectionUrl = add_query_arg(
 					array(
-						'page' 	  => Options\WP_ApiShip_Options::get_wc_settings_page(),
-						'tab'  	  => Options\WP_ApiShip_Options::get_wc_settings_plugin_tab(),
-						'section' => Options\WP_ApiShip_Options::get_plugin_providers_section(),
+						'page' 	  => Options\ApiShip_Options::get_wc_settings_page(),
+						'tab'  	  => Options\ApiShip_Options::get_wc_settings_plugin_tab(),
+						'section' => Options\ApiShip_Options::get_plugin_providers_section(),
 					),
 					admin_url('admin.php')
 				);
@@ -2325,13 +2325,13 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				$data = array(
 					'pagenow' 		 	  	   => $pagenow,
 					'providersSectionUrl'  	   => $providersSectionUrl,
-					'post_type' 		  	   => Options\WP_ApiShip_Options::WC_ORDER_POST_TYPE,
+					'post_type' 		  	   => Options\ApiShip_Options::WC_ORDER_POST_TYPE,
 					'post_id'			  	   => self::$wc_order->get_id(),
 					'shippingMethodMeta'  	   => self::get_shipping_method_meta(self::$wc_order),
 					'shippingOrderItemId' 	   => self::$shipping_order_item_id ? self::$shipping_order_item_id : null,
-					'INTEGRATOR_ORDER_KEY' 	   => Options\WP_ApiShip_Options::INTEGRATOR_ORDER_KEY,
-					'INTEGRATOR_ORDER_INIT_VALUE'    => Options\WP_ApiShip_Options::INTEGRATOR_ORDER_INIT_VALUE,
-					'metaboxFields' 				 => Options\WP_ApiShip_Options::get_metabox_fields(),
+					'INTEGRATOR_ORDER_KEY' 	   => Options\ApiShip_Options::INTEGRATOR_ORDER_KEY,
+					'INTEGRATOR_ORDER_INIT_VALUE'    => Options\ApiShip_Options::INTEGRATOR_ORDER_INIT_VALUE,
+					'metaboxFields' 				 => Options\ApiShip_Options::get_metabox_fields(),
 					'integratorOrderWarningSelector' => '.integrator-order-warning',
 					'senderAddressStringSelector'	 => '.meta-value-sender-address',
 					'messageWrapperSelector'		 => '.order-shipping-message-wrapper',
@@ -2345,25 +2345,25 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				$providerCard = require_once( self::$PLUGIN_DIR_PATH_TEMPLATES . 'provider-card.php' );
 				$data['providerCardHtml'] 		= $providerCard;
 				$data['providerCardsSelector']  = '#order_shipping_line_items .thumb';
-				$data['providerIconURL'] 		= Options\WP_ApiShip_Options::get_icon_url();
+				$data['providerIconURL'] 		= Options\ApiShip_Options::get_icon_url();
 
 				$data['connections'] = array();
 				$data['providerKey'] = '';
 
-				$data['currentPointOutData'] = Options\WP_ApiShip_Options::get_order_meta(
+				$data['currentPointOutData'] = Options\ApiShip_Options::get_order_meta(
 					self::$wc_order->get_id(),
-					Options\WP_ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
+					Options\ApiShip_Options::POST_SHIPPING_TO_POINT_OUT_META,
 					false
 				);
 				//
 				$data['deliveryTypeSelector'] = '#wpapiship-order-metabox .delivery-type';
-				$data['deliveryType'] 		  = Options\WP_ApiShip_Options::get_delivery_types();
+				$data['deliveryType'] 		  = Options\ApiShip_Options::get_delivery_types();
 				//
 				$data['ymapSelector'] = '#wpapiship-ymap';
 				//
-				$data['wcCountryCode'] = Options\WP_ApiShip_Options::get_wc_option(
+				$data['wcCountryCode'] = Options\ApiShip_Options::get_wc_option(
 					'woocommerce_default_country',
-					Options\WP_ApiShip_Options::WС_DEFAULT_COUNTRY,
+					Options\ApiShip_Options::WС_DEFAULT_COUNTRY,
 					false
 				);
 
@@ -2374,7 +2374,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 					'yandexMaps',
 					self::get_yandex_map_url(),
 					'',
-					Options\WP_ApiShip_Options::YANDEX_MAP_VERSION,
+					Options\ApiShip_Options::YANDEX_MAP_VERSION,
 					true
 				);
 				wp_enqueue_script('yandexMaps');
@@ -2386,7 +2386,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 					'wpapiship-admin',
 					self::$PLUGIN_DIR_URL . 'assets/js/wpapiship-admin' . self::SCRIPT_SUFFIX() . '.js',
 					array('jquery'),
-					WP_APISHIP_VERSION,
+					APISHIP_VERSION,
 					true
 				);
 				wp_enqueue_script('wpapiship-admin');
@@ -2394,7 +2394,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 					'wpapiship-admin',
 					'WPApiShipAdmin',
 					array(
-						'version' 		=> WP_APISHIP_VERSION,
+						'version' 		=> APISHIP_VERSION,
 						'process_ajax' 	=> self::get_class_name() . '_process_ajax',
 						'ajaxurl' 		=> admin_url('admin-ajax.php'),
 						'nonce'			=> wp_create_nonce('wp_apiship_admin_ajax'),
@@ -2410,7 +2410,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 					'wpapiship-admin-map',
 					self::$PLUGIN_DIR_URL . 'assets/js/wpapiship-admin-map' . self::SCRIPT_SUFFIX() . '.js',
 					array('jquery','wpapiship-admin'),
-					WP_APISHIP_VERSION,
+					APISHIP_VERSION,
 					true
 				);
 				wp_enqueue_script('wpapiship-admin-map');
@@ -2438,11 +2438,11 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 			$current_tab = self::safe_get('tab');
 
 			$enabled_tabs = array(
-				Options\WP_ApiShip_Options::get_wc_settings_plugin_tab(),
-				Options\WP_ApiShip_Options::get_wc_settings_shipping_tab(),
+				Options\ApiShip_Options::get_wc_settings_plugin_tab(),
+				Options\ApiShip_Options::get_wc_settings_shipping_tab(),
 			);
 
-			if (Options\WP_ApiShip_Options::get_wc_settings_page_hook() != $hook) {
+			if (Options\ApiShip_Options::get_wc_settings_page_hook() != $hook) {
 				return;
 			}
 
@@ -2457,11 +2457,11 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 			$i18n['Error'] 	    	= esc_html__('Error', 'apiship');
 
 			$data = array();
-			$data['wcSettingsPage'] = Options\WP_ApiShip_Options::get_wc_settings_page();
+			$data['wcSettingsPage'] = Options\ApiShip_Options::get_wc_settings_page();
 			$data['section'] 		= $current_section == '' ? 'general' : $current_section;
 			$data['tab'] 		  	= $current_tab;
-			$data['pluginTab'] 		= Options\WP_ApiShip_Options::get_wc_settings_plugin_tab();
-			$data['shippingTab'] 	= Options\WP_ApiShip_Options::get_wc_settings_shipping_tab();
+			$data['pluginTab'] 		= Options\ApiShip_Options::get_wc_settings_plugin_tab();
+			$data['shippingTab'] 	= Options\ApiShip_Options::get_wc_settings_shipping_tab();
 
 			// @todo Open single provider card.
 			$selected_provider = self::safe_get('provider');
@@ -2470,10 +2470,10 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 			} else {
 				$data['selectedProvider'] = $selected_provider;
 			}
-			$data['selectedProviders'] = Options\WP_ApiShip_Options::get_selected_providers();
+			$data['selectedProviders'] = Options\ApiShip_Options::get_selected_providers();
 
 			switch( $current_tab ) :
-				case Options\WP_ApiShip_Options::get_wc_settings_plugin_tab() :
+				case Options\ApiShip_Options::get_wc_settings_plugin_tab() :
 
 					if ( $current_section == 'providers' ) {
 						$providerCard = require_once( self::$PLUGIN_DIR_PATH_TEMPLATES . 'provider-card.php' );
@@ -2490,16 +2490,16 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 						$data['notSelectedProviderCardClass']	  = 'provider-not-selected';
 						$data['pointInSelectWrapperSelector']	  = '.point-in-select-wrapper';
 						$data['providerCardPickupSelect']		  = '.provider-card-pickup-select';
-						$data['providerIconURL'] 				  = Options\WP_ApiShip_Options::get_icon_url();
-						$data['ownerPointTypes']				  = Options\WP_ApiShip_Options::get_owner_point_types();
+						$data['providerIconURL'] 				  = Options\ApiShip_Options::get_icon_url();
+						$data['ownerPointTypes']				  = Options\ApiShip_Options::get_owner_point_types();
 					}
 
 					$data['imageURL'] = self::$PLUGIN_DIR_IMAGE_URL;
-					$data['providerPlaceholder'] = Options\WP_ApiShip_Options::PROVIDER_PLACEHOLDER;
-					$data['noImageProviders'] 	 = Options\WP_ApiShip_Options::get_no_image_providers();
+					$data['providerPlaceholder'] = Options\ApiShip_Options::PROVIDER_PLACEHOLDER;
+					$data['noImageProviders'] 	 = Options\ApiShip_Options::get_no_image_providers();
 
 					break;
-				case Options\WP_ApiShip_Options::get_wc_settings_shipping_tab() :
+				case Options\ApiShip_Options::get_wc_settings_shipping_tab() :
 					$data['instanceID'] = self::safe_get('instance_id');
 					break;
 				default:
@@ -2512,7 +2512,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				'wpapiship-admin',
 				self::$PLUGIN_DIR_URL . 'assets/js/wpapiship-admin' . self::SCRIPT_SUFFIX() . '.js',
 				array('jquery'),
-				WP_APISHIP_VERSION,
+				APISHIP_VERSION,
 				true
 			);
 			wp_enqueue_script( 'wpapiship-admin' );
@@ -2520,7 +2520,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				'wpapiship-admin',
 				'WPApiShipAdmin',
 				array(
-					'version' 		=> WP_APISHIP_VERSION,
+					'version' 		=> APISHIP_VERSION,
 					'process_ajax' 	=> self::get_class_name() . '_process_ajax',
 					'ajaxurl' 		=> admin_url( 'admin-ajax.php' ),
 					'nonce'			=> wp_create_nonce( self::ADMIN_AJAX_NONCE ),
@@ -2588,7 +2588,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				'yandexMaps',
 				self::get_yandex_map_url(),
 				'',
-				Options\WP_ApiShip_Options::YANDEX_MAP_VERSION,
+				Options\ApiShip_Options::YANDEX_MAP_VERSION,
 				true
 			);
 			wp_enqueue_script('yandexMaps');
@@ -2600,7 +2600,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				'wpapiship',
 				self::$PLUGIN_DIR_URL . 'assets/js/wpapiship' . self::SCRIPT_SUFFIX() . '.js',
 				array('jquery'),
-				WP_APISHIP_VERSION,
+				APISHIP_VERSION,
 				true
 			);
 			wp_enqueue_script('wpapiship');
@@ -2608,7 +2608,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				'wpapiship',
 				'WPApiShip',
 				array(
-					'version' => WP_APISHIP_VERSION,
+					'version' => APISHIP_VERSION,
 					'data' 	  => $data,
 					'i18n' 	  => $i18n,
 				)
@@ -2640,8 +2640,8 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				'pointOutAddressButton'	    => '.wpapiship-delivery-to-point',
 				//
 				'deliveryTypes' => array(
-					'byCourier'  => Options\WP_ApiShip_Options::DELIVERY_BY_COURIER,
-					'toPointOut' => Options\WP_ApiShip_Options::DELIVERY_TO_POINT_OUT,
+					'byCourier'  => Options\ApiShip_Options::DELIVERY_BY_COURIER,
+					'toPointOut' => Options\ApiShip_Options::DELIVERY_TO_POINT_OUT,
 				),
 				//
 				'mapProviderSelect' => '#wpapiship_provider_select'
@@ -2651,7 +2651,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				'wpapiship-map',
 				self::$PLUGIN_DIR_URL . 'assets/js/wpapiship-map' . self::SCRIPT_SUFFIX() . '.js',
 				array('jquery'),
-				WP_APISHIP_VERSION,
+				APISHIP_VERSION,
 				true
 			);
 			wp_enqueue_script('wpapiship-map');
@@ -2659,7 +2659,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				'wpapiship-map',
 				'WPApiShipMap',
 				array(
-					'yandexMapsVersion' => Options\WP_ApiShip_Options::YANDEX_MAP_VERSION,
+					'yandexMapsVersion' => Options\ApiShip_Options::YANDEX_MAP_VERSION,
 					'process_ajax' 	    => self::get_class_name() . '_process_ajax',
 					'ajaxurl' 		    => admin_url('admin-ajax.php'),
 					'nonce'			    => wp_create_nonce( self::PUBLIC_AJAX_NONCE ),
@@ -2685,7 +2685,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 				'apiship',
 				self::$PLUGIN_DIR_URL . 'assets/css/wpapiship' . self::SCRIPT_SUFFIX() . '.css',
 				array(),
-				WP_APISHIP_VERSION,
+				APISHIP_VERSION,
 				'all'
 			);
 			wp_enqueue_style('apiship');
@@ -2758,15 +2758,15 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		 */
 		public static function is_order_edit_hook( $hook ) {
 
-			if ( WP_ApiShip_HPOS_Compatibility::is_hpos_enabled() ) {
-				return $hook === WP_ApiShip_HPOS_Compatibility::get_order_screen_id();
+			if ( ApiShip_HPOS_Compatibility::is_hpos_enabled() ) {
+				return $hook === ApiShip_HPOS_Compatibility::get_order_screen_id();
 			}
 
 			global $post;
 
 			return 'post.php' === $hook
 				&& isset( $post->post_type )
-				&& Options\WP_ApiShip_Options::WC_ORDER_POST_TYPE === $post->post_type;
+				&& Options\ApiShip_Options::WC_ORDER_POST_TYPE === $post->post_type;
 		}
 
 		/**
@@ -2889,7 +2889,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 			if (
 				! empty( $meta['integrator'] ) &&
-				Options\WP_ApiShip_Options::INTEGRATOR == $meta['integrator']->value )
+				Options\ApiShip_Options::INTEGRATOR == $meta['integrator']->value )
 			{
 				return true;
 			}
@@ -3038,11 +3038,11 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 							$provider_key = $meta->value;
 						}
 
-						if ( Options\WP_ApiShip_Options::INTEGRATOR_ORDER_KEY === $meta->key ) {
+						if ( Options\ApiShip_Options::INTEGRATOR_ORDER_KEY === $meta->key ) {
 
 							if ( isset($meta->value) && (int) $meta->value > 0 ) {
 								echo '#' . esc_html( $meta->value ) . '&nbsp; СД: '
-									. esc_html( Options\WP_ApiShip_Options::get_provider_name($provider_key) );
+									. esc_html( Options\ApiShip_Options::get_provider_name($provider_key) );
 							}
 							break 2;
 						}
@@ -3060,11 +3060,11 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		 */
 		public static function get_provider_icon_url( $provider = false ) {
 
-			if ( ! $provider || in_array( $provider, Options\WP_ApiShip_Options::get_no_image_providers() ) ) {
-				return self::$PLUGIN_DIR_IMAGE_URL . Options\WP_ApiShip_Options::PROVIDER_PLACEHOLDER;
+			if ( ! $provider || in_array( $provider, Options\ApiShip_Options::get_no_image_providers() ) ) {
+				return self::$PLUGIN_DIR_IMAGE_URL . Options\ApiShip_Options::PROVIDER_PLACEHOLDER;
 			}
 
-			return Options\WP_ApiShip_Options::get_icon_url($provider.'.svg');
+			return Options\ApiShip_Options::get_icon_url($provider.'.svg');
 		}
 
 		/**
@@ -3083,7 +3083,7 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		 */
 		protected static function get_yandex_map_url() {
 
-			$api_key = Options\WP_ApiShip_Options::get_wc_option(
+			$api_key = Options\ApiShip_Options::get_wc_option(
 				'wp_apiship_yandexmap_key',
 				'',
 				false
@@ -3092,10 +3092,10 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 			$api_key = trim($api_key);
 
 			if ( empty($api_key) ) {
-				$api_key = Options\WP_ApiShip_Options::YANDEX_MAP_DEFAULT_KEY;
+				$api_key = Options\ApiShip_Options::YANDEX_MAP_DEFAULT_KEY;
 			};
 
-			return Options\WP_ApiShip_Options::YANDEX_MAP_URL . '&apikey=' . $api_key;
+			return Options\ApiShip_Options::YANDEX_MAP_URL . '&apikey=' . $api_key;
 		}
 
 		/**
@@ -3107,10 +3107,10 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		 */
 		public static function is_godmode( $full_mode = true ) {
 
-			if ( defined( 'WP_APISHIP_GODMODE' ) ) {  # && WP_APISHIP_GODMODE
+			if ( defined( 'APISHIP_GODMODE' ) ) {  # && APISHIP_GODMODE
 
 				if ( $full_mode ) {
-					if ( 'yes' === Options\WP_ApiShip_Options::get_option('god_mode') ) {
+					if ( 'yes' === Options\ApiShip_Options::get_option('god_mode') ) {
 						return true;
 					}
 				} else {
@@ -3130,9 +3130,9 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 		 */
 		public static function is_bypass_shipping_cache() {
 
-			if ( defined('WP_APISHIP_SHIPPING_CACHE') ) {
+			if ( defined('APISHIP_SHIPPING_CACHE') ) {
 
-				if ( WP_APISHIP_SHIPPING_CACHE  ) {
+				if ( APISHIP_SHIPPING_CACHE  ) {
 					return false;
 				} else {
 					return true;
@@ -3140,8 +3140,8 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 			}
 
-			$shipping_debug_mode = Options\WP_ApiShip_Options::get_wc_option(
-				Options\WP_ApiShip_Options::get_wc_shipping_debug_mode_key(),
+			$shipping_debug_mode = Options\ApiShip_Options::get_wc_option(
+				Options\ApiShip_Options::get_wc_shipping_debug_mode_key(),
 				'no',
 				false
 			);
@@ -3155,9 +3155,9 @@ if ( ! class_exists('WP_ApiShip_Core') ) :
 
 		public static function get_order_statuses($orderId)
 		{
-			$response = WP_ApiShip_HTTP::get("orders/$orderId/statusHistory");
+			$response = ApiShip_HTTP::get("orders/$orderId/statusHistory");
 
-			if (wp_remote_retrieve_response_code($response) !== HTTP\WP_ApiShip_HTTP::OK) {
+			if (wp_remote_retrieve_response_code($response) !== HTTP\ApiShip_HTTP::OK) {
 				return [];
 			}
 

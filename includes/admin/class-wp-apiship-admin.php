@@ -7,20 +7,20 @@
  *
  * @since 1.0.0
  */
-namespace WP_ApiShip\Admin;
+namespace ApiShip\Admin;
 
 use Exception;
-use WP_ApiShip\Options,
-	WP_ApiShip\HTTP;
+use ApiShip\Options,
+	ApiShip\HTTP;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists('WP_ApiShip_Admin') ) :
+if ( ! class_exists('ApiShip_Admin') ) :
 
-	class WP_ApiShip_Admin {
+	class ApiShip_Admin {
 		
 		/**
 		 * Log file to store order's labels info.
@@ -202,7 +202,7 @@ if ( ! class_exists('WP_ApiShip_Admin') ) :
 
 				$integrator_order = wc_get_order_item_meta(
 					$shipping_order_item_id,
-					Options\WP_ApiShip_Options::INTEGRATOR_ORDER_KEY
+					Options\ApiShip_Options::INTEGRATOR_ORDER_KEY
 				);
 
 				if ( (int) $integrator_order > 0 ) {
@@ -219,7 +219,7 @@ if ( ! class_exists('WP_ApiShip_Admin') ) :
 		 */	
 		public function filter__handle_actions($redirect_to, $doaction, $post_ids) {
 			
-			if ( Options\WP_ApiShip_Options::PRINT_LABELS_ACTION != $doaction and Options\WP_ApiShip_Options::PRINT_WAYBILLS_ACTION != $doaction ) {
+			if ( Options\ApiShip_Options::PRINT_LABELS_ACTION != $doaction and Options\ApiShip_Options::PRINT_WAYBILLS_ACTION != $doaction ) {
 				return $redirect_to;
 			}
 
@@ -241,13 +241,13 @@ if ( ! class_exists('WP_ApiShip_Admin') ) :
 			$response = array();
 			$response['success'] = 'ok';
 
-			if (Options\WP_ApiShip_Options::PRINT_WAYBILLS_ACTION == $doaction) {
+			if (Options\ApiShip_Options::PRINT_WAYBILLS_ACTION == $doaction) {
 				$endpoint = 'orders/waybills';
 			} else {
 				$endpoint = 'orders/labels';
 			}
 			
-			$response['response'] = HTTP\WP_ApiShip_HTTP::post(
+			$response['response'] = HTTP\ApiShip_HTTP::post(
 				$endpoint,
 				array(
 					'headers' 	=> array( 
@@ -270,13 +270,13 @@ if ( ! class_exists('WP_ApiShip_Admin') ) :
 
 				$body = json_decode(wp_remote_retrieve_body($response['response']));
 
-				if (wp_remote_retrieve_response_code($response['response']) == HTTP\WP_ApiShip_HTTP::OK) {
+				if (wp_remote_retrieve_response_code($response['response']) == HTTP\ApiShip_HTTP::OK) {
 					if (!empty($body->failedOrders)) {
 						foreach($body->failedOrders as $error) {
 							$errors[] = esc_html__('Заказ #') . $error->orderId . ': ' . $error->message;
 						}
 					}
-					if (Options\WP_ApiShip_Options::PRINT_WAYBILLS_ACTION == $doaction) {
+					if (Options\ApiShip_Options::PRINT_WAYBILLS_ACTION == $doaction) {
 						foreach((array) ($body->waybillItems ?? []) as $providerWaybills) {
 							$success[] = $providerWaybills->file;
 						}
@@ -312,8 +312,8 @@ if ( ! class_exists('WP_ApiShip_Admin') ) :
 		 * @since 1.0.0
 		 */
 		public function filter__add_actions($bulk_actions) {
-			$bulk_actions[ Options\WP_ApiShip_Options::PRINT_LABELS_ACTION ] = esc_html__('Печать наклеек','apiship');
-			$bulk_actions[ Options\WP_ApiShip_Options::PRINT_WAYBILLS_ACTION ] = esc_html__('Печать акта приема-передачи','apiship');	
+			$bulk_actions[ Options\ApiShip_Options::PRINT_LABELS_ACTION ] = esc_html__('Печать наклеек','apiship');
+			$bulk_actions[ Options\ApiShip_Options::PRINT_WAYBILLS_ACTION ] = esc_html__('Печать акта приема-передачи','apiship');	
 			return $bulk_actions;
 		}
 		
@@ -340,8 +340,8 @@ if ( ! class_exists('WP_ApiShip_Admin') ) :
 			
 			$url = add_query_arg(
 				array(
-					'page' => Options\WP_ApiShip_Options::get_wc_settings_page(),
-					'tab' => Options\WP_ApiShip_Options::get_wc_settings_plugin_tab(),
+					'page' => Options\ApiShip_Options::get_wc_settings_page(),
+					'tab' => Options\ApiShip_Options::get_wc_settings_plugin_tab(),
 				), 
 				admin_url( 'admin.php' )
 			);
@@ -370,7 +370,7 @@ if ( ! class_exists('WP_ApiShip_Admin') ) :
 
 			$this->set_logs_dir();	
 
-			$this->labels_log_file = Options\WP_ApiShip_Options::get_labels_file();
+			$this->labels_log_file = Options\ApiShip_Options::get_labels_file();
 			
 			if ( file_exists($this->labels_log_file) ) {
 				unlink( $this->labels_log_file );
@@ -387,7 +387,7 @@ if ( ! class_exists('WP_ApiShip_Admin') ) :
 		 */		
 		protected function set_logs_dir() {
 			
-			$logs_dir = Options\WP_ApiShip_Options::get_plugin_logs_dir();
+			$logs_dir = Options\ApiShip_Options::get_plugin_logs_dir();
 
 			wp_mkdir_p( $logs_dir );
 			

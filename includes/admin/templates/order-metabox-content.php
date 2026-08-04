@@ -8,7 +8,7 @@
  * @since 1.0.0
  */
 
-use WP_ApiShip\Options;
+use ApiShip\Options;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -28,14 +28,14 @@ foreach ( $line_items_shipping as $item_id=>$item ) {
  */
 $id = wc_get_order_item_meta( 
 	$shipping_order_item_id, #$item->get_id(), 
-	Options\WP_ApiShip_Options::INTEGRATOR_ORDER_KEY
+	Options\ApiShip_Options::INTEGRATOR_ORDER_KEY
 );
 
 $formatted_meta_data = $item->get_formatted_meta_data( '' );
 
 $tools_class = 'hidden';
 // $tools_class = '';
-if ( WP_ApiShip\WP_ApiShip_Core::is_godmode() ) {
+if ( ApiShip\ApiShip_Core::is_godmode() ) {
 	$tools_class = '';
 }
 
@@ -51,7 +51,7 @@ unset( $formatted_meta_data );
 /**
  * Icon URL.
  * @test for no image provider.
- * $icon_url = WP_ApiShip\WP_ApiShip_Core::get_provider_icon_url('zabberi');
+ * $icon_url = ApiShip\ApiShip_Core::get_provider_icon_url('zabberi');
  */
 $icon_url = $this->get_provider_icon_url($meta_data['tariffProviderKey']->value);
 
@@ -374,7 +374,7 @@ if (isset($tariff->isDeliveryToPoint)) {
 									data-request-id="custom-length"
 									data-place-order="0" 
 									data-dimension="length" />
-								<?php echo Options\WP_ApiShip_Options::DIMENSIONS_UNIT; ?>.
+								<?php echo Options\ApiShip_Options::DIMENSIONS_UNIT; ?>.
 							</div>
 							<!-- width -->
 							<div class="meta--item meta-key meta-width"><?php esc_html_e('Ширина','apiship'); ?>:</div>
@@ -391,7 +391,7 @@ if (isset($tariff->isDeliveryToPoint)) {
 									data-request-id="custom-width" 
 									data-place-order="0"									
 									data-dimension="width" />
-								<?php echo Options\WP_ApiShip_Options::DIMENSIONS_UNIT; ?>.
+								<?php echo Options\ApiShip_Options::DIMENSIONS_UNIT; ?>.
 							</div>
 							<!-- height -->
 							<div class="meta--item meta-key meta-height"><?php esc_html_e('Высота','apiship'); ?>:</div>
@@ -408,7 +408,7 @@ if (isset($tariff->isDeliveryToPoint)) {
 									data-request-id="custom-height" 
 									data-place-order="0" 
 									data-dimension="height" />		
-								<?php echo Options\WP_ApiShip_Options::DIMENSIONS_UNIT; ?>.
+								<?php echo Options\ApiShip_Options::DIMENSIONS_UNIT; ?>.
 							</div>
 							<!-- weight -->
 							<div class="meta--item meta-key"><?php esc_html_e('Вес','apiship'); ?>:</div>
@@ -425,7 +425,7 @@ if (isset($tariff->isDeliveryToPoint)) {
 									data-request-id="custom-weight" 
 									data-place-order="0" 
 									data-dimension="weight" />		
-								<?php echo Options\WP_ApiShip_Options::WEIGHT_UNIT; ?>.
+								<?php echo Options\ApiShip_Options::WEIGHT_UNIT; ?>.
 							</div>								
 							<?php 	
 						}
@@ -478,7 +478,7 @@ if (isset($tariff->isDeliveryToPoint)) {
 			</div><?php
 		} 	?>	
 		<!-- Pickup date -->
-		<?php $field = Options\WP_ApiShip_Options::get_metabox_field('pickupDate'); ?>
+		<?php $field = Options\ApiShip_Options::get_metabox_field('pickupDate'); ?>
 		<div class="meta--item meta-key meta-pickup-date meta-caption"><?php echo $field['caption']; ?>:</div>
 		<div class="meta--item meta-value">
 			<input type="<?php echo $field['type']; ?>" 
@@ -492,7 +492,7 @@ if (isset($tariff->isDeliveryToPoint)) {
 		<div class="meta--item meta-key">&nbsp;</div>
 		<div class="meta--item meta-title"><?php $this->the_sender_title(); ?></div>					
 		<!-- Sender: contact name -->
-		<?php $field = Options\WP_ApiShip_Options::get_metabox_field('contactName'); ?>
+		<?php $field = Options\ApiShip_Options::get_metabox_field('contactName'); ?>
 		<div class="meta--item meta-key meta-contact-name meta-caption"><?php echo $field['caption']; ?>:</div>
 		<div class="meta--item meta-value">
 			<input type="<?php echo $field['type']; ?>" 
@@ -506,7 +506,7 @@ if (isset($tariff->isDeliveryToPoint)) {
 				data-request-id="<?php echo $field['requestID']; ?>" />
 		</div>
 		<!-- Sender: contact phone -->
-		<?php $field = Options\WP_ApiShip_Options::get_metabox_field('phone'); ?>
+		<?php $field = Options\ApiShip_Options::get_metabox_field('phone'); ?>
 		<div class="meta--item meta-key meta-contact-name meta-caption"><?php echo $field['caption']; ?>:</div>
 		<div class="meta--item meta-value">
 			<input type="<?php echo $field['type']; ?>" 
@@ -537,7 +537,7 @@ if (isset($tariff->isDeliveryToPoint)) {
 			} ?>	
 		</div>
 		<!-- Shipping point in: ID -->
-		<?php $field = Options\WP_ApiShip_Options::get_metabox_field('pointInId'); ?>		
+		<?php $field = Options\ApiShip_Options::get_metabox_field('pointInId'); ?>		
 		<div class="meta--item meta-key meta-caption"><?php echo $field['caption']; ?>:</div>
 		<div class="meta--item meta-value">
 			<input type="<?php echo $field['type']; ?>" 
@@ -550,7 +550,7 @@ if (isset($tariff->isDeliveryToPoint)) {
 				data-request-id="<?php echo $field['requestID']; ?>" />		
 		</div>		
 		<!-- Shipping point in: Address -->
-		<?php $field = Options\WP_ApiShip_Options::get_metabox_field('pointInAddress'); ?>			
+		<?php $field = Options\ApiShip_Options::get_metabox_field('pointInAddress'); ?>			
 		<div class="meta--item meta-key meta-caption"><?php echo $field['caption']; ?>:</div>
 		<div class="meta--item meta-value">
 			<input type="<?php echo $field['type']; ?>" 
@@ -584,7 +584,7 @@ if (isset($tariff->isDeliveryToPoint)) {
 			} ?>			
 		</div>		
 		<!-- Shipping point out: ID -->
-		<?php $field = Options\WP_ApiShip_Options::get_metabox_field('pointOutId'); ?>		
+		<?php $field = Options\ApiShip_Options::get_metabox_field('pointOutId'); ?>		
 		<div class="meta--item meta-key meta-caption"><?php echo $field['caption']; ?>:</div>
 		<div class="meta--item meta-value">
 			<input type="<?php echo $field['type']; ?>" 
@@ -597,7 +597,7 @@ if (isset($tariff->isDeliveryToPoint)) {
 				data-request-id="<?php echo $field['requestID']; ?>" />		
 		</div>	
 		<!-- Shipping point out: Address -->
-		<?php $field = Options\WP_ApiShip_Options::get_metabox_field('pointOutAddress'); ?>			
+		<?php $field = Options\ApiShip_Options::get_metabox_field('pointOutAddress'); ?>			
 		<div class="meta--item meta-key meta-caption"><?php echo $field['caption']; ?>:</div>
 		<div class="meta--item meta-value">
 			<input type="<?php echo $field['type']; ?>" 

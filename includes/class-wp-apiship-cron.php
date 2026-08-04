@@ -7,26 +7,26 @@
  *
  * @since 1.4.0
  */
-namespace WP_ApiShip;
+namespace ApiShip;
 
 use DateTime;
 use Throwable;
 use WC_Admin_Settings;
 use WC_Order;
-use WP_ApiShip\HTTP\WP_ApiShip_HTTP;
-use WP_ApiShip\Options\WP_ApiShip_Options;
+use ApiShip\HTTP\ApiShip_HTTP;
+use ApiShip\Options\ApiShip_Options;
 
 // Exit if accessed directly.
 if (!defined('ABSPATH')) {
 	exit;
 }
 
-if (!class_exists('WP_ApiShip_Cron')) :
+if (!class_exists('ApiShip_Cron')) :
 
 	/**
 	 * Cron actions.
 	 */
-	class WP_ApiShip_Cron
+	class ApiShip_Cron
 	{
 		protected const LOG_ENABLED = false;
 
@@ -54,8 +54,8 @@ if (!class_exists('WP_ApiShip_Cron')) :
 		public function providers_callback()
 		{
 			set_time_limit(0);
-			$response = WP_ApiShip_HTTP::get("lists/providers?limit=999");
-			if(wp_remote_retrieve_response_code($response) == WP_ApiShip_HTTP::OK) {
+			$response = ApiShip_HTTP::get("lists/providers?limit=999");
+			if(wp_remote_retrieve_response_code($response) == ApiShip_HTTP::OK) {
 				$body = json_decode($response['body']);
 				if (empty($body->rows)) {
 					return;
@@ -88,9 +88,9 @@ if (!class_exists('WP_ApiShip_Cron')) :
 			$date_param = rawurlencode($query_date);
 
 			do {
-				$response = WP_ApiShip_HTTP::get("/orders/statuses/history/date/$date_param?offset=$offset");
+				$response = ApiShip_HTTP::get("/orders/statuses/history/date/$date_param?offset=$offset");
 
-				if (wp_remote_retrieve_response_code($response) != WP_ApiShip_HTTP::OK) {
+				if (wp_remote_retrieve_response_code($response) != ApiShip_HTTP::OK) {
 					$this->log("Неудачный запрос: " . print_r($response, true));
 					return;
 				}
@@ -204,10 +204,10 @@ if (!class_exists('WP_ApiShip_Cron')) :
 			$this->db = $wpdb;
 			$this->db_prefix = $wpdb->base_prefix;
 			
-			$this->integratorOrderKey = Options\WP_ApiShip_Options::INTEGRATOR_ORDER_KEY;
+			$this->integratorOrderKey = Options\ApiShip_Options::INTEGRATOR_ORDER_KEY;
 			$this->mapping_options = WC_Admin_Settings::get_option(
 				'wp_apiship_mapping',
-				WP_ApiShip_Options::APISHIP_MAPPING_SETTINGS
+				ApiShip_Options::APISHIP_MAPPING_SETTINGS
 			);
 
 			$this->last_query = self::normalize_timestamp(
@@ -256,7 +256,7 @@ if (!class_exists('WP_ApiShip_Cron')) :
 				}
 
 				if ($order->has_status($wp_status) === false) {
-					Options\WP_ApiShip_Options::update_order_meta($order->get_id(), WP_ApiShip_Options::PROVIDER_NUMBER_KEY, $providerNumber);
+					Options\ApiShip_Options::update_order_meta($order->get_id(), ApiShip_Options::PROVIDER_NUMBER_KEY, $providerNumber);
 					$order->update_status($wp_status);
 					$this->log("Обновление статуса заказа на $wp_status. orderId" . $order->get_id());
 				} else {

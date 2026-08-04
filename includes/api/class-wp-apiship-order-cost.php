@@ -7,16 +7,16 @@
  * @since 1.0.0
  */
 
-use WP_ApiShip\Options;
+use ApiShip\Options;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists('WP_ApiShip_Order_Cost') ) :
+if ( ! class_exists('ApiShip_Order_Cost') ) :
 
-	class WP_ApiShip_Order_Cost {
+	class ApiShip_Order_Cost {
 		
 		/**
 		 * Оценочная стоимость / сумма страховки (в рублях).
@@ -84,7 +84,7 @@ if ( ! class_exists('WP_ApiShip_Order_Cost') ) :
 				in_array(
 					$payment_method, 
 					array(
-						Options\WP_ApiShip_Options::WC_PAYMENT_DIRECT_BANK_TRANSFER
+						Options\ApiShip_Options::WC_PAYMENT_DIRECT_BANK_TRANSFER
 					) 
 				)
 			) {

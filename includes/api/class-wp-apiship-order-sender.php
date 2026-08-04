@@ -7,18 +7,18 @@
  * @since 1.0.0
  */
 
-use WP_ApiShip\Options;
+use ApiShip\Options;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists('WP_ApiShip_Order_Sender') ) :
+if ( ! class_exists('ApiShip_Order_Sender') ) :
 
-	class WP_ApiShip_Order_Sender {
+	class ApiShip_Order_Sender {
 
-		protected $countryCode 	 = Options\WP_ApiShip_Options::WС_DEFAULT_COUNTRY;
+		protected $countryCode 	 = Options\ApiShip_Options::WС_DEFAULT_COUNTRY;
 		protected $postIndex 	 = '';
 		protected $region 		 = '';
 		protected $area 		 = '';
@@ -51,13 +51,13 @@ if ( ! class_exists('WP_ApiShip_Order_Sender') ) :
 		 */		
 		public function __construct($request, WC_Order $wc_order) {
 	
-			$this->warehouse_address_use = Options\WP_ApiShip_Options::get_wc_option( 
+			$this->warehouse_address_use = Options\ApiShip_Options::get_wc_option( 
 				'wp_apiship_warehouse_address_use', 
 				'no', 
 				false 
 			);
 			
-			$wc_default_country = Options\WP_ApiShip_Options::get_wc_option( 
+			$wc_default_country = Options\ApiShip_Options::get_wc_option( 
 				'woocommerce_default_country', 
 				false, 
 				false 
@@ -66,13 +66,13 @@ if ( ! class_exists('WP_ApiShip_Order_Sender') ) :
 			if ( $this->warehouse_address_use == 'no' ) {
 				
 				$country_code 	= $wc_default_country;
-				$post_index   	= Options\WP_ApiShip_Options::get_wc_option( 'woocommerce_store_postcode', false, false );
-				$city 		  	= Options\WP_ApiShip_Options::get_wc_option( 'woocommerce_store_city', false, false );
-				// $address_string = Options\WP_ApiShip_Options::get_wc_option( 'woocommerce_store_address', false, false );
+				$post_index   	= Options\ApiShip_Options::get_wc_option( 'woocommerce_store_postcode', false, false );
+				$city 		  	= Options\ApiShip_Options::get_wc_option( 'woocommerce_store_city', false, false );
+				// $address_string = Options\ApiShip_Options::get_wc_option( 'woocommerce_store_address', false, false );
 				
 			} else {
 				
-				$country_code = Options\WP_ApiShip_Options::get_wc_option( 
+				$country_code = Options\ApiShip_Options::get_wc_option( 
 					'wp_apiship_warehouse_country', 
 					$wc_default_country, 
 					false 
@@ -82,9 +82,9 @@ if ( ! class_exists('WP_ApiShip_Order_Sender') ) :
 					$country_code = $wc_default_country;
 				}
 
-				$post_index   	= Options\WP_ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_index', false, false );
-				$city 		  	= Options\WP_ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_city', false, false );
-				// $address_string = Options\WP_ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_address', false, false );				
+				$post_index   	= Options\ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_index', false, false );
+				$city 		  	= Options\ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_city', false, false );
+				// $address_string = Options\ApiShip_Options::get_wc_option( 'wp_apiship_warehouse_address', false, false );				
 			
 			}
 
@@ -106,7 +106,7 @@ if ( ! class_exists('WP_ApiShip_Order_Sender') ) :
 			$this->phone 		 = $this->get_phone($request, $wc_order);
 			$this->email  		 = '';
 			$this->comment  	 = '';
-			// $this->brandName 	 = Options\WP_ApiShip_Options::BRAND;
+			// $this->brandName 	 = Options\ApiShip_Options::BRAND;
 			$this->addressString = $this->get_address_string();
 		}
 
@@ -130,7 +130,7 @@ if ( ! class_exists('WP_ApiShip_Order_Sender') ) :
 			
 			if ( $this->warehouse_address_use == 'no' ) {
 
-				$address_2 = Options\WP_ApiShip_Options::get_wc_option( 
+				$address_2 = Options\ApiShip_Options::get_wc_option( 
 					'woocommerce_store_address_2', 
 					'', 
 					false 
@@ -140,7 +140,7 @@ if ( ! class_exists('WP_ApiShip_Order_Sender') ) :
 					$address_2 = ' '.$address_2;
 				}
 
-				$address_string[] = Options\WP_ApiShip_Options::get_wc_option( 
+				$address_string[] = Options\ApiShip_Options::get_wc_option( 
 					'woocommerce_store_address', 
 					false, 
 					false 
@@ -148,7 +148,7 @@ if ( ! class_exists('WP_ApiShip_Order_Sender') ) :
 			
 			} else {
 				
-				$address_2 = Options\WP_ApiShip_Options::get_wc_option( 
+				$address_2 = Options\ApiShip_Options::get_wc_option( 
 					'wp_apiship_warehouse_address_2', 
 					'', 
 					false 
@@ -158,7 +158,7 @@ if ( ! class_exists('WP_ApiShip_Order_Sender') ) :
 					$address_2 = ' '.$address_2;
 				}
 				
-				$address_string[] = Options\WP_ApiShip_Options::get_wc_option( 
+				$address_string[] = Options\ApiShip_Options::get_wc_option( 
 					'wp_apiship_warehouse_address', 
 					false, 
 					false 

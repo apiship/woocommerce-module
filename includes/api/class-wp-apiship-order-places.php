@@ -7,20 +7,20 @@
  * @since 1.0.0
  */
 
-use WP_ApiShip\Options;
+use ApiShip\Options;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists('WP_ApiShip_Order_Places') ) :
+if ( ! class_exists('ApiShip_Order_Places') ) :
 
 	/**
 	 * To get info about validate Order 
 	 * @see https://api.apiship.ru/doc/#/orders/validateOrder
 	 */
-	class WP_ApiShip_Order_Places {
+	class ApiShip_Order_Places {
 
 		/**
 		 * Высота единицы товара в сантиметрах.
@@ -100,7 +100,7 @@ if ( ! class_exists('WP_ApiShip_Order_Places') ) :
 				in_array(
 					$payment_method, 
 					array(
-						Options\WP_ApiShip_Options::WC_PAYMENT_DIRECT_BANK_TRANSFER
+						Options\ApiShip_Options::WC_PAYMENT_DIRECT_BANK_TRANSFER
 					) 
 				)
 			) {
@@ -387,23 +387,23 @@ if ( ! class_exists('WP_ApiShip_Order_Places') ) :
 				case 'height' :
 					$option 	   = 'wp_apiship_height';
 					$value 		   = $product->get_height();
-					$default_value = Options\WP_ApiShip_Options::ITEM_HEIGHT;
+					$default_value = Options\ApiShip_Options::ITEM_HEIGHT;
 					break;
 				case 'width' :
 					$option 	   = 'wp_apiship_width';
 					$value 		   = $product->get_width();
-					$default_value = Options\WP_ApiShip_Options::ITEM_WIDTH;
+					$default_value = Options\ApiShip_Options::ITEM_WIDTH;
 					break;
 				case 'length' :
 					$option 	   = 'wp_apiship_length';
 					$value 		   = $product->get_length();
-					$default_value = Options\WP_ApiShip_Options::ITEM_LENGTH;				
+					$default_value = Options\ApiShip_Options::ITEM_LENGTH;				
 					break;
 			endswitch;				
 			
 			if ( empty($value) ) {
 
-				$value = Options\WP_ApiShip_Options::get_wc_option(
+				$value = Options\ApiShip_Options::get_wc_option(
 					$option, 
 					$default_value,
 					false
@@ -458,14 +458,14 @@ if ( ! class_exists('WP_ApiShip_Order_Places') ) :
 
 			if ( empty($weight) ) {
 				
-				$weight = Options\WP_ApiShip_Options::get_wc_option(
+				$weight = Options\ApiShip_Options::get_wc_option(
 					'wp_apiship_weight', 
-					Options\WP_ApiShip_Options::ITEM_WEIGHT,
+					Options\ApiShip_Options::ITEM_WEIGHT,
 					false
 				);
 				
 				if ( empty($weight) ) {
-					$weight = Options\WP_ApiShip_Options::ITEM_WEIGHT;
+					$weight = Options\ApiShip_Options::ITEM_WEIGHT;
 				}
 				
 			} else {
